@@ -5,6 +5,7 @@
     "action": { "type": "block" },
     "condition": {
       "urlFilter": "||doubleclick.net^",
+      "excludedInitiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com"],
       "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "media", "websocket", "other"]
     }
   },
@@ -14,6 +15,7 @@
     "action": { "type": "block" },
     "condition": {
       "urlFilter": "||googlesyndication.com^",
+      "excludedInitiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com"],
       "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "media", "websocket", "other"]
     }
   },
@@ -23,6 +25,7 @@
     "action": { "type": "block" },
     "condition": {
       "urlFilter": "||googleadservices.com^",
+      "excludedInitiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com"],
       "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "media", "websocket", "other"]
     }
   },

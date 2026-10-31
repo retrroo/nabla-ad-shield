@@ -56,7 +56,18 @@
         "scripts/heuristic_ai.js"
       ],
       "run_at": "document_start",
-      "all_frames": true
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "*://*.youtube.com/*"
+      ],
+      "js": [
+        "scripts/youtube_main_world.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": false
     },
     {
       "matches": [
