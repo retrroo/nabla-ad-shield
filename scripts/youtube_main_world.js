@@ -1,7 +1,12 @@
 /**
- * Nabla Ad Shield — Layer 3A: High-Speed YouTube Main-World Sanitizer
+ * Nabla Ad Shield — Layer 3A: Stealth YouTube Main-World Sanitizer
  * Runs in MAIN world at document_start on *.youtube.com.
- * Uses fast SIMD string pre-filtering on JSON.parse and respects whitelist/pause flags.
+ *
+ * Anti-Detection & Honeypot Evasion:
+ *  - Leaves YouTube's 7-second synthetic canary payloads (videoId === "ux" or invalid IDs)
+ *    100% untouched so tamper-detection self-tests always pass.
+ *  - Skips synthetic in-memory Response.prototype.json() checks where response.url === "".
+ *  - Uses V8 Proxy apply traps so Function.prototype.toString preserves [native code].
  */
 
 (function initYouTubeMainWorld() {
@@ -19,8 +24,19 @@
     }
   }
 
-  // Exit early if cached session marker indicates YouTube is whitelisted or shield is paused
   if (isShieldDisabled()) return;
+
+  // Real YouTube video IDs are strictly 11-character base64url strings (never "ux" honeypots)
+  const VALID_YT_VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
+
+  function isRealVideoPayload(obj) {
+    if (!obj || typeof obj !== 'object') return false;
+    const videoId = obj.videoDetails?.videoId;
+    if (typeof videoId !== 'string' || !VALID_YT_VIDEO_ID.test(videoId)) {
+      return false;
+    }
+    return Boolean(obj.playabilityStatus || obj.streamingData);
+  }
 
   // 1. Satisfy YouTube's anti-adblock canary variable
   try {
@@ -46,34 +62,53 @@
   }
 
   /**
-   * Surgically strips ad placements from YouTube Player API response objects
+   * Surgically strips ad placements ONLY from genuine YouTube video payloads,
+   * bypassing synthetic "ux" honeypot self-tests completely.
    */
-  function sanitizePlayerPayload(data, source) {
-    if (!data || typeof data !== 'object' || isShieldDisabled()) return data;
+  function sanitizeRealPlayerObject(playerObj, source) {
+    if (!isRealPlayerCandidate(playerObj) || isShieldDisabled()) return;
 
     const strippedKeys = [];
 
-    if (Array.isArray(data.adPlacements) && data.adPlacements.length > 0) {
-      strippedKeys.push(`adPlacements(${data.adPlacements.length})`);
-      data.adPlacements = [];
+    if (Array.isArray(playerObj.adPlacements) && playerObj.adPlacements.length > 0) {
+      strippedKeys.push(`adPlacements(${playerObj.adPlacements.length})`);
+      playerObj.adPlacements = [];
     }
 
-    if (Array.isArray(data.playerAds) && data.playerAds.length > 0) {
-      strippedKeys.push(`playerAds(${data.playerAds.length})`);
-      data.playerAds = [];
+    if (Array.isArray(playerObj.playerAds) && playerObj.playerAds.length > 0) {
+      strippedKeys.push(`playerAds(${playerObj.playerAds.length})`);
+      playerObj.playerAds = [];
     }
 
-    if (Array.isArray(data.adSlots) && data.adSlots.length > 0) {
-      strippedKeys.push(`adSlots(${data.adSlots.length})`);
-      data.adSlots = [];
+    if (Array.isArray(playerObj.adSlots) && playerObj.adSlots.length > 0) {
+      strippedKeys.push(`adSlots(${playerObj.adSlots.length})`);
+      playerObj.adSlots = [];
     }
 
     if (strippedKeys.length > 0) {
       emitMainWorldLog(`Sanitized YouTube player payload (${source})`, {
         source,
         stripped: strippedKeys,
-        videoId: data.videoDetails?.videoId || 'unknown'
+        videoId: playerObj.videoDetails.videoId
       });
+    }
+  }
+
+  function isRealPlayerCandidate(obj) {
+    return isRealVideoPayload(obj);
+  }
+
+  function inspectAndSanitize(data, source) {
+    if (!data || typeof data !== 'object' || isShieldDisabled()) return data;
+
+    // Case A: Root object is a genuine player response
+    if (isRealVideoPayload(data)) {
+      sanitizeRealPlayerObject(data, source);
+    }
+
+    // Case B: SPA /youtubei/v1/next response containing nested playerResponse
+    if (data.playerResponse && typeof data.playerResponse === 'object' && isRealVideoPayload(data.playerResponse)) {
+      sanitizeRealPlayerObject(data.playerResponse, `${source}:nested`);
     }
 
     return data;
@@ -82,45 +117,52 @@
   // 2. Intercept window.ytInitialPlayerResponse setter for SSR video loads
   try {
     let internalPlayerResponse = window.ytInitialPlayerResponse;
+    if (internalPlayerResponse) {
+      inspectAndSanitize(internalPlayerResponse, 'ytInitialPlayerResponse');
+    }
     Object.defineProperty(window, 'ytInitialPlayerResponse', {
       configurable: true,
       get() {
         return internalPlayerResponse;
       },
       set(newValue) {
-        internalPlayerResponse = sanitizePlayerPayload(newValue, 'ytInitialPlayerResponse');
+        internalPlayerResponse = inspectAndSanitize(newValue, 'ytInitialPlayerResponse');
       }
     });
   } catch (e) {}
 
-  // 3. Intercept Response.prototype.json for SPA /youtubei/v1/player fetches
+  // 3. Proxy Response.prototype.json (ignores synthetic in-memory new Response() honeypots where url === "")
   try {
-    const originalJson = Response.prototype.json;
-    Response.prototype.json = async function (...args) {
-      const data = await originalJson.apply(this, args);
-      if (data && typeof data === 'object' && ('adPlacements' in data || 'playerAds' in data || 'adSlots' in data)) {
-        sanitizePlayerPayload(data, 'fetch.json');
+    Response.prototype.json = new Proxy(Response.prototype.json, {
+      apply(target, thisArg, args) {
+        const promise = Reflect.apply(target, thisArg, args);
+        const respUrl = thisArg && typeof thisArg.url === 'string' ? thisArg.url : '';
+        if (!respUrl || (!respUrl.includes('/youtubei/v1/player') && !respUrl.includes('/youtubei/v1/next'))) {
+          return promise;
+        }
+        return promise.then((data) => inspectAndSanitize(data, 'fetch.json'));
       }
-      return data;
-    };
+    });
   } catch (e) {}
 
-  // 4. Intercept JSON.parse with fast string substring pre-filter
+  // 4. Proxy JSON.parse (preserves [native code] signature and ignores "ux" canary strings)
   try {
-    const originalParse = JSON.parse;
-    JSON.parse = function (...args) {
-      const raw = args[0];
-      const mayContainPlayerAds =
-        typeof raw === 'string' &&
-        raw.length > 120 &&
-        (raw.includes('adPlacements') || raw.includes('playerAds') || raw.includes('adSlots'));
+    JSON.parse = new Proxy(JSON.parse, {
+      apply(target, thisArg, args) {
+        const raw = args[0];
+        const shouldInspect =
+          typeof raw === 'string' &&
+          raw.length > 200 &&
+          !raw.includes('"videoId":"ux"') &&
+          (raw.includes('adPlacements') || raw.includes('playerAds') || raw.includes('adSlots'));
 
-      const data = originalParse.apply(this, args);
+        const parsed = Reflect.apply(target, thisArg, args);
 
-      if (mayContainPlayerAds && data && typeof data === 'object' && data.playabilityStatus) {
-        sanitizePlayerPayload(data, 'JSON.parse');
+        if (shouldInspect && parsed && typeof parsed === 'object') {
+          inspectAndSanitize(parsed, 'JSON.parse');
+        }
+        return parsed;
       }
-      return data;
-    };
+    });
   } catch (e) {}
 })();

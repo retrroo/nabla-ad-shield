@@ -451,5 +451,25 @@
       "urlFilter": "||rlcdn.com^",
       "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "media", "websocket", "other"]
     }
+  },
+  {
+    "id": 9001,
+    "priority": 10,
+    "action": { "type": "allow" },
+    "condition": {
+      "urlFilter": "||pagead2.googlesyndication.com/bg/",
+      "initiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "tpc.googlesyndication.com"],
+      "resourceTypes": ["script", "xmlhttprequest", "other"]
+    }
+  },
+  {
+    "id": 9002,
+    "priority": 10,
+    "action": { "type": "allow" },
+    "condition": {
+      "urlFilter": "||pagead2.googlesyndication.com/pagead/gen_204?id=sodar",
+      "initiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "tpc.googlesyndication.com"],
+      "resourceTypes": ["image", "ping", "xmlhttprequest", "other"]
+    }
   }
 ]

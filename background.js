@@ -390,10 +390,10 @@ if (chrome.declarativeNetRequest.onRuleMatchedDebug) {
   chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {
     if (!info || !info.request) return;
 
-    // Ignore allow / allowAllRequests whitelist matches when counting blocked threats
+    // Ignore allow / allowAllRequests rules when counting blocked threats
     const ruleId = info.rule?.ruleId;
     const rulesetId = info.rule?.rulesetId;
-    if (rulesetId === '_dynamic') return;
+    if (rulesetId === '_dynamic' || ruleId >= 9000) return;
 
     const tabId = info.request.tabId;
     if (tabId > 0) {

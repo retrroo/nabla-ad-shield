@@ -1,10 +1,14 @@
 /**
- * Nabla Ad Shield — Layer 3B: High-Efficiency YouTube Shield & Grid Reflow
- * Optimized with:
- *  - 0ms optimistic stylesheet injection (zero layout flash)
- *  - Shared ~1ms storage state lookup (zero Service Worker cold-start wakeup)
- *  - Scoped MutationObservers (ignores 60fps player progress bar & caption ticks)
- *  - Batched telemetry IPC via __nablaReport
+ * Nabla Ad Shield — Layer 3B: Glitch-Free YouTube Shield & Grid Reflow
+ *
+ * Key Stability & Evasion Guarantees:
+ *  - Visual Ad Cloaking: Sets opacity: 0 on the video & ad overlays ONLY while .ad-showing is active
+ *    so zero ad frames ever flash while keeping Chromium's MSE decoder running.
+ *  - MSE-Safe Seeking: Never forces high playbackRate while readyState === 0 / duration === NaN
+ *    (which stalls Chromium's DASH buffer). Waits ~50ms for loadedmetadata/durationchange, then
+ *    jumps cleanly to video.duration.
+ *  - Visible-Only Skip Clicks: Ignores hidden pre-rendered .ytp-skip-ad-button nodes and throttles
+ *    clicks to prevent event-loop spam.
  */
 
 (async function initYouTubeShield() {
@@ -13,6 +17,7 @@
   const STYLE_ID = 'nabla-yt-shield-styles';
 
   const YT_SHIELD_CSS = `
+    /* 1. Feed & Sidebar Ad Container Collapse (prevents empty black grid holes) */
     ytd-rich-item-renderer[data-nabla-hidden="true"],
     ytd-rich-section-renderer[data-nabla-hidden="true"],
     ytd-rich-item-renderer:has(ytd-ad-slot-renderer),
@@ -53,6 +58,16 @@
       border: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
+    }
+
+    /* 2. In-Stream Ad Visual Cloak (hides ad frames without pausing MSE decoding) */
+    .html5-video-player.ad-showing video.html5-main-video,
+    .html5-video-player.ad-interrupting video.html5-main-video,
+    .html5-video-player.ad-showing .ytp-ad-player-overlay,
+    .html5-video-player.ad-showing .ytp-ad-player-overlay-layout,
+    .html5-video-player.ad-showing .ytp-ad-action-interstitial,
+    .html5-video-player.ad-showing .ytp-ad-image-overlay {
+      opacity: 0 !important;
     }
   `;
 
@@ -108,7 +123,7 @@
     }
   });
 
-  report('YOUTUBE', 'INFO', 'YouTube Shield active (Zero-Latency CSS + Main-World Sanitizer)', {}, 0);
+  report('YOUTUBE', 'INFO', 'YouTube Shield active (Honeypot-Safe Sanitizer + MSE-Safe Skipper)', {}, 0);
 
   // 3. Deduplicated Dynamic Grid Reflow & Row Backfiller
   const AD_GRID_SELECTOR =
@@ -164,10 +179,12 @@
     }
   }
 
-  // 4. Instant Video Stream Ad Accelerator & Auto-Skipper
+  // 4. MSE-Safe Video Ad Fast-Forwarder & Visible-Only Skipper
   let wasAdActive = false;
   let userMutedState = false;
   let userPlaybackRate = 1.0;
+  let lastSkipClickTime = 0;
+  let lastSeekedDuration = -1;
   let observedPlayer = null;
   let observedAdModule = null;
   let boundVideo = null;
@@ -177,23 +194,33 @@
     '.ytp-ad-skip-button-modern,' +
     '.ytp-ad-SkipButton,' +
     '.ytp-skip-ad-button,' +
-    '.ytp-ad-skip-button-text,' +
     'button.ytp-ad-skip-button-modern,' +
-    'button[class*="ytp-ad-skip"],' +
     '.ytp-ad-skip-button-container button';
 
-  function tryClickSkip() {
+  function isElementGenuinelyVisible(el) {
+    if (!el || el.offsetParent === null) return false;
+    const rect = el.getBoundingClientRect();
+    return rect.width > 4 && rect.height > 4;
+  }
+
+  function tryClickVisibleSkip() {
+    const now = performance.now();
+    if (now - lastSkipClickTime < 800) return;
+
     const buttons = document.querySelectorAll(SKIP_COMBINED_SELECTOR);
     for (let i = 0; i < buttons.length; i++) {
       const btn = buttons[i];
-      if (typeof btn.click === 'function') {
+      if (isElementGenuinelyVisible(btn) && typeof btn.click === 'function') {
+        lastSkipClickTime = now;
         btn.click();
-        report('YOUTUBE', 'BLOCKED', `Triggered YouTube ad skip button (${btn.className || btn.tagName})`, {}, 0);
+        report('YOUTUBE', 'BLOCKED', `Clicked visible skip button (${btn.className || btn.tagName})`, {}, 0);
+        break;
       }
     }
 
     const overlayClose = document.querySelector('.ytp-ad-overlay-close-button');
-    if (overlayClose && typeof overlayClose.click === 'function') {
+    if (isElementGenuinelyVisible(overlayClose) && typeof overlayClose.click === 'function') {
+      lastSkipClickTime = now;
       overlayClose.click();
       report('YOUTUBE', 'BLOCKED', 'Closed video overlay banner ad', {}, 0);
     }
@@ -206,7 +233,6 @@
       player.classList.contains('ad-showing') ||
       player.classList.contains('ad-interrupting');
 
-    // Fast bailout when no ad is playing and no cleanup is needed
     if (!isAdShowing && !wasAdActive) {
       return;
     }
@@ -219,35 +245,67 @@
         userMutedState = video.muted;
         userPlaybackRate = video.playbackRate && video.playbackRate <= 2 ? video.playbackRate : 1.0;
         wasAdActive = true;
+        lastSeekedDuration = -1;
 
         report(
           'YOUTUBE',
           'BLOCKED',
-          'In-stream video ad intercepted. Muting & fast-forwarding.',
-          { duration: video.duration, currentTime: video.currentTime },
+          'In-stream video ad intercepted (cloaked & muted)',
+          {
+            readyState: video.readyState,
+            duration: isFinite(video.duration) ? Number(video.duration.toFixed(2)) : 'loading'
+          },
           1
         );
       }
 
+      // 1. Always mute audio immediately
       video.muted = true;
 
-      try {
-        if (video.playbackRate !== 16.0) {
-          video.playbackRate = 16.0;
-        }
-      } catch (e) {}
+      // 2. Ensure ad is not paused at 0.00s waiting for user interaction
+      if (video.paused && !video.ended) {
+        video.play().catch(() => {});
+      }
 
-      if (isFinite(video.duration) && video.duration > 0.5) {
-        const targetTime = Math.max(0, video.duration - 0.05);
-        if (video.currentTime < targetTime) {
+      // 3. MSE-Safe fast-forward: ONLY seek or boost rate AFTER metadata is loaded!
+      const dur = video.duration;
+      if (video.readyState >= 1 && isFinite(dur) && dur > 0.2) {
+        // Seek directly to the end once per ad duration so HTML5 fires 'ended' cleanly
+        if (Math.abs(dur - lastSeekedDuration) > 0.1 && video.currentTime < dur - 0.1) {
+          lastSeekedDuration = dur;
           try {
-            video.currentTime = targetTime;
+            video.currentTime = dur;
+            report(
+              'YOUTUBE',
+              'BLOCKED',
+              `Skipped ad stream to end (${dur.toFixed(1)}s)`,
+              { duration: dur },
+              0
+            );
+          } catch (e) {}
+        }
+
+        // Fallback if seek was clamped: smooth 8x rate only when buffer has frames (readyState >= 3)
+        if (dur - video.currentTime > 0.5 && video.readyState >= 3) {
+          try {
+            if (video.playbackRate !== 8.0) {
+              video.playbackRate = 8.0;
+            }
+          } catch (e) {}
+        }
+      } else {
+        // Metadata still loading (readyState === 0): keep playbackRate at 1.0 so MSE never stalls!
+        if (video.playbackRate > 2.0) {
+          try {
+            video.playbackRate = 1.0;
           } catch (e) {}
         }
       }
 
-      tryClickSkip();
+      // 4. Click skip button ONLY if genuinely visible
+      tryClickVisibleSkip();
     } else if (wasAdActive) {
+      // Ad finished: restore user audio & normal playback speed immediately
       if (!userMutedState) {
         video.muted = false;
       }
@@ -255,15 +313,15 @@
         video.playbackRate = userPlaybackRate > 0 ? userPlaybackRate : 1.0;
       } catch (e) {}
       wasAdActive = false;
+      lastSeekedDuration = -1;
 
-      report('YOUTUBE', 'INFO', 'Video ad cleared. Restored user playback state.', {}, 0);
+      report('YOUTUBE', 'INFO', 'Ad bypassed cleanly. Main video playing.', {}, 0);
     }
   }
 
   function attachPlayerHooks(player) {
     if (!player) return;
 
-    // Watch ONLY player class changes (zero overhead during normal playback)
     if (observedPlayer !== player) {
       observedPlayer = player;
       const classObserver = new MutationObserver(() => {
@@ -275,19 +333,17 @@
       });
     }
 
-    // Watch ONLY the tiny .ytp-ad-module container for late-appearing skip buttons
     const adModule = player.querySelector('.ytp-ad-module');
     if (adModule && observedAdModule !== adModule) {
       observedAdModule = adModule;
       const adModuleObserver = new MutationObserver(() => {
         if (player.classList.contains('ad-showing') || player.classList.contains('ad-interrupting')) {
-          tryClickSkip();
+          handleVideoAds(player);
         }
       });
       adModuleObserver.observe(adModule, { childList: true, subtree: true });
     }
 
-    // Bind ultra-fast 1-boolean-check media listeners directly on <video>
     const video = player.querySelector('video.html5-main-video') || player.querySelector('video');
     if (video && boundVideo !== video) {
       boundVideo = video;
@@ -297,7 +353,10 @@
         }
       };
       video.addEventListener('play', fastMediaCheck, { passive: true });
+      video.addEventListener('playing', fastMediaCheck, { passive: true });
       video.addEventListener('loadedmetadata', fastMediaCheck, { passive: true });
+      video.addEventListener('durationchange', fastMediaCheck, { passive: true });
+      video.addEventListener('canplay', fastMediaCheck, { passive: true });
       video.addEventListener('timeupdate', fastMediaCheck, { passive: true });
     }
 
@@ -310,7 +369,6 @@
     cleanupAdGridSlots();
   }
 
-  // Feed observer: ignores internal video player progress/caption ticks completely
   let feedRafScheduled = false;
   const feedObserver = new MutationObserver((mutations) => {
     if (feedRafScheduled) return;
@@ -318,7 +376,6 @@
     let relevantAddition = false;
     for (let i = 0; i < mutations.length; i++) {
       const m = mutations[i];
-      // Skip high-frequency player UI updates (progress bar, time display, captions)
       if (observedPlayer && observedPlayer.contains(m.target)) continue;
 
       const added = m.addedNodes;
