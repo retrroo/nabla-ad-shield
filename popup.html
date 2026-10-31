@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nabla Controller</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <!-- Dynamic Particle Constellation Background Canvas -->
+  <canvas id="popup-canvas" class="popup-canvas"></canvas>
+
+  <div class="popup-wrapper">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="brand-group">
+        <svg class="brand-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="12,21 3,5 21,5" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round" fill="none"/>
+          <circle cx="12" cy="10" r="2" fill="#FFFFFF"/>
+        </svg>
+        <span class="brand-title">NABLA</span>
+      </div>
+      <div id="status-pill" class="status-pill active-status">
+        <span class="status-dot"></span>
+        <span id="status-text">ACTIVE</span>
+      </div>
+    </header>
+
+    <!-- Master Switch Hero -->
+    <section class="master-switch-card">
+      <div class="master-switch-header">
+        <span class="card-caption">GLOBAL PROTECTION</span>
+        <span id="global-state-indicator" class="state-indicator">ENABLED</span>
+      </div>
+      <button id="master-toggle-btn" class="master-pill-btn" aria-label="Toggle Global Protection">
+        <div class="toggle-slider-track">
+          <div class="toggle-slider-knob"></div>
+        </div>
+        <span id="master-toggle-label" class="master-label">Shield Enabled</span>
+      </button>
+    </section>
+
+    <!-- Live Telemetry Grid -->
+    <section class="telemetry-grid">
+      <div class="telemetry-card">
+        <span class="telemetry-title">BLOCKED ON THIS PAGE</span>
+        <span id="tab-blocked-counter" class="telemetry-value">0</span>
+        <span class="telemetry-footnote">Network &amp; DOM Elements</span>
+      </div>
+      <div class="telemetry-card">
+        <span class="telemetry-title">TOTAL THREATS NEUTRALIZED</span>
+        <span id="total-blocked-counter" class="telemetry-value">0</span>
+        <span class="telemetry-footnote">Cumulative Lifetime Total</span>
+      </div>
+    </section>
+
+    <!-- Controls Panel -->
+    <section class="controls-card">
+      <!-- Domain Specific Toggle -->
+      <div class="control-row" id="domain-row">
+        <div class="control-info">
+          <span class="control-label" id="current-domain-label">Current Domain</span>
+          <span class="control-subtext" id="domain-subtext">Active protection on this site</span>
+        </div>
+        <button id="domain-whitelist-btn" class="secondary-pill-btn">
+          Pause Site
+        </button>
+      </div>
+
+      <!-- Cookie Consent Auto-Reject Toggle -->
+      <div class="control-row">
+        <div class="control-info">
+          <span class="control-label">Cookie Auto-Reject</span>
+          <span class="control-subtext">Auto-decline CMP &amp; GDPR banners</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="cookie-reject-toggle" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="popup-footer">
+      <span class="pure-protocol">Pure Web Protocol &bull; 100% Free &bull; Zero Telemetry</span>
+    </footer>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

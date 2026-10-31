@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nabla — Where browsing becomes pure.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="onboarding.css">
+</head>
+<body>
+  <!-- Dynamic Particle Constellation Canvas -->
+  <canvas id="constellation-canvas" class="background-canvas"></canvas>
+
+  <main class="onboarding-container">
+    <!-- Brand Header -->
+    <header class="brand-header">
+      <div class="logo-mark">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="14,24 3,5 25,5" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round" fill="none"/>
+          <circle cx="14" cy="11" r="2" fill="#FFFFFF"/>
+        </svg>
+        <span class="brand-name">NABLA</span>
+      </div>
+      <div class="version-tag">PROTOCOL v1.0</div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <h1 class="hero-headline">Where browsing becomes pure.</h1>
+      <p class="hero-subtext">
+        Zero surveillance. Zero visual noise. A deterministic, on-device ad blocking architecture built for the modern web.
+      </p>
+    </section>
+
+    <!-- Architecture Pillars Grid -->
+    <section class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-icon">01</div>
+        <div class="pillar-info">
+          <h3>Declarative Net Filtering</h3>
+          <p>Kernel-level MV3 rule matching blocks telemetry and ad servers with zero runtime CPU overhead.</p>
+        </div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">02</div>
+        <div class="pillar-info">
+          <h3>Stealth Video Mitigation</h3>
+          <p>Bypasses anti-adblock modals with stream acceleration and automated skip button execution.</p>
+        </div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">03</div>
+        <div class="pillar-info">
+          <h3>On-Device Heuristics</h3>
+          <p>Zero cloud API calls. Real-time DOM entropy and dimension analysis collapses injected trackers.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Configuration & Policies Box -->
+    <section class="config-card">
+      <h2 class="config-title">Initial Configuration</h2>
+
+      <!-- Privacy Consent Toggle (Mandatory) -->
+      <div class="toggle-row mandatory-row">
+        <div class="toggle-meta">
+          <label for="privacy-toggle" class="toggle-label">Accept Privacy &amp; Local Storage Policy</label>
+          <span class="toggle-desc">Nabla stores all preferences and rule tables strictly on your device. No telemetry or analytics are ever transmitted.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="privacy-toggle">
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+      <!-- Cookie Banner Auto-Reject Toggle (Opt-in) -->
+      <div class="toggle-row">
+        <div class="toggle-meta">
+          <label for="cookie-toggle" class="toggle-label">Cookie Banner Auto-Reject</label>
+          <span class="toggle-desc">Automatically dismisses GDPR and CMP consent dialogs by selecting &quot;Reject All&quot; or neutralizing the modal backdrop.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="cookie-toggle" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Action Section -->
+    <section class="action-section">
+      <div class="dormant-notice" id="status-hint">
+        Shield status: <span class="status-dormant">Dormant</span> &mdash; Awaiting initialization
+      </div>
+      <button id="initialize-btn" class="pill-btn primary-pill-btn" disabled>
+        Initialize Protection
+      </button>
+    </section>
+  </main>
+
+  <script type="module" src="onboarding.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1001,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||cdn.cookielaw.org^",
+      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+    }
+  },
+  {
+    "id": 1002,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||consent.cookiebot.com^",
+      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+    }
+  },
+  {
+    "id": 1003,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||quantcast.mgr.consensu.org^",
+      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+    }
+  },
+  {
+    "id": 1004,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||consent.trustarc.com^",
+      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+    }
+  },
+  {
+    "id": 1005,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||usercentrics.eu^",
+      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+    }
+  },
+  {
+    "id": 1006,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||app.termly.io^",
+      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+    }
+  },
+  {
+    "id": 1007,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||cmp.osano.com^",
+      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+    }
+  },
+  {
+    "id": 1008,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||cdn.iubenda.com^",
+      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+    }
+  },
+  {
+    "id": 1009,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||cookiehub.net^",
+      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+    }
+  },
+  {
+    "id": 1010,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "||didomi.io^",
+      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+    }
+  }
+]
