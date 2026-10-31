@@ -1,13 +1,12 @@
 /**
  * Nabla Ad Shield — Popup Controller
  * Manages master toggle, domain whitelisting, live telemetry,
- * cookie auto-rejection, and background constellation canvas.
+ * cookie auto-rejection, diagnostic launch, and background constellation canvas.
  */
 
 import { ParticleConstellation } from './shared/particle_canvas.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // 1. Initialize background particle constellation
   const canvas = document.getElementById('popup-canvas');
   if (canvas) {
     new ParticleConstellation(canvas, {
@@ -17,7 +16,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // DOM element references
   const statusPill = document.getElementById('status-pill');
   const statusText = document.getElementById('status-text');
   const globalIndicator = document.getElementById('global-state-indicator');
@@ -29,6 +27,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const domainSubtext = document.getElementById('domain-subtext');
   const domainWhitelistBtn = document.getElementById('domain-whitelist-btn');
   const cookieRejectToggle = document.getElementById('cookie-reject-toggle');
+  const openDebuggerBtn = document.getElementById('open-debugger-btn');
+  const logCountIndicator = document.getElementById('log-count-indicator');
 
   let activeTabId = null;
   let activeTabUrl = null;
@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   let isSiteWhitelisted = false;
   let isGlobalEnabled = false;
 
-  // 2. Query active tab
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (tab) {
@@ -47,7 +46,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Failed to query active tab:', err);
   }
 
-  // 3. Fetch comprehensive popup state from background service worker
   async function loadState() {
     try {
       const response = await chrome.runtime.sendMessage({
@@ -67,12 +65,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       renderCounters(response.tabBlocked, response.totalThreatsNeutralized);
 
       cookieRejectToggle.checked = Boolean(response.cookieAutoReject);
+
+      if (logCountIndicator) {
+        logCountIndicator.textContent = (response.totalLogsCount || 0).toLocaleString();
+      }
     } catch (err) {
       console.error('Error fetching popup data:', err);
     }
   }
 
-  // Render global switch and status pill
   function renderGlobalState(enabled) {
     if (enabled) {
       statusPill.className = 'status-pill active-status';
@@ -91,7 +92,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Render per-domain controls
   function renderDomainState(domain, whitelisted) {
     if (!domain) {
       currentDomainLabel.textContent = 'Internal / Local Page';
@@ -114,7 +114,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Smooth counter animation
   function animateValue(element, start, end, duration = 400) {
     if (start === end) {
       element.textContent = end.toLocaleString();
@@ -126,7 +125,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     function step(currentTime) {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
       const current = Math.round(start + range * eased);
       element.textContent = current.toLocaleString();
@@ -142,7 +140,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     animateValue(totalBlockedEl, 0, totalCount || 0);
   }
 
-  // Event: Master Switch Toggle
   masterToggleBtn.addEventListener('click', async () => {
     masterToggleBtn.disabled = true;
     try {
@@ -158,7 +155,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Event: Domain Whitelist Toggle
   domainWhitelistBtn.addEventListener('click', async () => {
     if (!currentDomain) return;
     domainWhitelistBtn.disabled = true;
@@ -172,7 +168,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (res && res.success) {
         isSiteWhitelisted = res.isWhitelisted;
         renderDomainState(currentDomain, isSiteWhitelisted);
-        // Optionally reload current tab so whitelist change takes immediate effect
         if (activeTabId) {
           chrome.tabs.reload(activeTabId);
         }
@@ -184,7 +179,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Event: Cookie Consent Auto-Reject Toggle
   cookieRejectToggle.addEventListener('change', async () => {
     try {
       await chrome.runtime.sendMessage({ type: 'TOGGLE_COOKIE_REJECT' });
@@ -193,6 +187,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Initial load
+  // Launch Diagnostics & Log Monitor
+  openDebuggerBtn.addEventListener('click', () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL('debugger.html') });
+  });
+
   await loadState();
 });

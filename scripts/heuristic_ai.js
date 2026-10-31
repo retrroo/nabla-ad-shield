@@ -2,10 +2,16 @@
  * Nabla Ad Shield — Layer 4: Zero-Cost On-Device Heuristic Classifier
  * Vanilla JS heuristic evaluation of dynamic DOM elements without cloud APIs.
  * Analyzes standard IAB dimensions, URL entropy, z-index, and promotional tokens.
+ * Emits telemetry events to the diagnostic logging engine.
  */
 
 (async function initHeuristicClassifier() {
   'use strict';
+
+  // YouTube DOM is handled exclusively by youtube_shield.js to prevent false positives on video cards
+  if (window.location.hostname.includes('youtube.com')) {
+    return;
+  }
 
   // 1. Verify extension state
   let state;
@@ -20,6 +26,21 @@
 
   if (!state || !state.enabled || state.isWhitelisted) {
     return;
+  }
+
+  function logHeuristic(level, message, details = {}) {
+    try {
+      chrome.runtime.sendMessage({
+        type: 'NABLA_LOG_EVENT',
+        event: {
+          category: 'HEURISTIC',
+          level,
+          message,
+          url: window.location.href,
+          details
+        }
+      }).catch(() => {});
+    } catch (e) {}
   }
 
   // Standard IAB Ad Dimensions [width, height] with tolerance
@@ -46,7 +67,7 @@
    */
   function isCoreContent(el) {
     const tagName = el.tagName.toLowerCase();
-    if (['nav', 'header', 'footer', 'main', 'article', 'form'].includes(tagName)) {
+    if (['nav', 'header', 'footer', 'main', 'article', 'form', 'video'].includes(tagName)) {
       return true;
     }
 
@@ -54,7 +75,6 @@
       return true;
     }
 
-    // Protect article bodies with substantive text density
     const paragraphs = el.querySelectorAll('p');
     if (paragraphs.length >= 3) {
       const textLen = (el.innerText || '').length;
@@ -66,13 +86,13 @@
 
   /**
    * Evaluates feature weights for a candidate element
-   * Returns confidence score between 0.0 and 1.0
    */
   function scoreElement(el) {
-    if (el.dataset.nablaNeutralized === 'true') return 0;
-    if (isCoreContent(el)) return 0;
+    if (el.dataset.nablaNeutralized === 'true') return { score: 0, features: [] };
+    if (isCoreContent(el)) return { score: 0, features: ['core_content_bypass'] };
 
     let score = 0.0;
+    const features = [];
     const rect = el.getBoundingClientRect();
     const width = Math.round(rect.width);
     const height = Math.round(rect.height);
@@ -82,6 +102,7 @@
       for (const [w, h] of IAB_DIMENSIONS) {
         if (Math.abs(width - w) <= 4 && Math.abs(height - h) <= 4) {
           score += 0.35;
+          features.push(`IAB_${w}x${h}`);
           break;
         }
       }
@@ -104,17 +125,16 @@
 
         if (isCrossOrigin && (AD_URL_REGEX.test(src) || parsed.search.length > 70)) {
           score += 0.35;
+          features.push('Cross-Origin Ad URL');
         }
-      } catch (e) {
-        // Ignored
-      }
+      } catch (e) {}
     }
 
     // Feature 3: Promotional Label Match in innerText (+0.35)
-    // Only test if text is short (avoid false positives on articles discussing ads)
     const textSnippet = (el.innerText || '').slice(0, 120).trim();
     if (textSnippet && textSnippet.length < 80 && PROMO_TOKEN_REGEX.test(textSnippet)) {
       score += 0.35;
+      features.push(`Promo Text ("${textSnippet.slice(0, 30)}")`);
     }
 
     // Feature 4: High z-index Sticky / Fixed Docked Overlay (+0.25)
@@ -124,14 +144,12 @@
       const zIndex = parseInt(style.zIndex, 10);
 
       if (isFixed && zIndex >= 999) {
-        // Sticky banner pinned to viewport edge
         if (rect.top <= 10 || rect.bottom >= window.innerHeight - 10) {
           score += 0.25;
+          features.push('High z-index sticky overlay');
         }
       }
-    } catch (e) {
-      // Ignored
-    }
+    } catch (e) {}
 
     // Feature 5: Suspicious Ad Attributes (+0.25)
     if (
@@ -141,15 +159,16 @@
       el.className?.toString().includes('google-auto-placed')
     ) {
       score += 0.25;
+      features.push('Ad Vendor Dataset Attributes');
     }
 
-    return score;
+    return { score, features, width, height };
   }
 
   /**
    * Neutralize elements scoring >= 0.85
    */
-  function neutralizeCandidate(el) {
+  function neutralizeCandidate(el, evaluation) {
     el.dataset.nablaNeutralized = 'true';
     el.style.setProperty('display', 'none', 'important');
     el.style.setProperty('height', '0', 'important');
@@ -159,7 +178,15 @@
     el.style.setProperty('pointer-events', 'none', 'important');
     el.style.setProperty('overflow', 'hidden', 'important');
 
-    // Notify background telemetry
+    logHeuristic('BLOCKED', `Heuristic AI neutralized element (Score: ${evaluation.score.toFixed(2)})`, {
+      score: evaluation.score,
+      features: evaluation.features,
+      dimensions: `${evaluation.width}x${evaluation.height}`,
+      tag: el.tagName,
+      id: el.id,
+      className: typeof el.className === 'string' ? el.className.slice(0, 60) : ''
+    });
+
     chrome.runtime.sendMessage({ type: 'INCREMENT_BLOCKED', count: 1 }).catch(() => {});
   }
 
@@ -169,13 +196,13 @@
   function scanCandidates() {
     const candidates = document.querySelectorAll('iframe, div, aside');
     for (const el of candidates) {
-      if (scoreElement(el) >= 0.85) {
-        neutralizeCandidate(el);
+      const evalResult = scoreElement(el);
+      if (evalResult.score >= 0.85) {
+        neutralizeCandidate(el, evalResult);
       }
     }
   }
 
-  // Initial scan after DOM content loads
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       scanCandidates();
@@ -184,7 +211,6 @@
     scanCandidates();
   }
 
-  // MutationObserver for dynamic ad injections
   let scanScheduled = false;
   const observer = new MutationObserver((mutations) => {
     let hasNewElements = false;

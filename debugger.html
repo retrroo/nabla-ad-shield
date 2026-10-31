@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nabla — Telemetry &amp; Diagnostics Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="debugger.css">
+</head>
+<body>
+  <!-- Dynamic Particle Constellation Canvas -->
+  <canvas id="debugger-canvas" class="background-canvas"></canvas>
+
+  <div class="console-wrapper">
+    <!-- Top Header Bar -->
+    <header class="console-header">
+      <div class="header-left">
+        <div class="logo-glyph">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="12,21 3,5 21,5" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round" fill="none"/>
+            <circle cx="12" cy="10" r="2" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="header-meta">
+          <h1 class="console-title">NABLA <em>Diagnostics &amp; Audit Log</em></h1>
+          <span class="console-subtitle">Live Network Interceptions &bull; DOM Neutralizations &bull; AI Scoring Engine</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="live-indicator" id="live-indicator">
+          <span class="live-dot"></span>
+          <span class="live-text">STREAMING LIVE</span>
+        </div>
+        <button id="copy-btn" class="pill-action-btn primary-btn" title="Copy all logs to clipboard as JSON">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Copy Log (JSON)
+        </button>
+        <button id="export-btn" class="pill-action-btn secondary-btn" title="Download diagnostic report">
+          Download Report
+        </button>
+        <button id="clear-btn" class="pill-action-btn secondary-btn" title="Clear recorded audit buffer">
+          Clear Buffer
+        </button>
+      </div>
+    </header>
+
+    <!-- Metrics Bar -->
+    <section class="metrics-bar">
+      <div class="metric-item">
+        <span class="metric-label">TOTAL LOGGED EVENTS</span>
+        <span class="metric-val" id="metric-total">0</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-label">NETWORK BLOCKS (DNR)</span>
+        <span class="metric-val" id="metric-network">0</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-label">YOUTUBE MITIGATIONS</span>
+        <span class="metric-val" id="metric-youtube">0</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-label">HEURISTIC EVALUATIONS</span>
+        <span class="metric-val" id="metric-heuristic">0</span>
+      </div>
+      <div class="metric-item">
+        <span class="metric-label">COOKIE CMP REJECTIONS</span>
+        <span class="metric-val" id="metric-cookie">0</span>
+      </div>
+    </section>
+
+    <!-- Toolbar: Category Filter Tabs & Search -->
+    <section class="toolbar">
+      <div class="filter-tabs" id="filter-tabs">
+        <button class="tab-btn active" data-category="ALL">All Events (<span id="count-all">0</span>)</button>
+        <button class="tab-btn" data-category="NETWORK">Network (<span id="count-network">0</span>)</button>
+        <button class="tab-btn" data-category="YOUTUBE">YouTube Shield (<span id="count-youtube">0</span>)</button>
+        <button class="tab-btn" data-category="HEURISTIC">Heuristic AI (<span id="count-heuristic">0</span>)</button>
+        <button class="tab-btn" data-category="COSMETIC">Cosmetic DOM (<span id="count-cosmetic">0</span>)</button>
+        <button class="tab-btn" data-category="COOKIE">Cookie Consent (<span id="count-cookie">0</span>)</button>
+        <button class="tab-btn" data-category="SYSTEM">System (<span id="count-system">0</span>)</button>
+      </div>
+
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888888" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search-input" placeholder="Search URL, selector, rule ID, keyword..." autocomplete="off">
+        <button id="pause-stream-btn" class="mini-tool-btn" title="Pause or Resume live log feed">Pause</button>
+      </div>
+    </section>
+
+    <!-- Logs Table Container -->
+    <main class="table-container">
+      <table class="logs-table">
+        <thead>
+          <tr>
+            <th style="width: 110px;">TIMESTAMP</th>
+            <th style="width: 100px;">CATEGORY</th>
+            <th style="width: 90px;">STATUS</th>
+            <th style="width: 280px;">TARGET / URL</th>
+            <th>DESCRIPTION &amp; DIAGNOSTIC PAYLOAD</th>
+          </tr>
+        </thead>
+        <tbody id="logs-tbody">
+          <!-- Populated dynamically -->
+        </tbody>
+      </table>
+      <div id="empty-state" class="empty-state" style="display: none;">
+        <p>No telemetry events matching the current filter.</p>
+      </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Copied diagnostic log to clipboard!</div>
+  </div>
+
+  <script type="module" src="debugger.js"></script>
+</body>
+</html>

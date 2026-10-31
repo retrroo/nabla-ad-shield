@@ -2,6 +2,7 @@
  * Nabla Ad Shield — Layer 2: Non-Breaking Cosmetic & Cookie Consent Filter
  * Injected at document_start across all frames.
  * Collapses known ad containers and auto-dismisses GDPR / CMP cookie popups.
+ * Emits telemetry events to the diagnostic logging engine.
  */
 
 (async function initCosmeticFilter() {
@@ -15,12 +16,26 @@
       url: window.location.href
     });
   } catch (err) {
-    // Background worker may be asleep or initializing
     return;
   }
 
   if (!state || !state.enabled || state.isWhitelisted) {
     return;
+  }
+
+  function logCosmetic(category, level, message, details = {}) {
+    try {
+      chrome.runtime.sendMessage({
+        type: 'NABLA_LOG_EVENT',
+        event: {
+          category,
+          level,
+          message,
+          url: window.location.href,
+          details
+        }
+      }).catch(() => {});
+    } catch (e) {}
   }
 
   // 2. High-Priority Non-Breaking Cosmetic Stylesheet Injection
@@ -81,10 +96,10 @@
     const target = document.head || document.documentElement;
     if (target) {
       target.appendChild(styleEl);
+      logCosmetic('COSMETIC', 'INFO', 'Injected non-breaking cosmetic CSS rules');
     }
   }
 
-  // Inject immediately or when documentElement is ready
   if (document.documentElement) {
     injectCosmeticStyles();
   } else {
@@ -140,9 +155,7 @@
           document.body.style.setProperty('overflow', 'auto', 'important');
           document.body.style.setProperty('position', 'static', 'important');
         }
-      } catch (e) {
-        // Safe fail
-      }
+      } catch (e) {}
     }
 
     function attemptCookieDismissal() {
@@ -155,11 +168,13 @@
           btn.click();
           cookieDismissed = true;
           unlockScroll();
+          logCosmetic('COOKIE', 'BLOCKED', `Auto-clicked CMP Reject button: ${sel}`);
+          chrome.runtime.sendMessage({ type: 'INCREMENT_BLOCKED', count: 1 }).catch(() => {});
           return;
         }
       }
 
-      // Stage B: Scan buttons inside CMP containers for "Reject / Necessary Only" texts
+      // Stage B: Scan buttons inside CMP containers
       for (const containerSel of CMP_CONTAINER_SELECTORS) {
         const container = document.querySelector(containerSel);
         if (container) {
@@ -170,32 +185,33 @@
               btn.click();
               cookieDismissed = true;
               unlockScroll();
+              logCosmetic('COOKIE', 'BLOCKED', `Auto-clicked Reject button matching text: "${txt}"`, { container: containerSel });
+              chrome.runtime.sendMessage({ type: 'INCREMENT_BLOCKED', count: 1 }).catch(() => {});
               return;
             }
           }
 
-          // Stage C: If container is visible and no button matched, cleanly collapse overlay
+          // Stage C: Hide overlay cleanly
           container.style.setProperty('display', 'none', 'important');
           container.style.setProperty('visibility', 'hidden', 'important');
           container.style.setProperty('pointer-events', 'none', 'important');
 
-          // Remove any associated backdrop overlays
           const backdrops = document.querySelectorAll('.modal-backdrop, .cmp-backdrop, .cookie-overlay, .fc-ab-root');
           backdrops.forEach((b) => b.remove());
 
           cookieDismissed = true;
           unlockScroll();
+          logCosmetic('COOKIE', 'BLOCKED', `Neutralized CMP overlay container and backdrop: ${containerSel}`);
+          chrome.runtime.sendMessage({ type: 'INCREMENT_BLOCKED', count: 1 }).catch(() => {});
           return;
         }
       }
     }
 
-    // Run when DOM elements start appearing
     if (document.body) {
       attemptCookieDismissal();
     }
 
-    // Observer for lazy-loaded CMP dialogs (active during initial 8 seconds)
     const cmpObserver = new MutationObserver(() => {
       attemptCookieDismissal();
     });
@@ -204,7 +220,6 @@
       const target = document.body || document.documentElement;
       if (target) {
         cmpObserver.observe(target, { childList: true, subtree: true });
-        // Auto disconnect after 8 seconds to save resources
         setTimeout(() => {
           cmpObserver.disconnect();
           unlockScroll();

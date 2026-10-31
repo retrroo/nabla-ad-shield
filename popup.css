@@ -26,7 +26,7 @@
 
 body {
   width: 360px;
-  min-height: 520px;
+  min-height: 560px;
   background-color: var(--bg-deep-space);
   color: var(--text-pure-white);
   font-family: var(--font-sans);
@@ -54,8 +54,8 @@ body {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  gap: 16px;
+  padding: 18px 20px;
+  gap: 14px;
 }
 
 /* Header */
@@ -124,10 +124,10 @@ body {
   background: var(--bg-surface);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
-  padding: 16px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
@@ -232,7 +232,7 @@ body {
 
 .telemetry-value {
   font-family: var(--font-sans);
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--text-pure-white);
   line-height: 1.1;
@@ -246,15 +246,70 @@ body {
   color: var(--text-dim-zinc);
 }
 
+/* Diagnostics Entry Card */
+.diagnostics-card {
+  background: var(--bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.diagnostics-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.diagnostics-title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.diagnostics-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #3BD671;
+  box-shadow: 0 0 6px #3BD671;
+}
+
+.diagnostics-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-pure-white);
+}
+
+.diagnostics-subtext {
+  font-size: 10px;
+  color: var(--text-muted-zinc);
+}
+
+.debugger-launch-btn {
+  font-size: 11px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.debugger-launch-btn:hover {
+  background: var(--text-pure-white);
+  color: #000000;
+}
+
 /* Controls Panel */
 .controls-card {
   background: var(--bg-surface);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
-  padding: 14px 16px;
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .control-row {
@@ -265,7 +320,7 @@ body {
 }
 
 .control-row:not(:last-child) {
-  padding-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -372,7 +427,7 @@ input:checked + .slider::before {
 /* Footer */
 .popup-footer {
   text-align: center;
-  padding-top: 4px;
+  padding-top: 2px;
 }
 
 .pure-protocol {

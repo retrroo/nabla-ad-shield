@@ -1,17 +1,19 @@
 /**
  * Nabla Ad Shield — Background Service Worker (MV3)
  * Handles Declarative Net Request rules, dynamic domain whitelisting,
- * telemetry aggregation, badge updates, and onboarding lifecycle.
+ * telemetry aggregation, badge updates, and real-time diagnostic logging.
  */
 
 const RULESET_ADS = 'ads_ruleset';
 const RULESET_COOKIES = 'cookies_ruleset';
+const MAX_LOGS = 600;
 
-// Ephemeral in-memory blocked counts per tab
+// Ephemeral in-memory state
 const tabBlockedCounts = new Map();
+let auditLogs = [];
 
 /**
- * Initialize default storage schema
+ * Initialize default storage schema and load existing logs
  */
 async function initializeDefaults() {
   const data = await chrome.storage.local.get([
@@ -19,7 +21,8 @@ async function initializeDefaults() {
     'cookieAutoReject',
     'whitelistedDomains',
     'totalThreatsNeutralized',
-    'initialized'
+    'initialized',
+    'auditLogs'
   ]);
 
   const updates = {};
@@ -28,12 +31,55 @@ async function initializeDefaults() {
   if (!Array.isArray(data.whitelistedDomains)) updates.whitelistedDomains = [];
   if (typeof data.totalThreatsNeutralized !== 'number') updates.totalThreatsNeutralized = 0;
   if (typeof data.initialized !== 'boolean') updates.initialized = false;
+  if (!Array.isArray(data.auditLogs)) updates.auditLogs = [];
+
+  auditLogs = updates.auditLogs || data.auditLogs || [];
 
   if (Object.keys(updates).length > 0) {
     await chrome.storage.local.set(updates);
   }
 
   return { ...data, ...updates };
+}
+
+/**
+ * Record a diagnostic log event into the ring buffer
+ */
+async function appendLog(event) {
+  if (!event || !event.timestamp) {
+    event = {
+      id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+      timestamp: new Date().toISOString(),
+      ...event
+    };
+  }
+
+  auditLogs.unshift(event);
+  if (auditLogs.length > MAX_LOGS) {
+    auditLogs = auditLogs.slice(0, MAX_LOGS);
+  }
+
+  // Debounced persistence to storage
+  scheduleLogPersist();
+
+  // Broadcast to open debugger windows
+  try {
+    chrome.runtime.sendMessage({
+      type: 'NABLA_NEW_LOG',
+      event
+    }).catch(() => {});
+  } catch (e) {
+    // No active listeners
+  }
+}
+
+let persistTimeout = null;
+function scheduleLogPersist() {
+  if (persistTimeout) return;
+  persistTimeout = setTimeout(async () => {
+    persistTimeout = null;
+    await chrome.storage.local.set({ auditLogs: auditLogs.slice(0, 300) });
+  }, 1000);
 }
 
 /**
@@ -60,11 +106,17 @@ async function syncRulesets() {
     enableRulesetIds,
     disableRulesetIds
   });
+
+  appendLog({
+    category: 'SYSTEM',
+    level: 'INFO',
+    message: `DNR Rulesets updated. Enabled: [${enableRulesetIds.join(', ')}], Disabled: [${disableRulesetIds.join(', ')}]`,
+    details: { enabled, cookieAutoReject }
+  });
 }
 
 /**
  * Synchronize dynamic rules for per-site whitelisting.
- * Generates allowAllRequests rules for initiatorDomains and allow rules for requestDomains.
  */
 async function syncDynamicRules(whitelistedDomains = null) {
   if (!whitelistedDomains) {
@@ -94,7 +146,6 @@ async function syncDynamicRules(whitelistedDomains = null) {
 
   whitelistedDomains.forEach((domain, idx) => {
     const baseId = (idx + 1) * 2;
-    // 1. Allow all subrequests initiated by the whitelisted page
     addRules.push({
       id: baseId,
       priority: 1000,
@@ -104,7 +155,6 @@ async function syncDynamicRules(whitelistedDomains = null) {
         resourceTypes: allResourceTypes
       }
     });
-    // 2. Allow top-level and direct requests to the domain
     addRules.push({
       id: baseId + 1,
       priority: 1000,
@@ -120,6 +170,13 @@ async function syncDynamicRules(whitelistedDomains = null) {
     removeRuleIds,
     addRules
   });
+
+  appendLog({
+    category: 'SYSTEM',
+    level: 'INFO',
+    message: `Dynamic whitelist synced. Active whitelisted domains: ${whitelistedDomains.length}`,
+    details: { whitelistedDomains }
+  });
 }
 
 /**
@@ -128,7 +185,6 @@ async function syncDynamicRules(whitelistedDomains = null) {
 async function recordThreatsBlocked(tabId, count = 1) {
   if (count <= 0) return;
 
-  // Update tab in-memory count
   if (tabId && tabId > 0) {
     const current = tabBlockedCounts.get(tabId) || 0;
     const updated = current + count;
@@ -136,7 +192,6 @@ async function recordThreatsBlocked(tabId, count = 1) {
     updateTabBadge(tabId, updated);
   }
 
-  // Update global persistent count
   const { totalThreatsNeutralized = 0 } = await chrome.storage.local.get('totalThreatsNeutralized');
   await chrome.storage.local.set({
     totalThreatsNeutralized: totalThreatsNeutralized + count
@@ -167,7 +222,7 @@ async function updateTabBadge(tabId, count) {
 }
 
 /**
- * Clean domain helper (extract hostname without port or www)
+ * Clean domain helper
  */
 function normalizeHostname(url) {
   try {
@@ -183,8 +238,14 @@ function normalizeHostname(url) {
 chrome.runtime.onInstalled.addListener(async (details) => {
   await initializeDefaults();
 
+  appendLog({
+    category: 'SYSTEM',
+    level: 'INFO',
+    message: `Extension installed/updated. Reason: ${details.reason}`,
+    details
+  });
+
   if (details.reason === 'install') {
-    // Keep engine dormant (enabled: false) and launch onboarding
     await chrome.tabs.create({
       url: chrome.runtime.getURL('onboarding.html')
     });
@@ -194,11 +255,29 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   }
 });
 
-// Telemetry: DeclarativeNetRequest matched debug listener (when supported/unpacked)
+// Telemetry: DeclarativeNetRequest matched debug listener
 if (chrome.declarativeNetRequest.onRuleMatchedDebug) {
   chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {
-    if (info && info.request && info.request.tabId > 0) {
-      recordThreatsBlocked(info.request.tabId, 1);
+    if (info && info.request) {
+      const tabId = info.request.tabId;
+      if (tabId > 0) {
+        recordThreatsBlocked(tabId, 1);
+      }
+
+      appendLog({
+        category: 'NETWORK',
+        level: 'BLOCKED',
+        message: `DNR Blocked: ${info.request.url.substring(0, 100)}`,
+        url: info.request.url,
+        tabId,
+        details: {
+          ruleId: info.rule?.ruleId,
+          rulesetId: info.rule?.rulesetId,
+          method: info.request.method,
+          resourceType: info.request.type,
+          initiator: info.request.initiator
+        }
+      });
     }
   });
 }
@@ -245,12 +324,34 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           isWhitelisted
         });
       })();
-      return true; // Keep message channel open for async response
+      return true;
     }
 
     case 'INCREMENT_BLOCKED': {
       const count = message.count || 1;
       recordThreatsBlocked(tabId, count);
+      sendResponse({ success: true });
+      break;
+    }
+
+    case 'NABLA_LOG_EVENT': {
+      if (message.event) {
+        const ev = { ...message.event };
+        if (tabId && !ev.tabId) ev.tabId = tabId;
+        appendLog(ev);
+      }
+      sendResponse({ success: true });
+      break;
+    }
+
+    case 'NABLA_GET_LOGS': {
+      sendResponse({ logs: auditLogs });
+      break;
+    }
+
+    case 'NABLA_CLEAR_LOGS': {
+      auditLogs = [];
+      chrome.storage.local.set({ auditLogs: [] });
       sendResponse({ success: true });
       break;
     }
@@ -266,13 +367,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         await syncRulesets();
         await syncDynamicRules();
 
-        // Update all tabs' badge state
         const tabs = await chrome.tabs.query({});
         for (const t of tabs) {
           if (t.id) {
             updateTabBadge(t.id, tabBlockedCounts.get(t.id) || 0);
           }
         }
+
+        appendLog({
+          category: 'SYSTEM',
+          level: 'INFO',
+          message: 'Protection initialized by user via Onboarding.',
+          details: { cookieAutoReject: cookieOptIn }
+        });
 
         sendResponse({ success: true });
       })();
@@ -286,13 +393,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         await chrome.storage.local.set({ enabled: nextState });
         await syncRulesets();
 
-        // Update all badges
         const tabs = await chrome.tabs.query({});
         for (const t of tabs) {
           if (t.id) {
             updateTabBadge(t.id, tabBlockedCounts.get(t.id) || 0);
           }
         }
+
+        appendLog({
+          category: 'SYSTEM',
+          level: 'INFO',
+          message: `Global Protection toggled: ${nextState ? 'ENABLED' : 'PAUSED'}`,
+          details: { enabled: nextState }
+        });
 
         sendResponse({ success: true, enabled: nextState });
       })();
@@ -320,6 +433,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         await chrome.storage.local.set({ whitelistedDomains: updated });
         await syncDynamicRules(updated);
 
+        appendLog({
+          category: 'SYSTEM',
+          level: 'INFO',
+          message: `Domain ${domain} ${exists ? 'removed from' : 'added to'} whitelist`,
+          details: { domain, isWhitelisted: !exists }
+        });
+
         sendResponse({ success: true, isWhitelisted: !exists, whitelistedDomains: updated });
       })();
       return true;
@@ -331,6 +451,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const nextState = !cookieAutoReject;
         await chrome.storage.local.set({ cookieAutoReject: nextState });
         await syncRulesets();
+
+        appendLog({
+          category: 'SYSTEM',
+          level: 'INFO',
+          message: `Cookie Auto-Reject toggled: ${nextState ? 'ACTIVE' : 'INACTIVE'}`,
+          details: { cookieAutoReject: nextState }
+        });
+
         sendResponse({ success: true, cookieAutoReject: nextState });
       })();
       return true;
@@ -366,7 +494,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           currentDomain,
           isWhitelisted: whitelisted,
           tabBlocked,
-          totalThreatsNeutralized: data.totalThreatsNeutralized || 0
+          totalThreatsNeutralized: data.totalThreatsNeutralized || 0,
+          totalLogsCount: auditLogs.length
         });
       })();
       return true;
