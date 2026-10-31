@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/retrroo/nabla-ad-shield/releases/latest/download/nabla-ad-shield.zip">
-    <img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F_DOWNLOAD-Nabla_Ad_Shield_v1.0.0_(ZIP)-FFFFFF?style=for-the-badge&logoColor=000000&labelColor=050505" alt="Download Nabla Shield" />
+    <img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F_DOWNLOAD-Nabla_Ad_Shield_(Latest_ZIP)-FFFFFF?style=for-the-badge&logoColor=000000&labelColor=050505" alt="Download Nabla Shield" />
   </a>
 </p>
 
