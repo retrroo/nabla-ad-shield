@@ -57,31 +57,48 @@
       </div>
     </section>
 
-    <!-- Diagnostics Console Entry -->
-    <section class="diagnostics-card">
-      <div class="diagnostics-info">
-        <div class="diagnostics-title-group">
-          <span class="diagnostics-pulse-dot"></span>
-          <span class="diagnostics-label">Diagnostics &amp; Log Monitor</span>
-        </div>
-        <span class="diagnostics-subtext"><span id="log-count-indicator">0</span> telemetry events recorded</span>
-      </div>
-      <button id="open-debugger-btn" class="secondary-pill-btn debugger-launch-btn">
-        Open Console &nearr;
-      </button>
-    </section>
-
-    <!-- Controls Panel -->
+    <!-- Controls & Whitelist Manager Panel -->
     <section class="controls-card">
-      <!-- Domain Specific Toggle -->
+      <!-- Active Tab Domain Quick Toggle -->
       <div class="control-row" id="domain-row">
         <div class="control-info">
           <span class="control-label" id="current-domain-label">Current Domain</span>
-          <span class="control-subtext" id="domain-subtext">Active protection on this site</span>
+          <span class="control-subtext" id="domain-subtext">Shield active for this site</span>
         </div>
         <button id="domain-whitelist-btn" class="secondary-pill-btn">
-          Pause Site
+          Whitelist Site
         </button>
+      </div>
+
+      <!-- Persistent Website Whitelist Drawer Trigger -->
+      <div class="control-row whitelist-header-row">
+        <div class="control-info">
+          <span class="control-label">Website Whitelist</span>
+          <span class="control-subtext"><span id="whitelist-count">0</span> sites auto-disable shield</span>
+        </div>
+        <button id="toggle-whitelist-panel-btn" class="secondary-pill-btn" aria-expanded="false">
+          Manage
+        </button>
+      </div>
+
+      <!-- Expandable Whitelist Manager Drawer -->
+      <div id="whitelist-drawer" class="whitelist-drawer" hidden>
+        <form id="whitelist-add-form" class="whitelist-form" autocomplete="off">
+          <input
+            type="text"
+            id="whitelist-domain-input"
+            class="whitelist-input"
+            placeholder="Add site (e.g. example.com)"
+            spellcheck="false"
+          >
+          <button type="submit" id="whitelist-add-btn" class="primary-mini-pill-btn">
+            + Add
+          </button>
+        </form>
+        <div id="whitelist-feedback" class="whitelist-feedback" hidden></div>
+        <ul id="whitelist-list" class="whitelist-list">
+          <!-- Populated dynamically -->
+        </ul>
       </div>
 
       <!-- Cookie Consent Auto-Reject Toggle -->
@@ -95,6 +112,20 @@
           <span class="slider round"></span>
         </label>
       </div>
+    </section>
+
+    <!-- Diagnostics Console Entry -->
+    <section class="diagnostics-card">
+      <div class="diagnostics-info">
+        <div class="diagnostics-title-group">
+          <span class="diagnostics-pulse-dot"></span>
+          <span class="diagnostics-label">Diagnostics &amp; Log Monitor</span>
+        </div>
+        <span class="diagnostics-subtext"><span id="log-count-indicator">0</span> telemetry events recorded</span>
+      </div>
+      <button id="open-debugger-btn" class="secondary-pill-btn debugger-launch-btn">
+        Open Console &nearr;
+      </button>
     </section>
 
     <!-- Footer -->

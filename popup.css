@@ -25,21 +25,32 @@
 }
 
 body {
-  width: 360px;
-  min-height: 560px;
+  width: 368px;
+  min-height: 540px;
+  max-height: 600px;
   background-color: var(--bg-deep-space);
   color: var(--text-pure-white);
   font-family: var(--font-sans);
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   user-select: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+body::-webkit-scrollbar {
+  width: 5px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+}
+
 /* Background Particle Canvas */
 .popup-canvas {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -55,7 +66,7 @@ body {
   display: flex;
   flex-direction: column;
   padding: 18px 20px;
-  gap: 14px;
+  gap: 13px;
 }
 
 /* Header */
@@ -109,6 +120,17 @@ body {
   color: var(--text-pure-white);
 }
 
+.status-pill.whitelisted-status {
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #DDDDDD;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.status-pill.whitelisted-status .status-dot {
+  background-color: #AAAAAA;
+  box-shadow: none;
+}
+
 .status-pill.paused-status {
   border-color: rgba(255, 255, 255, 0.08);
   color: var(--text-muted-zinc);
@@ -124,7 +146,7 @@ body {
   background: var(--bg-surface);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
-  padding: 14px 16px;
+  padding: 13px 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -246,12 +268,198 @@ body {
   color: var(--text-dim-zinc);
 }
 
+/* Controls Panel */
+.controls-card {
+  background: var(--bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.control-row:not(:last-child) {
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.control-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.control-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-pure-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.control-subtext {
+  font-size: 10px;
+  color: var(--text-muted-zinc);
+}
+
+/* Whitelist Manager Drawer */
+.whitelist-drawer {
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.whitelist-drawer[hidden] {
+  display: none !important;
+}
+
+.whitelist-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.whitelist-input {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--pill-radius);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #0A0A0A;
+  color: var(--text-pure-white);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.whitelist-input::placeholder {
+  color: var(--text-dim-zinc);
+}
+
+.whitelist-input:focus {
+  border-color: var(--text-pure-white);
+}
+
+.primary-mini-pill-btn {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: var(--pill-radius);
+  border: none;
+  background: var(--text-pure-white);
+  color: #000000;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.primary-mini-pill-btn:hover {
+  box-shadow: var(--glow-primary);
+}
+
+.whitelist-feedback {
+  font-size: 10px;
+  color: #E5A83B;
+  padding: 0 4px;
+}
+
+.whitelist-feedback[hidden] {
+  display: none !important;
+}
+
+.whitelist-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 132px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.whitelist-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.whitelist-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+}
+
+.whitelist-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: #0E0E0E;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 11px;
+  color: var(--text-pure-white);
+}
+
+.whitelist-domain-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+  font-weight: 500;
+}
+
+.whitelist-remove-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted-zinc);
+  font-size: 14px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.whitelist-remove-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-pure-white);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.whitelist-empty {
+  font-size: 10px;
+  color: var(--text-dim-zinc);
+  text-align: center;
+  padding: 8px 4px;
+}
+
 /* Diagnostics Entry Card */
 .diagnostics-card {
   background: var(--bg-surface);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 14px;
-  padding: 12px 14px;
+  padding: 11px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -299,51 +507,6 @@ body {
 .debugger-launch-btn:hover {
   background: var(--text-pure-white);
   color: #000000;
-}
-
-/* Controls Panel */
-.controls-card {
-  background: var(--bg-surface);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
-  padding: 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.control-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.control-row:not(:last-child) {
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.control-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  overflow: hidden;
-}
-
-.control-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-pure-white);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 170px;
-}
-
-.control-subtext {
-  font-size: 10px;
-  color: var(--text-muted-zinc);
 }
 
 /* Secondary Pill Button */

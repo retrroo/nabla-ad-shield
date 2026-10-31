@@ -52,6 +52,7 @@
     {
       "matches": ["<all_urls>"],
       "js": [
+        "scripts/state_client.js",
         "scripts/cosmetic.js",
         "scripts/heuristic_ai.js"
       ],
@@ -74,6 +75,7 @@
         "*://*.youtube.com/*"
       ],
       "js": [
+        "scripts/state_client.js",
         "scripts/youtube_shield.js"
       ],
       "run_at": "document_start",

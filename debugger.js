@@ -72,13 +72,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Real-time listener for incoming events
+  // Real-time listener for incoming events (coalesced onto animation frames)
+  let renderRafId = null;
+  function scheduleRender() {
+    if (renderRafId) return;
+    renderRafId = requestAnimationFrame(() => {
+      renderRafId = null;
+      render();
+    });
+  }
+
   chrome.runtime.onMessage.addListener((message) => {
     if (message.type === 'NABLA_NEW_LOG' && message.event) {
       if (!isStreamPaused) {
         logs.unshift(message.event);
         if (logs.length > 800) logs.pop();
-        render();
+        scheduleRender();
       }
     }
   });

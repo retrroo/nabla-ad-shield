@@ -1,7 +1,7 @@
 /**
  * Nabla Ad Shield — Popup Controller
- * Manages master toggle, domain whitelisting, live telemetry,
- * cookie auto-rejection, diagnostic launch, and background constellation canvas.
+ * Manages master switch, full persistent Website Whitelist Manager,
+ * active-site quick toggle, live telemetry, and diagnostic console launch.
  */
 
 import { ParticleConstellation } from './shared/particle_canvas.js';
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const canvas = document.getElementById('popup-canvas');
   if (canvas) {
     new ParticleConstellation(canvas, {
-      particleCount: 30,
+      particleCount: 28,
       maxDistance: 70,
       baseSpeed: 0.25
     });
@@ -30,11 +30,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   const openDebuggerBtn = document.getElementById('open-debugger-btn');
   const logCountIndicator = document.getElementById('log-count-indicator');
 
+  // Whitelist Manager DOM elements
+  const whitelistCountEl = document.getElementById('whitelist-count');
+  const toggleWhitelistPanelBtn = document.getElementById('toggle-whitelist-panel-btn');
+  const whitelistDrawer = document.getElementById('whitelist-drawer');
+  const whitelistAddForm = document.getElementById('whitelist-add-form');
+  const whitelistDomainInput = document.getElementById('whitelist-domain-input');
+  const whitelistFeedback = document.getElementById('whitelist-feedback');
+  const whitelistList = document.getElementById('whitelist-list');
+
   let activeTabId = null;
   let activeTabUrl = null;
   let currentDomain = null;
   let isSiteWhitelisted = false;
   let isGlobalEnabled = false;
+  let whitelistedDomains = [];
 
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -44,6 +54,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   } catch (err) {
     console.error('Failed to query active tab:', err);
+  }
+
+  function doesListMatchDomain(host, list) {
+    if (!host || !Array.isArray(list)) return false;
+    for (let i = 0; i < list.length; i++) {
+      const d = list[i];
+      if (host === d || host.endsWith('.' + d)) return true;
+    }
+    return false;
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
   async function loadState() {
@@ -58,10 +85,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       isGlobalEnabled = Boolean(response.enabled);
       currentDomain = response.currentDomain;
+      whitelistedDomains = Array.isArray(response.whitelistedDomains)
+        ? response.whitelistedDomains
+        : [];
       isSiteWhitelisted = Boolean(response.isWhitelisted);
 
-      renderGlobalState(isGlobalEnabled);
-      renderDomainState(currentDomain, isSiteWhitelisted);
+      renderStatusAndGlobalState();
+      renderDomainState();
+      renderWhitelistManager();
       renderCounters(response.tabBlocked, response.totalThreatsNeutralized);
 
       cookieRejectToggle.checked = Boolean(response.cookieAutoReject);
@@ -74,47 +105,106 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  function renderGlobalState(enabled) {
-    if (enabled) {
-      statusPill.className = 'status-pill active-status';
-      statusText.textContent = 'ACTIVE';
-      globalIndicator.textContent = 'ENABLED';
-      globalIndicator.style.color = '#FFFFFF';
-      masterToggleBtn.classList.add('active');
-      masterToggleLabel.textContent = 'Shield Enabled';
-    } else {
+  function renderStatusAndGlobalState() {
+    if (!isGlobalEnabled) {
       statusPill.className = 'status-pill paused-status';
       statusText.textContent = 'PAUSED';
       globalIndicator.textContent = 'PAUSED';
       globalIndicator.style.color = '#888888';
       masterToggleBtn.classList.remove('active');
       masterToggleLabel.textContent = 'Protection Paused';
+      return;
+    }
+
+    globalIndicator.textContent = 'ENABLED';
+    globalIndicator.style.color = '#FFFFFF';
+    masterToggleBtn.classList.add('active');
+    masterToggleLabel.textContent = 'Shield Enabled';
+
+    if (isSiteWhitelisted) {
+      statusPill.className = 'status-pill whitelisted-status';
+      statusText.textContent = 'WHITELISTED';
+    } else {
+      statusPill.className = 'status-pill active-status';
+      statusText.textContent = 'ACTIVE';
     }
   }
 
-  function renderDomainState(domain, whitelisted) {
-    if (!domain) {
+  function renderDomainState() {
+    if (!currentDomain) {
       currentDomainLabel.textContent = 'Internal / Local Page';
       domainSubtext.textContent = 'No network filters applied';
       domainWhitelistBtn.style.display = 'none';
       return;
     }
 
-    currentDomainLabel.textContent = domain;
+    currentDomainLabel.textContent = currentDomain;
     domainWhitelistBtn.style.display = 'block';
 
-    if (whitelisted) {
-      domainSubtext.textContent = 'Protection paused on this site';
+    if (isSiteWhitelisted) {
+      domainSubtext.textContent = 'Ad blocker auto-off on this site';
       domainWhitelistBtn.textContent = 'Resume Site';
       domainWhitelistBtn.classList.add('resumed');
     } else {
       domainSubtext.textContent = 'Shield active for this site';
-      domainWhitelistBtn.textContent = 'Pause Site';
+      domainWhitelistBtn.textContent = 'Whitelist Site';
       domainWhitelistBtn.classList.remove('resumed');
     }
   }
 
-  function animateValue(element, start, end, duration = 400) {
+  function renderWhitelistManager() {
+    whitelistCountEl.textContent = String(whitelistedDomains.length);
+
+    if (whitelistedDomains.length === 0) {
+      whitelistList.innerHTML =
+        '<li class="whitelist-empty">No whitelisted sites yet. Add a domain above to auto-disable blocking on it.</li>';
+      return;
+    }
+
+    whitelistList.innerHTML = whitelistedDomains
+      .map(
+        (domain) => `
+        <li class="whitelist-item">
+          <span class="whitelist-domain-text" title="${escapeHtml(domain)}">${escapeHtml(domain)}</span>
+          <button
+            type="button"
+            class="whitelist-remove-btn"
+            data-domain="${escapeHtml(domain)}"
+            title="Remove ${escapeHtml(domain)} from whitelist"
+            aria-label="Remove ${escapeHtml(domain)}"
+          >&times;</button>
+        </li>
+      `
+      )
+      .join('');
+  }
+
+  function showWhitelistFeedback(msg) {
+    if (!msg) {
+      whitelistFeedback.hidden = true;
+      whitelistFeedback.textContent = '';
+      return;
+    }
+    whitelistFeedback.textContent = msg;
+    whitelistFeedback.hidden = false;
+  }
+
+  function syncCurrentTabAfterWhitelistChange(newList) {
+    const previouslyWhitelisted = isSiteWhitelisted;
+    whitelistedDomains = newList;
+    isSiteWhitelisted = doesListMatchDomain(currentDomain, whitelistedDomains);
+
+    renderStatusAndGlobalState();
+    renderDomainState();
+    renderWhitelistManager();
+
+    // Reload active tab only if its own whitelist state changed
+    if (activeTabId && currentDomain && previouslyWhitelisted !== isSiteWhitelisted) {
+      chrome.tabs.reload(activeTabId);
+    }
+  }
+
+  function animateValue(element, start, end, duration = 350) {
     if (start === end) {
       element.textContent = end.toLocaleString();
       return;
@@ -140,13 +230,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     animateValue(totalBlockedEl, 0, totalCount || 0);
   }
 
+  // Master Switch Toggle
   masterToggleBtn.addEventListener('click', async () => {
     masterToggleBtn.disabled = true;
     try {
       const res = await chrome.runtime.sendMessage({ type: 'TOGGLE_GLOBAL' });
       if (res && res.success) {
         isGlobalEnabled = res.enabled;
-        renderGlobalState(isGlobalEnabled);
+        renderStatusAndGlobalState();
       }
     } catch (err) {
       console.error('Failed to toggle global shield:', err);
@@ -155,6 +246,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // Active Tab Quick Whitelist Toggle
   domainWhitelistBtn.addEventListener('click', async () => {
     if (!currentDomain) return;
     domainWhitelistBtn.disabled = true;
@@ -166,11 +258,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
       if (res && res.success) {
-        isSiteWhitelisted = res.isWhitelisted;
-        renderDomainState(currentDomain, isSiteWhitelisted);
-        if (activeTabId) {
-          chrome.tabs.reload(activeTabId);
-        }
+        syncCurrentTabAfterWhitelistChange(res.whitelistedDomains || []);
       }
     } catch (err) {
       console.error('Failed to toggle domain whitelist:', err);
@@ -179,6 +267,67 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // Expand / Collapse Whitelist Manager Drawer
+  toggleWhitelistPanelBtn.addEventListener('click', () => {
+    const isHidden = whitelistDrawer.hidden;
+    whitelistDrawer.hidden = !isHidden;
+    toggleWhitelistPanelBtn.setAttribute('aria-expanded', String(isHidden));
+    toggleWhitelistPanelBtn.textContent = isHidden ? 'Done' : 'Manage';
+    if (isHidden) {
+      whitelistDomainInput.focus();
+    } else {
+      showWhitelistFeedback('');
+    }
+  });
+
+  // Add Website to Whitelist Form Submit
+  whitelistAddForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const rawValue = whitelistDomainInput.value.trim();
+    if (!rawValue) return;
+
+    showWhitelistFeedback('');
+    try {
+      const res = await chrome.runtime.sendMessage({
+        type: 'ADD_WHITELIST_DOMAIN',
+        domain: rawValue
+      });
+
+      if (!res || !res.success) {
+        showWhitelistFeedback(res?.error || 'Invalid domain format');
+        return;
+      }
+
+      whitelistDomainInput.value = '';
+      syncCurrentTabAfterWhitelistChange(res.whitelistedDomains || []);
+    } catch (err) {
+      showWhitelistFeedback('Could not save domain');
+    }
+  });
+
+  // Remove Website from Whitelist List Click
+  whitelistList.addEventListener('click', async (e) => {
+    const removeBtn = e.target.closest('.whitelist-remove-btn');
+    if (!removeBtn) return;
+
+    const domainToRemove = removeBtn.dataset.domain;
+    if (!domainToRemove) return;
+
+    try {
+      const res = await chrome.runtime.sendMessage({
+        type: 'REMOVE_WHITELIST_DOMAIN',
+        domain: domainToRemove
+      });
+
+      if (res && res.success) {
+        syncCurrentTabAfterWhitelistChange(res.whitelistedDomains || []);
+      }
+    } catch (err) {
+      console.error('Failed to remove whitelisted domain:', err);
+    }
+  });
+
+  // Cookie Consent Auto-Reject Toggle
   cookieRejectToggle.addEventListener('change', async () => {
     try {
       await chrome.runtime.sendMessage({ type: 'TOGGLE_COOKIE_REJECT' });
