@@ -9,6 +9,8 @@
  *    jumps cleanly to video.duration.
  *  - Visible-Only Skip Clicks: Ignores hidden pre-rendered .ytp-skip-ad-button nodes and throttles
  *    clicks to prevent event-loop spam.
+ *  - Lifecycle Context Guard: Automatically disconnects observers & listeners when the extension
+ *    is reloaded/updated in chrome://extensions so "Extension context invalidated" never occurs.
  */
 
 (async function initYouTubeShield() {
@@ -95,12 +97,17 @@
   }
 
   // 2. Resolve shared ~1ms state
-  const state =
-    typeof window.__nablaGetState === 'function'
-      ? await window.__nablaGetState()
-      : { enabled: false, isWhitelisted: false };
+  let state;
+  try {
+    state =
+      typeof window.__nablaGetState === 'function'
+        ? await window.__nablaGetState()
+        : { enabled: false, isWhitelisted: false };
+  } catch (e) {
+    state = { enabled: false, isWhitelisted: false };
+  }
 
-  if (!state.enabled || state.isWhitelisted) {
+  if (!state || !state.enabled || state.isWhitelisted) {
     removeStyles();
     if (document.documentElement) {
       document.documentElement.dataset.nablaYoutubeDisabled = 'true';
@@ -114,16 +121,25 @@
     document.addEventListener('readystatechange', injectStyles, { once: true });
   }
 
-  const report = window.__nablaReport || function () {};
+  let shieldDisposed = false;
+
+  function safeReport(category, level, message, details = {}, blockedIncrement = 0) {
+    if (shieldDisposed) return;
+    try {
+      if (typeof window.__nablaReport === 'function') {
+        window.__nablaReport(category, level, message, details, blockedIncrement);
+      }
+    } catch (e) {}
+  }
 
   // Forward logs from the MAIN world player sanitizer script into batched queue
-  window.addEventListener('nabla-yt-main-log', (event) => {
-    if (event.detail) {
-      report('YOUTUBE', 'BLOCKED', event.detail.message, event.detail.details || {}, 1);
-    }
-  });
+  function onMainWorldLog(event) {
+    if (shieldDisposed || !event.detail) return;
+    safeReport('YOUTUBE', 'BLOCKED', event.detail.message, event.detail.details || {}, 1);
+  }
+  window.addEventListener('nabla-yt-main-log', onMainWorldLog);
 
-  report('YOUTUBE', 'INFO', 'YouTube Shield active (Honeypot-Safe Sanitizer + MSE-Safe Skipper)', {}, 0);
+  safeReport('YOUTUBE', 'INFO', 'YouTube Shield active (Honeypot-Safe Sanitizer + MSE-Safe Skipper)', {}, 0);
 
   // 3. Deduplicated Dynamic Grid Reflow & Row Backfiller
   const AD_GRID_SELECTOR =
@@ -135,6 +151,7 @@
     'ytd-display-ad-renderer:not([data-nabla-handled])';
 
   function cleanupAdGridSlots() {
+    if (shieldDisposed) return;
     const adElements = document.querySelectorAll(AD_GRID_SELECTOR);
     if (adElements.length === 0) return;
 
@@ -163,7 +180,7 @@
           }
         }
 
-        report(
+        safeReport(
           'YOUTUBE',
           'BLOCKED',
           'Collapsed YouTube feed ad container',
@@ -187,7 +204,12 @@
   let lastSeekedDuration = -1;
   let observedPlayer = null;
   let observedAdModule = null;
+  let classObserver = null;
+  let adModuleObserver = null;
   let boundVideo = null;
+  let boundMediaListener = null;
+
+  const MEDIA_EVENTS = ['play', 'playing', 'loadedmetadata', 'durationchange', 'canplay', 'timeupdate'];
 
   const SKIP_COMBINED_SELECTOR =
     '.ytp-ad-skip-button,' +
@@ -213,7 +235,7 @@
       if (isElementGenuinelyVisible(btn) && typeof btn.click === 'function') {
         lastSkipClickTime = now;
         btn.click();
-        report('YOUTUBE', 'BLOCKED', `Clicked visible skip button (${btn.className || btn.tagName})`, {}, 0);
+        safeReport('YOUTUBE', 'BLOCKED', `Clicked visible skip button (${btn.className || btn.tagName})`, {}, 0);
         break;
       }
     }
@@ -222,12 +244,12 @@
     if (isElementGenuinelyVisible(overlayClose) && typeof overlayClose.click === 'function') {
       lastSkipClickTime = now;
       overlayClose.click();
-      report('YOUTUBE', 'BLOCKED', 'Closed video overlay banner ad', {}, 0);
+      safeReport('YOUTUBE', 'BLOCKED', 'Closed video overlay banner ad', {}, 0);
     }
   }
 
   function handleVideoAds(player) {
-    if (!player) return;
+    if (shieldDisposed || !player) return;
 
     const isAdShowing =
       player.classList.contains('ad-showing') ||
@@ -247,7 +269,7 @@
         wasAdActive = true;
         lastSeekedDuration = -1;
 
-        report(
+        safeReport(
           'YOUTUBE',
           'BLOCKED',
           'In-stream video ad intercepted (cloaked & muted)',
@@ -275,7 +297,7 @@
           lastSeekedDuration = dur;
           try {
             video.currentTime = dur;
-            report(
+            safeReport(
               'YOUTUBE',
               'BLOCKED',
               `Skipped ad stream to end (${dur.toFixed(1)}s)`,
@@ -315,16 +337,27 @@
       wasAdActive = false;
       lastSeekedDuration = -1;
 
-      report('YOUTUBE', 'INFO', 'Ad bypassed cleanly. Main video playing.', {}, 0);
+      safeReport('YOUTUBE', 'INFO', 'Ad bypassed cleanly. Main video playing.', {}, 0);
     }
   }
 
+  function unbindCurrentVideo() {
+    if (boundVideo && boundMediaListener) {
+      for (let i = 0; i < MEDIA_EVENTS.length; i++) {
+        boundVideo.removeEventListener(MEDIA_EVENTS[i], boundMediaListener);
+      }
+    }
+    boundVideo = null;
+    boundMediaListener = null;
+  }
+
   function attachPlayerHooks(player) {
-    if (!player) return;
+    if (shieldDisposed || !player) return;
 
     if (observedPlayer !== player) {
+      if (classObserver) classObserver.disconnect();
       observedPlayer = player;
-      const classObserver = new MutationObserver(() => {
+      classObserver = new MutationObserver(() => {
         handleVideoAds(player);
       });
       classObserver.observe(player, {
@@ -335,8 +368,9 @@
 
     const adModule = player.querySelector('.ytp-ad-module');
     if (adModule && observedAdModule !== adModule) {
+      if (adModuleObserver) adModuleObserver.disconnect();
       observedAdModule = adModule;
-      const adModuleObserver = new MutationObserver(() => {
+      adModuleObserver = new MutationObserver(() => {
         if (player.classList.contains('ad-showing') || player.classList.contains('ad-interrupting')) {
           handleVideoAds(player);
         }
@@ -346,24 +380,23 @@
 
     const video = player.querySelector('video.html5-main-video') || player.querySelector('video');
     if (video && boundVideo !== video) {
+      unbindCurrentVideo();
       boundVideo = video;
-      const fastMediaCheck = () => {
+      boundMediaListener = () => {
         if (wasAdActive || player.classList.contains('ad-showing') || player.classList.contains('ad-interrupting')) {
           handleVideoAds(player);
         }
       };
-      video.addEventListener('play', fastMediaCheck, { passive: true });
-      video.addEventListener('playing', fastMediaCheck, { passive: true });
-      video.addEventListener('loadedmetadata', fastMediaCheck, { passive: true });
-      video.addEventListener('durationchange', fastMediaCheck, { passive: true });
-      video.addEventListener('canplay', fastMediaCheck, { passive: true });
-      video.addEventListener('timeupdate', fastMediaCheck, { passive: true });
+      for (let i = 0; i < MEDIA_EVENTS.length; i++) {
+        video.addEventListener(MEDIA_EVENTS[i], boundMediaListener, { passive: true });
+      }
     }
 
     handleVideoAds(player);
   }
 
   function runSyncCheck() {
+    if (shieldDisposed) return;
     const player = document.querySelector('.html5-video-player');
     if (player) attachPlayerHooks(player);
     cleanupAdGridSlots();
@@ -371,7 +404,7 @@
 
   let feedRafScheduled = false;
   const feedObserver = new MutationObserver((mutations) => {
-    if (feedRafScheduled) return;
+    if (shieldDisposed || feedRafScheduled) return;
 
     let relevantAddition = false;
     for (let i = 0; i < mutations.length; i++) {
@@ -397,7 +430,22 @@
     });
   });
 
+  // Cleanly tear down orphaned observers if extension is reloaded in chrome://extensions
+  function disposeOrphanedShield() {
+    if (shieldDisposed) return;
+    shieldDisposed = true;
+    feedObserver.disconnect();
+    if (classObserver) classObserver.disconnect();
+    if (adModuleObserver) adModuleObserver.disconnect();
+    unbindCurrentVideo();
+    window.removeEventListener('nabla-yt-main-log', onMainWorldLog);
+    window.removeEventListener('yt-navigate-finish', runSyncCheck);
+  }
+
+  window.addEventListener('nabla-context-invalidated', disposeOrphanedShield, { once: true });
+
   function startFeedObserver() {
+    if (shieldDisposed) return;
     const root = document.body || document.documentElement;
     if (root) {
       feedObserver.observe(root, { childList: true, subtree: true });

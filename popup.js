@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Reload active tab only if its own whitelist state changed
     if (activeTabId && currentDomain && previouslyWhitelisted !== isSiteWhitelisted) {
-      chrome.tabs.reload(activeTabId);
+      chrome.tabs.reload(activeTabId).catch(() => {});
     }
   }
 

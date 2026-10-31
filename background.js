@@ -385,6 +385,13 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   }
 });
 
+// Lifecycle: Browser Startup
+chrome.runtime.onStartup.addListener(async () => {
+  await syncRulesets();
+  await syncDynamicRules();
+  await refreshAllTabBadges();
+});
+
 // Telemetry: DeclarativeNetRequest matched debug listener
 if (chrome.declarativeNetRequest.onRuleMatchedDebug) {
   chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {

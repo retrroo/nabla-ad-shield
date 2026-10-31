@@ -101,9 +101,13 @@
     document.addEventListener('readystatechange', injectCosmeticStyles, { once: true });
   }
 
-  const report =
-    window.__nablaReport ||
-    function () {};
+  function report(category, level, message, details = {}, blockedIncrement = 0) {
+    try {
+      if (typeof window.__nablaReport === 'function') {
+        window.__nablaReport(category, level, message, details, blockedIncrement);
+      }
+    } catch (e) {}
+  }
 
   report('COSMETIC', 'INFO', 'Applied zero-latency cosmetic stylesheet', {}, 0);
 
@@ -257,6 +261,8 @@
       }, 7000);
     }
   }
+
+  window.addEventListener('nabla-context-invalidated', stopCMPObserver, { once: true });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', startCMPObservation, { once: true });

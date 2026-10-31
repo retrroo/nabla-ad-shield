@@ -294,11 +294,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Clear buffer
   clearBtn.addEventListener('click', async () => {
     if (confirm('Are you sure you want to clear the audit log buffer?')) {
-      await chrome.runtime.sendMessage({ type: 'NABLA_CLEAR_LOGS' });
-      logs = [];
-      expandedRowIds.clear();
-      render();
-      showToast('Log buffer cleared.');
+      try {
+        await chrome.runtime.sendMessage({ type: 'NABLA_CLEAR_LOGS' });
+        logs = [];
+        expandedRowIds.clear();
+        render();
+        showToast('Log buffer cleared.');
+      } catch (err) {
+        showToast('Extension reloaded — refresh this page.');
+      }
     }
   });
 

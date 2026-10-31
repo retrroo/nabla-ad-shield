@@ -25,7 +25,16 @@
     return;
   }
 
-  const report = window.__nablaReport || function () {};
+  let heuristicDisposed = false;
+
+  function report(category, level, message, details = {}, blockedIncrement = 0) {
+    if (heuristicDisposed) return;
+    try {
+      if (typeof window.__nablaReport === 'function') {
+        window.__nablaReport(category, level, message, details, blockedIncrement);
+      }
+    } catch (e) {}
+  }
 
   // Standard IAB Ad Dimensions [width, height]
   const IAB_DIMENSIONS = [
@@ -297,6 +306,16 @@
       observer.observe(root, { childList: true, subtree: true });
     }
   }
+
+  window.addEventListener(
+    'nabla-context-invalidated',
+    () => {
+      heuristicDisposed = true;
+      observer.disconnect();
+      pendingRoots.clear();
+    },
+    { once: true }
+  );
 
   if (document.body) {
     attachMutationObserver();

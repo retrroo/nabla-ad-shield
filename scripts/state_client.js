@@ -1,7 +1,8 @@
 /**
  * Nabla Ad Shield — Shared Ultra-Fast Content State & Telemetry Batcher
- * Reads directly from chrome.storage.local (~1ms shared memory, zero Service Worker wakeup)
- * and batches outbound telemetry/counter IPC messages to minimize main-thread overhead.
+ * Reads directly from chrome.storage.local (~1ms shared memory, zero Service Worker wakeup),
+ * batches outbound telemetry/counter IPC messages, and gracefully tears down orphaned
+ * content-script contexts when the extension is reloaded or updated.
  */
 
 (function initNablaStateClient() {
@@ -10,7 +11,56 @@
   if (window.__nablaClientInitialized) return;
   window.__nablaClientInitialized = true;
 
+  let contextInvalidated = false;
+  let pendingLogs = [];
+  let pendingBlockedCount = 0;
+  let flushTimer = null;
+
   const rawHost = (window.location.hostname || '').replace(/^www\./i, '').toLowerCase();
+
+  /**
+   * Safely checks whether this content script's extension context is still alive.
+   * When an extension is reloaded in chrome://extensions, existing open tabs hold
+   * orphaned content scripts where chrome.runtime.id becomes undefined (or throws).
+   */
+  function isContextValid() {
+    if (contextInvalidated) return false;
+    try {
+      if (typeof chrome !== 'undefined' && chrome.runtime && Boolean(chrome.runtime.id)) {
+        return true;
+      }
+    } catch (e) {
+      // Accessing invalidated chrome.runtime threw synchronously
+    }
+    teardownInvalidatedContext();
+    return false;
+  }
+
+  /**
+   * Cleanly shuts down timers, queues, and notifies sibling content scripts
+   * (youtube_shield.js, cosmetic.js, heuristic_ai.js) to disconnect observers.
+   */
+  function teardownInvalidatedContext() {
+    if (contextInvalidated) return;
+    contextInvalidated = true;
+    window.__nablaClientInitialized = false;
+
+    if (flushTimer) {
+      clearTimeout(flushTimer);
+      flushTimer = null;
+    }
+
+    pendingLogs = [];
+    pendingBlockedCount = 0;
+    window.__nablaReport = function () {};
+
+    window.removeEventListener('pagehide', flushTelemetry);
+    document.removeEventListener('visibilitychange', onVisibilityChange);
+
+    try {
+      window.dispatchEvent(new CustomEvent('nabla-context-invalidated'));
+    } catch (e) {}
+  }
 
   /**
    * Checks exact domain or subdomain match against whitelisted domains
@@ -54,31 +104,50 @@
 
   function fetchStateFromStorage() {
     return new Promise((resolve) => {
+      const fallback = {
+        enabled: false,
+        cookieAutoReject: false,
+        isWhitelisted: false,
+        host: rawHost
+      };
+
+      if (!isContextValid()) {
+        resolve(fallback);
+        return;
+      }
+
       try {
         chrome.storage.local.get(
           ['enabled', 'cookieAutoReject', 'whitelistedDomains'],
           (data) => {
-            if (chrome.runtime.lastError || !data) {
-              resolve({ enabled: false, cookieAutoReject: false, isWhitelisted: false, host: rawHost });
-              return;
+            try {
+              if (!isContextValid() || chrome.runtime.lastError || !data) {
+                resolve(fallback);
+                return;
+              }
+
+              const enabled = Boolean(data.enabled);
+              const cookieAutoReject = data.cookieAutoReject !== false;
+              const isWhitelisted = isHostWhitelisted(rawHost, data.whitelistedDomains);
+              const shouldBypass = !enabled || isWhitelisted;
+
+              applyBypassMarkers(shouldBypass);
+
+              resolve({
+                enabled,
+                cookieAutoReject,
+                isWhitelisted,
+                host: rawHost
+              });
+            } catch (cbErr) {
+              teardownInvalidatedContext();
+              resolve(fallback);
             }
-            const enabled = Boolean(data.enabled);
-            const cookieAutoReject = data.cookieAutoReject !== false;
-            const isWhitelisted = isHostWhitelisted(rawHost, data.whitelistedDomains);
-            const shouldBypass = !enabled || isWhitelisted;
-
-            applyBypassMarkers(shouldBypass);
-
-            resolve({
-              enabled,
-              cookieAutoReject,
-              isWhitelisted,
-              host: rawHost
-            });
           }
         );
       } catch (e) {
-        resolve({ enabled: false, cookieAutoReject: false, isWhitelisted: false, host: rawHost });
+        teardownInvalidatedContext();
+        resolve(fallback);
       }
     });
   }
@@ -100,24 +169,30 @@
   };
 
   // React to live storage updates (e.g., user toggles whitelist or master switch)
-  try {
-    chrome.storage.onChanged.addListener((changes, areaName) => {
-      if (areaName === 'local' && (changes.enabled || changes.whitelistedDomains || changes.cookieAutoReject)) {
-        cachedStatePromise = fetchStateFromStorage();
-      }
-    });
-  } catch (e) {}
+  if (isContextValid()) {
+    try {
+      chrome.storage.onChanged.addListener((changes, areaName) => {
+        if (!isContextValid()) return;
+        try {
+          if (areaName === 'local' && (changes.enabled || changes.whitelistedDomains || changes.cookieAutoReject)) {
+            cachedStatePromise = fetchStateFromStorage();
+          }
+        } catch (e) {
+          teardownInvalidatedContext();
+        }
+      });
+    } catch (e) {
+      teardownInvalidatedContext();
+    }
+  }
 
   // --- Batched Telemetry & Counter Queue ---
-  let pendingLogs = [];
-  let pendingBlockedCount = 0;
-  let flushTimer = null;
-
   function flushTelemetry() {
     if (flushTimer) {
       clearTimeout(flushTimer);
       flushTimer = null;
     }
+    if (!isContextValid()) return;
     if (pendingLogs.length === 0 && pendingBlockedCount === 0) return;
 
     const eventsToSend = pendingLogs;
@@ -126,18 +201,25 @@
     pendingBlockedCount = 0;
 
     try {
-      chrome.runtime.sendMessage({
+      const sendPromise = chrome.runtime.sendMessage({
         type: 'NABLA_BATCH_TELEMETRY',
         blockedCount: countToSend,
         events: eventsToSend
-      }).catch(() => {});
-    } catch (e) {}
+      });
+      if (sendPromise && typeof sendPromise.catch === 'function') {
+        sendPromise.catch(() => {});
+      }
+    } catch (e) {
+      teardownInvalidatedContext();
+    }
   }
 
   /**
    * Enqueues a diagnostic log and/or blocked threat increment into a 300ms batch
    */
   window.__nablaReport = function (category, level, message, details = {}, blockedIncrement = 0) {
+    if (!isContextValid()) return;
+
     if (blockedIncrement > 0) {
       pendingBlockedCount += blockedIncrement;
     }
@@ -159,10 +241,12 @@
     }
   };
 
-  window.addEventListener('pagehide', flushTelemetry, { passive: true });
-  document.addEventListener('visibilitychange', () => {
+  function onVisibilityChange() {
     if (document.visibilityState === 'hidden') {
       flushTelemetry();
     }
-  }, { passive: true });
+  }
+
+  window.addEventListener('pagehide', flushTelemetry, { passive: true });
+  document.addEventListener('visibilitychange', onVisibilityChange, { passive: true });
 })();
