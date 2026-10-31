@@ -1,4 +1,4 @@
-# ∇ NABLA — Pure Web Ad & Consent Shield
+# 🛡️ NABLA — Pure Web Ad & Consent Shield
 
 <p align="center">
   <img src="icons/icon128.png" width="96" height="96" alt="Nabla Shield Logo" />
