@@ -56,6 +56,15 @@
       visibility: hidden !important;
       overflow: hidden !important;
     }
+
+    /* Roblox sticky footer flow restoration */
+    .container-footer#footer-container,
+    footer.container-footer {
+      position: relative !important;
+      bottom: auto !important;
+      clear: both !important;
+      margin-top: 32px !important;
+    }
   `;
 
   function injectCosmeticStyles() {
@@ -152,6 +161,56 @@
   let cmpObserver = null;
   let cmpTimer = null;
 
+  const CMP_CLICK_KEY_PREFIX = '__nabla_cmp_click_';
+
+  function isRecentCMPClick() {
+    try {
+      const raw = sessionStorage.getItem(CMP_CLICK_KEY_PREFIX + location.hostname);
+      if (!raw) return false;
+      const data = JSON.parse(raw);
+      if (data && typeof data.time === 'number' && Date.now() - data.time < 15000) {
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  function recordCMPClick() {
+    try {
+      sessionStorage.setItem(
+        CMP_CLICK_KEY_PREFIX + location.hostname,
+        JSON.stringify({ time: Date.now() })
+      );
+    } catch (e) {}
+  }
+
+  function collapseContainersOnly() {
+    const containers = document.querySelectorAll(CMP_COMBINED_SELECTOR);
+    let collapsed = false;
+    for (let i = 0; i < containers.length; i++) {
+      const container = containers[i];
+      if (!container) continue;
+      if (container.children.length === 0 && (container.textContent || '').trim().length === 0) {
+        continue;
+      }
+      container.style.setProperty('display', 'none', 'important');
+      container.style.setProperty('visibility', 'hidden', 'important');
+      container.style.setProperty('pointer-events', 'none', 'important');
+      collapsed = true;
+    }
+    const backdrops = document.querySelectorAll('.modal-backdrop, .cmp-backdrop, .cookie-overlay, .fc-ab-root');
+    for (let b = 0; b < backdrops.length; b++) {
+      backdrops[b].remove();
+      collapsed = true;
+    }
+    if (collapsed) {
+      cookieDismissed = true;
+      stopCMPObserver();
+      unlockScroll();
+      report('COOKIE', 'BLOCKED', `Suppressed recurring CMP container via CSS (loop prevention on ${location.hostname})`, {}, 1);
+    }
+  }
+
   function stopCMPObserver() {
     if (cmpObserver) {
       cmpObserver.disconnect();
@@ -195,11 +254,20 @@
   function attemptCookieDismissal() {
     if (cookieDismissed) return;
 
+    // Loop breaker: If we already clicked a reject button on this domain within 15s
+    // and the page reloaded or re-rendered, DO NOT click again! Clicking again will cause
+    // an infinite reload loop (e.g. Genius.com). Fall back to silent CSS container collapse.
+    if (isRecentCMPClick()) {
+      collapseContainersOnly();
+      return;
+    }
+
     // Stage A: Single combined C++ selector pass for dedicated CMP reject buttons
     const directBtns = document.querySelectorAll(REJECT_COMBINED_SELECTOR);
     for (let i = 0; i < directBtns.length; i++) {
       const btn = directBtns[i];
       if (btn.offsetParent !== null) {
+        recordCMPClick();
         btn.click();
         cookieDismissed = true;
         stopCMPObserver();
@@ -225,6 +293,7 @@
         const btn = buttons[j];
         const txt = (btn.textContent || '').trim().replace(/\s+/g, ' ');
         if (txt.length > 0 && txt.length <= 32 && REJECT_TEXT_REGEX.test(txt)) {
+          recordCMPClick();
           btn.click();
           cookieDismissed = true;
           stopCMPObserver();
