@@ -167,6 +167,21 @@ body {
   white-space: nowrap;
 }
 
+/* Theme Icon Visibility */
+.theme-icon-moon {
+  display: none;
+}
+.theme-icon-sun {
+  display: block;
+}
+
+[data-theme="light"] .theme-icon-sun {
+  display: none;
+}
+[data-theme="light"] .theme-icon-moon {
+  display: block;
+}
+
 .primary-btn {
   background: var(--text-pure-white);
   color: #000000;
@@ -504,4 +519,197 @@ body {
 .toast.show {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ==========================================================================
+   Nabla White Mode (Light Monochrome Theme) Overrides for Diagnostics Console
+   ========================================================================== */
+[data-theme="light"] {
+  --bg-deep-space: #F5F5F7;
+  --bg-surface: #FFFFFF;
+  --bg-card: rgba(255, 255, 255, 0.94);
+  --border-glass: rgba(0, 0, 0, 0.08);
+  --border-glass-bright: rgba(0, 0, 0, 0.16);
+  --text-pure-white: #0A0A0A;
+  --text-muted-zinc: #666666;
+  --text-dim-zinc: #8E8E93;
+}
+
+[data-theme="light"] body::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.14);
+}
+
+[data-theme="light"] .logo-glyph {
+  background: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #0A0A0A;
+}
+
+[data-theme="light"] .live-indicator {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #000000;
+}
+
+[data-theme="light"] .primary-btn {
+  background: #000000;
+  color: #FFFFFF;
+  border-color: #000000;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme="light"] .primary-btn:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme="light"] .secondary-btn {
+  background: #FFFFFF;
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .secondary-btn:hover {
+  background: #F0F0F2;
+  border-color: rgba(0, 0, 0, 0.22);
+}
+
+[data-theme="light"] .metric-item {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .metric-item:hover {
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+[data-theme="light"] .toolbar {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .tab-btn:hover {
+  color: #000000;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .tab-btn.active {
+  background: #000000;
+  color: #FFFFFF;
+  border-color: #000000;
+}
+
+[data-theme="light"] .search-box {
+  background: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.14);
+}
+
+[data-theme="light"] .search-box input {
+  color: #000000;
+}
+
+[data-theme="light"] .search-box svg {
+  stroke: #71717A;
+}
+
+[data-theme="light"] .mini-tool-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #555555;
+}
+
+[data-theme="light"] .mini-tool-btn:hover {
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .table-container {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .logs-table th {
+  background: #F5F5F7;
+  color: #71717A;
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .logs-table td {
+  border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .log-row:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .badge-network {
+  background: rgba(0, 0, 0, 0.06);
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .badge-youtube {
+  background: rgba(0, 0, 0, 0.09);
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .badge-heuristic {
+  background: rgba(0, 0, 0, 0.05);
+  color: #27272A;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .badge-cosmetic {
+  background: rgba(0, 0, 0, 0.04);
+  color: #52525B;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .badge-cookie {
+  background: rgba(0, 0, 0, 0.06);
+  color: #18181B;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .badge-system {
+  background: rgba(0, 0, 0, 0.03);
+  color: #71717A;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .status-pill-blocked {
+  background: #000000;
+  color: #FFFFFF;
+  border-color: #000000;
+}
+
+[data-theme="light"] .status-pill-info {
+  background: #F0F0F2;
+  color: #52525B;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .log-url {
+  color: #71717A;
+}
+
+[data-theme="light"] .log-message {
+  color: #09090B;
+}
+
+[data-theme="light"] .log-details-preview {
+  color: #71717A;
+}
+
+[data-theme="light"] .log-expanded-details {
+  background: #F8F8FA;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #18181B;
+}
+
+[data-theme="light"] .toast {
+  background: #000000;
+  color: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }

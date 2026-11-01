@@ -92,6 +92,55 @@ body::-webkit-scrollbar-thumb {
   color: var(--text-pure-white);
 }
 
+.brand-icon {
+  color: var(--text-pure-white);
+}
+
+.header-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-toggle-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--border-glass);
+  background: var(--bg-surface);
+  color: var(--text-muted-zinc);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.theme-toggle-btn:hover {
+  color: var(--text-pure-white);
+  border-color: var(--border-glass-bright);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Theme Icon Visibility */
+.theme-icon-moon {
+  display: none;
+}
+.theme-icon-sun {
+  display: block;
+}
+
+[data-theme="light"] .theme-icon-sun {
+  display: none;
+}
+[data-theme="light"] .theme-icon-moon {
+  display: block;
+}
+[data-theme="light"] .theme-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
 .status-pill {
   display: inline-flex;
   align-items: center;
@@ -598,4 +647,189 @@ input:checked + .slider::before {
   font-weight: 500;
   letter-spacing: 0.08em;
   color: var(--text-dim-zinc);
+}
+
+/* ==========================================================================
+   Nabla White Mode (Light Monochrome Theme) Overrides
+   ========================================================================== */
+[data-theme="light"] {
+  --bg-deep-space: #F5F5F7;
+  --bg-surface: #FFFFFF;
+  --bg-card: rgba(255, 255, 255, 0.94);
+  --border-glass: rgba(0, 0, 0, 0.08);
+  --border-glass-bright: rgba(0, 0, 0, 0.16);
+  --text-pure-white: #0A0A0A;
+  --text-muted-zinc: #666666;
+  --text-dim-zinc: #8E8E93;
+  --glow-primary: 0 0 20px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] body::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.14);
+}
+
+[data-theme="light"] .master-switch-card,
+[data-theme="light"] .telemetry-card,
+[data-theme="light"] .controls-card,
+[data-theme="light"] .diagnostics-card {
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .master-pill-btn {
+  background: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #000000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .master-pill-btn:hover {
+  border-color: rgba(0, 0, 0, 0.28);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .toggle-slider-track {
+  background: #E5E5EA;
+}
+
+[data-theme="light"] .toggle-slider-knob {
+  background: #8E8E93;
+}
+
+[data-theme="light"] .master-pill-btn.active .toggle-slider-track {
+  background: #000000;
+}
+
+[data-theme="light"] .master-pill-btn.active .toggle-slider-knob {
+  background: #FFFFFF;
+}
+
+[data-theme="light"] .status-pill {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .status-pill .status-dot {
+  background-color: #000000;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="light"] .status-pill.active-status {
+  border-color: rgba(0, 0, 0, 0.22);
+  color: #000000;
+}
+
+[data-theme="light"] .status-pill.whitelisted-status {
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #555555;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .status-pill.whitelisted-status .status-dot {
+  background-color: #777777;
+  box-shadow: none;
+}
+
+[data-theme="light"] .status-pill.paused-status {
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #888888;
+}
+
+[data-theme="light"] .status-pill.paused-status .status-dot {
+  background-color: #AAAAAA;
+  box-shadow: none;
+}
+
+[data-theme="light"] .whitelist-drawer {
+  background: #F8F8FA;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .whitelist-input {
+  background: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #000000;
+}
+
+[data-theme="light"] .whitelist-input:focus {
+  border-color: #000000;
+}
+
+[data-theme="light"] .primary-mini-pill-btn {
+  background: #000000;
+  color: #FFFFFF;
+}
+
+[data-theme="light"] .primary-mini-pill-btn:hover {
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .whitelist-item {
+  background: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #000000;
+}
+
+[data-theme="light"] .whitelist-remove-btn {
+  color: #888888;
+}
+
+[data-theme="light"] .whitelist-remove-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .whitelist-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .secondary-pill-btn {
+  background: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #000000;
+}
+
+[data-theme="light"] .secondary-pill-btn:hover {
+  background: #F0F0F2;
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="light"] .secondary-pill-btn.resumed {
+  background: #000000;
+  color: #FFFFFF;
+  border-color: #000000;
+}
+
+[data-theme="light"] .slider {
+  background-color: #E5E5EA;
+  border-color: rgba(0, 0, 0, 0.14);
+}
+
+[data-theme="light"] .slider::before {
+  background-color: #8E8E93;
+}
+
+[data-theme="light"] input:checked + .slider {
+  background-color: #000000;
+  border-color: #000000;
+}
+
+[data-theme="light"] input:checked + .slider::before {
+  background-color: #FFFFFF;
+}
+
+[data-theme="light"] .debugger-launch-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #000000;
+}
+
+[data-theme="light"] .debugger-launch-btn:hover {
+  background: #000000;
+  color: #FFFFFF;
+}
+
+[data-theme="light"] .diagnostics-pulse-dot {
+  background-color: #1EB855;
+  box-shadow: 0 0 6px rgba(30, 184, 85, 0.6);
 }

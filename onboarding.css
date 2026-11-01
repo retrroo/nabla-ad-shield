@@ -101,6 +101,54 @@ body {
   color: var(--text-pure-white);
 }
 
+.logo-mark svg {
+  color: var(--text-pure-white);
+}
+
+.header-right-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme-toggle-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border-glass);
+  background: var(--bg-surface);
+  color: var(--text-muted-zinc);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.theme-toggle-btn:hover {
+  color: var(--text-pure-white);
+  border-color: var(--border-glass-hover);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.theme-icon-moon {
+  display: none;
+}
+.theme-icon-sun {
+  display: block;
+}
+
+[data-theme="light"] .theme-icon-sun {
+  display: none;
+}
+[data-theme="light"] .theme-icon-moon {
+  display: block;
+}
+[data-theme="light"] .theme-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
 .version-tag {
   font-size: 11px;
   font-weight: 600;
@@ -344,6 +392,91 @@ input:checked + .slider::before {
   color: #555555;
   cursor: not-allowed;
   box-shadow: none;
+}
+
+/* ==========================================================================
+   Nabla White Mode (Light Monochrome Theme) Overrides for Onboarding View
+   ========================================================================== */
+[data-theme="light"] {
+  --bg-deep-space: #F5F5F7;
+  --bg-surface: #FFFFFF;
+  --bg-card: rgba(255, 255, 255, 0.94);
+  --border-glass: rgba(0, 0, 0, 0.08);
+  --border-glass-hover: rgba(0, 0, 0, 0.18);
+  --text-pure-white: #0A0A0A;
+  --text-muted-zinc: #666666;
+  --text-dim-zinc: #8E8E93;
+  --glow-primary: 0 0 24px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .onboarding-container {
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .version-tag {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #71717A;
+}
+
+[data-theme="light"] .pillar-card {
+  background: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .pillar-card:hover {
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+[data-theme="light"] .pillar-icon {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #71717A;
+}
+
+[data-theme="light"] .config-card {
+  background: #FFFFFF;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .toggle-row:not(:last-child) {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .slider {
+  background-color: #E5E5EA;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .slider::before {
+  background-color: #8E8E93;
+}
+
+[data-theme="light"] input:checked + .slider {
+  background-color: #000000;
+  border-color: #000000;
+}
+
+[data-theme="light"] input:checked + .slider::before {
+  background-color: #FFFFFF;
+}
+
+[data-theme="light"] .primary-pill-btn {
+  background-color: #000000;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="light"] .primary-pill-btn:hover:not(:disabled) {
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="light"] .primary-pill-btn:disabled {
+  background-color: #E5E5EA;
+  color: #8E8E93;
 }
 
 /* Responsive */

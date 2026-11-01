@@ -5,14 +5,33 @@
  */
 
 import { ParticleConstellation } from './shared/particle_canvas.js';
+import { ThemeManager } from './shared/theme_manager.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  let constellationInstance = null;
   const canvas = document.getElementById('popup-canvas');
   if (canvas) {
-    new ParticleConstellation(canvas, {
+    const currentTheme = document.documentElement?.getAttribute('data-theme') || 'dark';
+    constellationInstance = new ParticleConstellation(canvas, {
       particleCount: 28,
       maxDistance: 70,
-      baseSpeed: 0.25
+      baseSpeed: 0.25,
+      theme: currentTheme
+    });
+  }
+
+  const themeManager = new ThemeManager({
+    onThemeChange: (theme) => {
+      if (constellationInstance) {
+        constellationInstance.setTheme(theme);
+      }
+    }
+  });
+
+  const themeToggleBtn = document.getElementById('theme-toggle-btn');
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', async () => {
+      await themeManager.toggleTheme();
     });
   }
 
@@ -110,14 +129,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       statusPill.className = 'status-pill paused-status';
       statusText.textContent = 'PAUSED';
       globalIndicator.textContent = 'PAUSED';
-      globalIndicator.style.color = '#888888';
+      globalIndicator.style.color = 'var(--text-muted-zinc)';
       masterToggleBtn.classList.remove('active');
       masterToggleLabel.textContent = 'Protection Paused';
       return;
     }
 
     globalIndicator.textContent = 'ENABLED';
-    globalIndicator.style.color = '#FFFFFF';
+    globalIndicator.style.color = 'var(--text-pure-white)';
     masterToggleBtn.classList.add('active');
     masterToggleLabel.textContent = 'Shield Enabled';
 

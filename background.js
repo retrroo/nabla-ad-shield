@@ -19,7 +19,8 @@ const stateCache = {
   whitelistedDomains: [],
   whitelistedSet: new Set(),
   totalThreatsNeutralized: 0,
-  initialized: false
+  initialized: false,
+  theme: 'dark'
 };
 
 // Ephemeral per-tab telemetry & hostname tracking
@@ -116,10 +117,12 @@ function ensureHydrated() {
       'whitelistedDomains',
       'totalThreatsNeutralized',
       'initialized',
-      'auditLogs'
+      'auditLogs',
+      'theme'
     ]);
 
     const updates = {};
+    stateCache.theme = data.theme === 'light' ? 'light' : (updates.theme = 'dark');
     stateCache.enabled = typeof data.enabled === 'boolean' ? data.enabled : (updates.enabled = false);
     stateCache.cookieAutoReject =
       typeof data.cookieAutoReject === 'boolean' ? data.cookieAutoReject : (updates.cookieAutoReject = true);
@@ -734,8 +737,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           whitelistedDomains: stateCache.whitelistedDomains,
           tabBlocked,
           totalThreatsNeutralized: stateCache.totalThreatsNeutralized,
-          totalLogsCount: auditLogs.length
+          totalLogsCount: auditLogs.length,
+          theme: stateCache.theme || 'dark'
         });
+      })();
+      return true;
+    }
+
+    case 'SET_THEME': {
+      (async () => {
+        await ensureHydrated();
+        const nextTheme = message.theme === 'light' ? 'light' : 'dark';
+        stateCache.theme = nextTheme;
+        await chrome.storage.local.set({ theme: nextTheme });
+        sendResponse({ success: true, theme: nextTheme });
       })();
       return true;
     }

@@ -5,15 +5,33 @@
  */
 
 import { ParticleConstellation } from './shared/particle_canvas.js';
+import { ThemeManager } from './shared/theme_manager.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Initialize background particle constellation
+  let constellationInstance = null;
   const canvas = document.getElementById('constellation-canvas');
   if (canvas) {
-    new ParticleConstellation(canvas, {
+    const currentTheme = document.documentElement?.getAttribute('data-theme') || 'dark';
+    constellationInstance = new ParticleConstellation(canvas, {
       particleCount: 55,
       maxDistance: 110,
-      baseSpeed: 0.3
+      baseSpeed: 0.3,
+      theme: currentTheme
+    });
+  }
+
+  const themeManager = new ThemeManager({
+    onThemeChange: (theme) => {
+      if (constellationInstance) {
+        constellationInstance.setTheme(theme);
+      }
+    }
+  });
+
+  const themeToggleBtn = document.getElementById('theme-toggle-btn');
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', async () => {
+      await themeManager.toggleTheme();
     });
   }
 

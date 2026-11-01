@@ -23,11 +23,33 @@ export class ParticleConstellation {
       ...options
     };
 
+    this.theme = options.theme || (document.documentElement?.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+    this.updateThemeColors(this.theme);
+
     this.handleResize = this.handleResize.bind(this);
     this.handleVisibility = this.handleVisibility.bind(this);
     this.animate = this.animate.bind(this);
 
     this.init();
+  }
+
+  setTheme(theme) {
+    this.theme = theme;
+    this.updateThemeColors(theme);
+  }
+
+  updateThemeColors(theme) {
+    if (theme === 'light') {
+      this.dotColorRgb = '18, 18, 20';
+      this.dotAlpha = 0.35;
+      this.lineColorRgb = '18, 18, 20';
+      this.lineAlphaBase = 0.07;
+    } else {
+      this.dotColorRgb = '255, 255, 255';
+      this.dotAlpha = this.options.dotAlpha || 0.6;
+      this.lineColorRgb = '255, 255, 255';
+      this.lineAlphaBase = this.options.lineAlpha || 0.12;
+    }
   }
 
   init() {
@@ -110,13 +132,13 @@ export class ParticleConstellation {
     const maxDist = this.options.maxDistance;
     const maxDistSq = maxDist * maxDist;
     const invMaxDist = 1 / maxDist;
-    const lineAlphaBase = this.options.lineAlpha;
+    const lineAlphaBase = this.lineAlphaBase !== undefined ? this.lineAlphaBase : this.options.lineAlpha;
     const particles = this.particles;
     const count = particles.length;
     const twoPi = Math.PI * 2;
 
     // 1. Update positions & batch all particle dots into a single GPU path fill
-    ctx.fillStyle = `rgba(255, 255, 255, ${this.options.dotAlpha})`;
+    ctx.fillStyle = `rgba(${this.dotColorRgb}, ${this.dotAlpha})`;
     ctx.beginPath();
     for (let i = 0; i < count; i++) {
       const p = particles[i];
@@ -149,7 +171,7 @@ export class ParticleConstellation {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha.toFixed(2)})`;
+          ctx.strokeStyle = `rgba(${this.lineColorRgb}, ${alpha.toFixed(2)})`;
           ctx.stroke();
         }
       }

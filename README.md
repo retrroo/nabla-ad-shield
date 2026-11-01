@@ -97,6 +97,11 @@ Most traditional ad blockers break modern website layouts (leaving huge empty bl
 * **Full Telemetry & Audit Stream**: Click **"Open Console ↗"** from the extension popup to view a live, real-time log of every network request blocked, ad element collapsed, YouTube mitigation executed, and cookie banner dismissed.
 * **One-Click Export**: Click **"Copy Log (JSON)"** to copy your complete diagnostic trace for instant troubleshooting.
 
+### 6. Dual Theme Architecture: Deep Space Dark & Pure White Mode
+* **Instant One-Click Switcher**: Seamlessly switch between the signature **Deep Space Black** (`#050505`) and the new **Pure White Mode** (`#F5F5F7` / `#FFFFFF`) across the Popup controller, Diagnostics Console, and Onboarding screens with a single click.
+* **Persistent & Synchronized**: Theme preferences persist in local storage and synchronize in real-time across all active extension views.
+* **Dynamic Constellation Particles**: HTML5 canvas particles dynamically adapt their luminescence, dot radii, and connecting lines to match light and dark modes flawlessly.
+
 ---
 
 ## 🎨 Design System ("Nabla" Monochrome Theme)
