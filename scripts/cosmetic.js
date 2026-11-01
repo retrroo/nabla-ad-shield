@@ -165,13 +165,29 @@
 
   function unlockScroll() {
     try {
-      if (document.documentElement) {
-        document.documentElement.style.setProperty('overflow', 'auto', 'important');
-        document.documentElement.style.setProperty('position', 'static', 'important');
+      const doc = document.documentElement;
+      const body = document.body;
+
+      if (doc) {
+        if (doc.style.position === 'fixed') {
+          doc.style.removeProperty('position');
+        }
+        if (doc.style.overflow === 'hidden' || doc.style.overflow === 'clip') {
+          doc.style.removeProperty('overflow');
+        }
       }
-      if (document.body) {
-        document.body.style.setProperty('overflow', 'auto', 'important');
-        document.body.style.setProperty('position', 'static', 'important');
+
+      if (body) {
+        if (body.style.position === 'fixed') {
+          body.style.removeProperty('position');
+        }
+        if (body.style.overflow === 'hidden' || body.style.overflow === 'clip') {
+          body.style.removeProperty('overflow');
+        }
+        if (body.style.overflowY === 'hidden' || body.style.overflowY === 'clip') {
+          body.style.removeProperty('overflow-y');
+        }
+        body.classList.remove('modal-open', 'cmp-lock', 'no-scroll', 'overlay-active', 'has-modal');
       }
     } catch (e) {}
   }
@@ -194,37 +210,66 @@
     }
 
     // Stage B: Single combined selector pass for CMP containers
-    const container = document.querySelector(CMP_COMBINED_SELECTOR);
-    if (!container) return;
+    const containers = document.querySelectorAll(CMP_COMBINED_SELECTOR);
+    for (let i = 0; i < containers.length; i++) {
+      const container = containers[i];
+      if (!container) continue;
 
-    const buttons = container.querySelectorAll('button, [role="button"], a');
-    for (let i = 0; i < buttons.length; i++) {
-      const btn = buttons[i];
-      const txt = (btn.textContent || '').trim().replace(/\s+/g, ' ');
-      if (txt.length > 0 && txt.length <= 32 && REJECT_TEXT_REGEX.test(txt)) {
-        btn.click();
+      // Guard: Skip empty mount placeholders (e.g. Roblox's empty <div id="cookie-banner-wrapper"></div>)
+      if (container.children.length === 0 && (container.textContent || '').trim().length === 0) {
+        continue;
+      }
+
+      const buttons = container.querySelectorAll('button, [role="button"], a');
+      for (let j = 0; j < buttons.length; j++) {
+        const btn = buttons[j];
+        const txt = (btn.textContent || '').trim().replace(/\s+/g, ' ');
+        if (txt.length > 0 && txt.length <= 32 && REJECT_TEXT_REGEX.test(txt)) {
+          btn.click();
+          cookieDismissed = true;
+          stopCMPObserver();
+          unlockScroll();
+          report('COOKIE', 'BLOCKED', `Auto-clicked Reject button: "${txt}"`, {}, 1);
+          return;
+        }
+      }
+
+      // Stage C: Dedicated CMP or active dialog with actual content
+      const isDedicatedCMP =
+        container.id === 'onetrust-consent-sdk' ||
+        container.id === 'onetrust-banner-sdk' ||
+        container.id === 'CybotCookiebotDialog' ||
+        container.id === 'CybotCookiebotDialogBody' ||
+        container.classList.contains('qc-cmp2-container') ||
+        container.id === 'truste-consent-track' ||
+        container.id === 'truste-consent-required' ||
+        container.classList.contains('trustarc-banner') ||
+        container.id === 'uc-banner' ||
+        container.id === 'didomi-host';
+
+      // For generic selectors ([id*="cookie-banner"], [class*="cookie-banner"], [role="dialog"]),
+      // require actual visible presence and cookie/consent text or buttons
+      const text = (container.textContent || '').toLowerCase();
+      const hasConsentWords = text.includes('cookie') || text.includes('consent') || text.includes('privacy');
+      const isVisible = container.offsetWidth > 0 || container.offsetHeight > 0 || container.getClientRects().length > 0;
+
+      if ((isDedicatedCMP && isVisible) || (hasConsentWords && isVisible && buttons.length > 0)) {
+        container.style.setProperty('display', 'none', 'important');
+        container.style.setProperty('visibility', 'hidden', 'important');
+        container.style.setProperty('pointer-events', 'none', 'important');
+
+        const backdrops = document.querySelectorAll('.modal-backdrop, .cmp-backdrop, .cookie-overlay, .fc-ab-root');
+        for (let b = 0; b < backdrops.length; b++) {
+          backdrops[b].remove();
+        }
+
         cookieDismissed = true;
         stopCMPObserver();
         unlockScroll();
-        report('COOKIE', 'BLOCKED', `Auto-clicked Reject button: "${txt}"`, {}, 1);
+        report('COOKIE', 'BLOCKED', `Neutralized CMP overlay container (#${container.id || container.className})`, {}, 1);
         return;
       }
     }
-
-    // Stage C: Collapse container & remove backdrop cleanly
-    container.style.setProperty('display', 'none', 'important');
-    container.style.setProperty('visibility', 'hidden', 'important');
-    container.style.setProperty('pointer-events', 'none', 'important');
-
-    const backdrops = document.querySelectorAll('.modal-backdrop, .cmp-backdrop, .cookie-overlay, .fc-ab-root');
-    for (let i = 0; i < backdrops.length; i++) {
-      backdrops[i].remove();
-    }
-
-    cookieDismissed = true;
-    stopCMPObserver();
-    unlockScroll();
-    report('COOKIE', 'BLOCKED', `Neutralized CMP overlay container (#${container.id || container.className})`, {}, 1);
   }
 
   let cmpRafPending = false;
