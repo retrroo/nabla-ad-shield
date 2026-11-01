@@ -89,8 +89,20 @@ body {
   font-family: var(--font-sans);
   font-size: 16px;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
   color: var(--text-pure-white);
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.brand-sub {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-muted-zinc);
+  text-transform: none;
 }
 
 .console-title em {
