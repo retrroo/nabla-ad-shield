@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Shield by Nablai",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "High-performance, zero-overhead ad blocking, stealth video mitigation, and cookie banner auto-rejection.",
   "author": "Nablai",
   "icons": {
@@ -38,12 +38,12 @@
     "rule_resources": [
       {
         "id": "ads_ruleset",
-        "enabled": false,
+        "enabled": true,
         "path": "rules/ads_ruleset.json"
       },
       {
         "id": "cookies_ruleset",
-        "enabled": false,
+        "enabled": true,
         "path": "rules/cookies_ruleset.json"
       }
     ]
@@ -57,7 +57,8 @@
         "scripts/heuristic_ai.js"
       ],
       "run_at": "document_start",
-      "all_frames": false
+      "all_frames": true,
+      "match_about_blank": true
     },
     {
       "matches": [

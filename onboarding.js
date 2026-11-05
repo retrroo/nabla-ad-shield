@@ -42,26 +42,48 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Verify current storage state
   const data = await chrome.storage.local.get(['enabled', 'initialized']);
-  if (data.initialized && data.enabled) {
-    // Already initialized
+  const isAlreadyActive = Boolean(data.initialized && data.enabled);
+  if (isAlreadyActive) {
     statusHint.innerHTML = 'Shield status: <span class="status-active">Active</span> &mdash; Protection running';
-    initializeBtn.textContent = 'Protection Already Active';
-    initializeBtn.disabled = true;
-    return;
+    initializeBtn.textContent = 'Close Onboarding';
+    initializeBtn.disabled = false;
+    initializeBtn.classList.add('ready-glow');
+    if (privacyToggle) privacyToggle.checked = true;
   }
 
   // Mandatory toggle handler
   privacyToggle.addEventListener('change', () => {
-    initializeBtn.disabled = !privacyToggle.checked;
-    if (privacyToggle.checked) {
-      initializeBtn.classList.add('ready-glow');
-    } else {
+    if (isAlreadyActive && !privacyToggle.checked) {
+      initializeBtn.disabled = true;
       initializeBtn.classList.remove('ready-glow');
+    } else {
+      initializeBtn.disabled = !privacyToggle.checked;
+      if (privacyToggle.checked) {
+        initializeBtn.classList.add('ready-glow');
+        if (isAlreadyActive) {
+          initializeBtn.textContent = 'Re-apply Settings';
+        }
+      } else {
+        initializeBtn.classList.remove('ready-glow');
+      }
     }
   });
 
+  if (cookieToggle) {
+    cookieToggle.addEventListener('change', () => {
+      if (isAlreadyActive && privacyToggle.checked) {
+        initializeBtn.textContent = 'Re-apply Settings';
+      }
+    });
+  }
+
   // Action button: Initialize Protection
   initializeBtn.addEventListener('click', async () => {
+    if (initializeBtn.textContent === 'Close Onboarding') {
+      window.close();
+      return;
+    }
+
     if (!privacyToggle.checked) return;
 
     initializeBtn.disabled = true;

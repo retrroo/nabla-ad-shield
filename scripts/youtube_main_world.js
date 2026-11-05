@@ -37,23 +37,56 @@
   function pruneAds(data) {
     if (!data || typeof data !== 'object') return data;
     try {
-      if (data.adPlacements) delete data.adPlacements;
-      if (data.playerAds) delete data.playerAds;
-      if (data.adSlots) delete data.adSlots;
-      if (data.adBreakHeartbeatParams) delete data.adBreakHeartbeatParams;
+      let prunedCount = 0;
+      const prunedTypes = [];
+
+      if (data.adPlacements) {
+        delete data.adPlacements;
+        prunedCount++;
+        prunedTypes.push('adPlacements');
+      }
+      if (data.playerAds) {
+        delete data.playerAds;
+        prunedCount++;
+        prunedTypes.push('playerAds');
+      }
+      if (data.adSlots) {
+        delete data.adSlots;
+        prunedCount++;
+        prunedTypes.push('adSlots');
+      }
+      if (data.adBreakHeartbeatParams) {
+        delete data.adBreakHeartbeatParams;
+        prunedCount++;
+        prunedTypes.push('adBreakHeartbeatParams');
+      }
       if (data.playerResponse && typeof data.playerResponse === 'object') {
         pruneAds(data.playerResponse);
       }
 
       // If YouTube marked playback UNPLAYABLE due to adblock detection, restore to OK
+      // Only restore if streamingData is present to avoid infinite player loading loops
       if (data.playabilityStatus && data.playabilityStatus.status === 'UNPLAYABLE') {
         const fullErr = (data.playabilityStatus.reason || '') + ' ' + JSON.stringify(data.playabilityStatus.errorScreen || {});
-        if (/ad blocker|terms of service|3037019/i.test(fullErr)) {
+        if (/ad blocker|terms of service|3037019/i.test(fullErr) && data.streamingData) {
           data.playabilityStatus.status = 'OK';
           delete data.playabilityStatus.errorScreen;
           delete data.playabilityStatus.reason;
           delete data.playabilityStatus.subreason;
         }
+      }
+
+      if (prunedCount > 0) {
+        try {
+          window.dispatchEvent(
+            new CustomEvent('nabla-yt-main-log', {
+              detail: {
+                message: `Pruned YouTube root ad payload (${prunedTypes.join(', ')})`,
+                details: { prunedCount, prunedTypes }
+              }
+            })
+          );
+        } catch (e) {}
       }
     } catch (e) {}
     return data;
@@ -128,7 +161,7 @@
   window.addEventListener('yt-navigate-finish', pruneWindowPlayerResponse, { passive: true });
   window.addEventListener('yt-page-data-updated', pruneWindowPlayerResponse, { passive: true });
 
-  // Intercept Response.prototype.json for Fetch responses
+  // Intercept Response.prototype.json for Fetch responses (preserves encodings, headers, and streams)
   try {
     if (typeof window.Response !== 'undefined' && Response.prototype.json) {
       const originalResponseJson = Response.prototype.json;
@@ -138,43 +171,6 @@
       };
     }
   } catch (e) {}
-
-  // Intercept fetch for SPA /youtubei/v1/player requests using native Proxy
-  if (typeof window.fetch === 'function') {
-    const nativeFetch = window.fetch;
-    window.fetch = new Proxy(nativeFetch, {
-      apply(target, thisArg, args) {
-        const fetchPromise = Reflect.apply(target, thisArg, args);
-        const resource = args[0];
-        const url = typeof resource === 'string' ? resource : (resource && resource.url) || '';
-
-        if (typeof url === 'string' && url.includes('/youtubei/v1/player')) {
-          return fetchPromise.then(responseBefore => {
-            if (!responseBefore || !responseBefore.ok) return responseBefore;
-            const cloned = responseBefore.clone();
-            return cloned.json().then(objBefore => {
-              if (typeof objBefore !== 'object' || objBefore === null) return responseBefore;
-              const objAfter = pruneAds(objBefore);
-              const responseAfter = Response.json(objAfter, {
-                status: responseBefore.status,
-                statusText: responseBefore.statusText,
-                headers: responseBefore.headers
-              });
-              Object.defineProperties(responseAfter, {
-                ok: { value: responseBefore.ok },
-                redirected: { value: responseBefore.redirected },
-                type: { value: responseBefore.type },
-                url: { value: responseBefore.url }
-              });
-              return responseAfter;
-            }).catch(() => responseBefore);
-          }).catch(() => fetchPromise);
-        }
-
-        return fetchPromise;
-      }
-    });
-  }
 
   // 3. Keep YouTube's internal ad status satisfied across all SPA navigations
   function ensureAdStatus() {

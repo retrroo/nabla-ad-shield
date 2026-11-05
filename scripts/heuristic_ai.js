@@ -70,9 +70,27 @@
   ]);
 
   /**
-   * Fast structural guard to protect navigation and editorial content without layout reflow
+   * Fast structural guard to protect navigation and editorial content without layout reflow.
+   * Elements with obvious ad attributes or ad server iframes are explicitly excluded from being core content.
    */
   function isCoreContent(el) {
+    const classStr = typeof el.className === 'string' ? el.className : '';
+    if (
+      el.hasAttribute('data-google-query-id') ||
+      el.hasAttribute('data-ad-client') ||
+      el.hasAttribute('data-dmp-id') ||
+      classStr.includes('google-auto-placed')
+    ) {
+      return false;
+    }
+
+    if (el.tagName === 'IFRAME') {
+      const src = el.getAttribute('src') || el.getAttribute('data-src') || '';
+      if (src && AD_URL_REGEX.test(src)) {
+        return false;
+      }
+    }
+
     if (PROTECTED_TAGS.has(el.tagName)) return true;
 
     // Large layout wrappers with many child blocks are never standalone ad units
@@ -148,8 +166,8 @@
 
     // Mathematical Early Exit #1:
     // Remaining features are Feature 1 (+0.35) and Feature 4 (+0.25), max +0.60.
-    // If current score < 0.25, even matching BOTH cannot reach 0.85! Skip getBoundingClientRect() completely!
-    if (score < 0.25) {
+    // If current score < 0.05, even matching BOTH cannot reach the 0.65 threshold! Skip getBoundingClientRect() completely!
+    if (score < 0.05) {
       if (el.tagName !== 'IFRAME' || src) {
         evaluatedNodes.add(el);
       }
@@ -175,8 +193,8 @@
     }
 
     // Mathematical Early Exit #2:
-    // Only Feature 4 (+0.25) remains. If score < 0.60, skip expensive getComputedStyle()!
-    if (score >= 0.60 && score < 0.85) {
+    // Only Feature 4 (+0.25) remains. If score >= 0.40 and < 0.65, check expensive getComputedStyle()
+    if (score >= 0.40 && score < 0.65) {
       try {
         const style = window.getComputedStyle(el);
         if (style.position === 'fixed' || style.position === 'sticky') {
@@ -189,7 +207,7 @@
       } catch (e) {}
     }
 
-    if (score >= 0.85) {
+    if (score >= 0.65) {
       return { el, score, features, width, height, classStr };
     }
 

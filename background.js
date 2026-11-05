@@ -154,8 +154,12 @@ function ensureHydrated() {
   return hydrationPromise;
 }
 
-// Eagerly warm cache on worker startup
-ensureHydrated();
+// Eagerly warm cache and synchronize DNR rules on worker startup
+ensureHydrated().then(async () => {
+  await syncRulesets();
+  await syncDynamicRules();
+  await refreshAllTabBadges();
+});
 
 /**
  * Debounced storage writer for high-frequency counters & logs (1.2s coalescing window)
@@ -377,14 +381,15 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     details
   });
 
+  // Always ensure DNR rulesets and dynamic whitelist rules are active on install & update
+  await syncRulesets();
+  await syncDynamicRules();
+  await refreshAllTabBadges();
+
   if (details.reason === 'install') {
     await chrome.tabs.create({
       url: chrome.runtime.getURL('onboarding.html')
     });
-  } else if (details.reason === 'update') {
-    await syncRulesets();
-    await syncDynamicRules();
-    await refreshAllTabBadges();
   }
 });
 

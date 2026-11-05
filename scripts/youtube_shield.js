@@ -75,9 +75,13 @@
       width: 0 !important;
     }
 
-    /* 2. Non-intrusive In-Stream Ad Banner Cloak */
+    /* 2. In-Stream Ad & Banner Cloak */
+    .ytp-ad-player-overlay,
+    .ytp-ad-player-overlay-layout,
     .ytp-ad-action-interstitial,
-    .ytp-ad-image-overlay {
+    .ytp-ad-image-overlay,
+    .ytp-ad-overlay-container,
+    .ytp-ad-message-container {
       display: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
@@ -262,12 +266,42 @@
     }
   }
 
+  function checkIsAdActive(player) {
+    if (!player) return false;
+
+    // 1. Standard player class indicators
+    if (
+      player.classList.contains('ad-showing') ||
+      player.classList.contains('ad-interrupting')
+    ) {
+      return true;
+    }
+
+    // 2. Active skip buttons present and genuinely visible
+    const skipBtn = player.querySelector(SKIP_COMBINED_SELECTOR);
+    if (skipBtn && isElementGenuinelyVisible(skipBtn)) {
+      return true;
+    }
+
+    // 3. Ad badges present (e.g., "Ad", "Ad 1 of 2")
+    const adBadge = player.querySelector('.ytp-ad-badge, .ytp-ad-simple-ad-badge, .ytp-ad-preview-container');
+    if (adBadge && isElementGenuinelyVisible(adBadge)) {
+      return true;
+    }
+
+    // 4. Non-empty ad module with visible contents (SSAI indicators)
+    const adModule = player.querySelector('.ytp-ad-module');
+    if (adModule && adModule.childElementCount > 0 && adModule.offsetHeight > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
   function handleVideoAds(player) {
     if (shieldDisposed || !player) return;
 
-    const isAdShowing =
-      player.classList.contains('ad-showing') ||
-      player.classList.contains('ad-interrupting');
+    const isAdShowing = checkIsAdActive(player);
 
     if (!isAdShowing && !wasAdActive) {
       return;
@@ -286,7 +320,7 @@
         safeReport(
           'YOUTUBE',
           'BLOCKED',
-          'In-stream video ad intercepted (cloaked & muted)',
+          'In-stream video ad intercepted (accelerated & muted)',
           {
             readyState: video.readyState,
             duration: isFinite(video.duration) ? Number(video.duration.toFixed(2)) : 'loading'
@@ -301,13 +335,8 @@
       // 2. Click skip button as soon as available
       tryClickVisibleSkip();
 
-      // 3. Fast-forward and accelerate playback rate
+      // 3. Safely accelerate playback rate to 16x without manipulating currentTime
       try {
-        if (isFinite(video.duration) && video.duration > 0 && video.readyState >= 2) {
-          if (video.currentTime < video.duration - 0.1) {
-            video.currentTime = video.duration - 0.1;
-          }
-        }
         if (video.playbackRate !== 16.0) {
           video.playbackRate = 16.0;
         }
@@ -370,7 +399,7 @@
       if (adModuleObserver) adModuleObserver.disconnect();
       observedAdModule = adModule;
       adModuleObserver = new MutationObserver(() => {
-        if (player.classList.contains('ad-showing') || player.classList.contains('ad-interrupting')) {
+        if (checkIsAdActive(player)) {
           handleVideoAds(player);
         }
       });
@@ -382,7 +411,7 @@
       unbindCurrentVideo();
       boundVideo = video;
       boundMediaListener = () => {
-        if (wasAdActive || player.classList.contains('ad-showing') || player.classList.contains('ad-interrupting')) {
+        if (wasAdActive || checkIsAdActive(player)) {
           handleVideoAds(player);
         }
       };
