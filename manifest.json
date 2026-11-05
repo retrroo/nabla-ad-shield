@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Shield by Nablai",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "High-performance, zero-overhead ad blocking, stealth video mitigation, and cookie banner auto-rejection.",
   "author": "Nablai",
   "icons": {

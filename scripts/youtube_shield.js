@@ -44,8 +44,7 @@
     ytd-companion-slot-renderer,
     ytd-player-legacy-desktop-watch-ads-renderer,
     ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"],
-    .ytp-ad-progress-list,
-    .ytp-ad-overlay-container {
+    .ytp-ad-progress-list {
       display: none !important;
       content-visibility: hidden !important;
       visibility: hidden !important;
@@ -75,16 +74,26 @@
       width: 0 !important;
     }
 
-    /* 2. In-Stream Ad & Banner Cloak */
-    .ytp-ad-player-overlay,
-    .ytp-ad-player-overlay-layout,
+    /* 2. Non-interactive In-Stream Ad Banner Cloak */
     .ytp-ad-action-interstitial,
     .ytp-ad-image-overlay,
-    .ytp-ad-overlay-container,
     .ytp-ad-message-container {
       display: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
+    }
+
+    /* 3. Keep interactive skip buttons visible, unobstructed and immediately clickable */
+    .ytp-ad-skip-button,
+    .ytp-ad-skip-button-modern,
+    .ytp-skip-ad-button,
+    .ytp-ad-skip-button-container,
+    .ytp-ad-skip-button-slot {
+      pointer-events: auto !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      display: block !important;
+      z-index: 99999 !important;
     }
   `;
 
@@ -277,22 +286,36 @@
       return true;
     }
 
-    // 2. Active skip buttons present and genuinely visible
+    // 2. Active skip buttons present anywhere in the player DOM (with content, child icon, or layout)
     const skipBtn = player.querySelector(SKIP_COMBINED_SELECTOR);
-    if (skipBtn && isElementGenuinelyVisible(skipBtn)) {
-      return true;
+    if (skipBtn) {
+      const hasContent = (skipBtn.textContent || '').trim().length > 0 || skipBtn.childElementCount > 0;
+      const hasLayout = skipBtn.offsetWidth > 0 || (skipBtn.getClientRects && skipBtn.getClientRects().length > 0);
+      if (hasContent || hasLayout) {
+        return true;
+      }
     }
 
-    // 3. Ad badges present (e.g., "Ad", "Ad 1 of 2")
-    const adBadge = player.querySelector('.ytp-ad-badge, .ytp-ad-simple-ad-badge, .ytp-ad-preview-container');
-    if (adBadge && isElementGenuinelyVisible(adBadge)) {
-      return true;
+    // 3. Ad badges, duration texts or preview containers with non-empty string content (ignores empty placeholders)
+    const adIndicators = player.querySelectorAll(
+      '.ytp-ad-badge, .ytp-ad-simple-ad-badge, .ytp-ad-duration-remaining, .ytp-ad-preview-text, .ytp-ad-text'
+    );
+    for (let i = 0; i < adIndicators.length; i++) {
+      if ((adIndicators[i].textContent || '').trim().length > 0) {
+        return true;
+      }
     }
 
-    // 4. Non-empty ad module with visible contents (SSAI indicators)
+    // 4. Non-empty ad module with active rendered ad elements (SSAI indicators)
     const adModule = player.querySelector('.ytp-ad-module');
-    if (adModule && adModule.childElementCount > 0 && adModule.offsetHeight > 0) {
-      return true;
+    if (adModule && adModule.childElementCount > 0) {
+      const moduleText = (adModule.innerText || adModule.textContent || '').trim();
+      if (moduleText.length > 0) {
+        return true;
+      }
+      if (adModule.querySelector(SKIP_COMBINED_SELECTOR)) {
+        return true;
+      }
     }
 
     return false;

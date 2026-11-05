@@ -161,6 +161,28 @@
   window.addEventListener('yt-navigate-finish', pruneWindowPlayerResponse, { passive: true });
   window.addEventListener('yt-page-data-updated', pruneWindowPlayerResponse, { passive: true });
 
+  // Intercept Response.prototype.text (YouTube web player reads API responses as text)
+  try {
+    if (typeof window.Response !== 'undefined' && Response.prototype.text) {
+      const originalResponseText = Response.prototype.text;
+      Response.prototype.text = async function () {
+        const text = await originalResponseText.apply(this, arguments);
+        if (
+          typeof text === 'string' &&
+          (text.includes('adPlacements') || text.includes('playerAds') || text.includes('adSlots') || text.includes('adBreakHeartbeatParams'))
+        ) {
+          try {
+            const parsed = JSON.parse(text);
+            return JSON.stringify(pruneAds(parsed));
+          } catch (e) {
+            return text;
+          }
+        }
+        return text;
+      };
+    }
+  } catch (e) {}
+
   // Intercept Response.prototype.json for Fetch responses (preserves encodings, headers, and streams)
   try {
     if (typeof window.Response !== 'undefined' && Response.prototype.json) {
@@ -172,7 +194,7 @@
     }
   } catch (e) {}
 
-  // 3. Keep YouTube's internal ad status satisfied across all SPA navigations
+  // 3. Keep YouTube's internal ad status satisfied across all SPA navigations (direct assignment, NO getter honeypot)
   function ensureAdStatus() {
     try {
       window.google_ad_status = 1;
@@ -180,19 +202,6 @@
   }
 
   ensureAdStatus();
-
-  try {
-    if (typeof window.google_ad_status === 'undefined') {
-      Object.defineProperty(window, 'google_ad_status', {
-        get: () => 1,
-        set: () => {},
-        configurable: true,
-        enumerable: true
-      });
-    }
-  } catch (e) {
-    ensureAdStatus();
-  }
 
   // 4. Safe Player Playback Resumer
   function attemptPlayerRecovery() {

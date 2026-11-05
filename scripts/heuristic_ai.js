@@ -56,6 +56,7 @@
     /(gampad|doubleclick|ad_client|adunit|click_url|safeframe|adnxs|criteo|outbrain|taboola|amazon-adsystem)/i;
 
   const currentHost = window.location.hostname.replace(/^www\./i, '').toLowerCase();
+  const isInsideIframe = window.self !== window.top;
   const evaluatedNodes = new WeakSet();
 
   const PROTECTED_TAGS = new Set([
@@ -123,16 +124,27 @@
     let score = 0.0;
     const features = [];
 
-    // Feature 5 (evaluated early — cheap C++ attribute check): Suspicious Ad Attributes (+0.25)
+    // Feature 5 (evaluated early — cheap C++ attribute check): Suspicious Ad Attributes (+0.30)
     const classStr = typeof el.className === 'string' ? el.className : '';
+    const idStr = typeof el.id === 'string' ? el.id : '';
     if (
       el.hasAttribute('data-google-query-id') ||
       el.hasAttribute('data-ad-client') ||
       el.hasAttribute('data-dmp-id') ||
-      classStr.includes('google-auto-placed')
+      classStr.includes('google-auto-placed') ||
+      /google_ads_iframe|dfp-ad|gpt-ad|ad-slot|ad-unit|ad-container/i.test(idStr)
     ) {
-      score += 0.25;
+      score += 0.30;
       features.push('Ad Vendor Attributes');
+    }
+
+    // Inside an ad subframe, the frame itself carries the ad URL & entropy (+0.40)
+    if (isInsideIframe) {
+      const currentUrl = window.location.href;
+      if (AD_URL_REGEX.test(currentUrl) || window.location.search.length > 50) {
+        score += 0.40;
+        features.push('Inside Ad Subframe');
+      }
     }
 
     // Feature 2 (cheap attribute check): Cross-Origin Ad URL & Query Entropy (+0.35)
