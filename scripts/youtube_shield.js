@@ -61,12 +61,13 @@
       pointer-events: none !important;
     }
 
-    /* Anti-Adblock Enforcement Modal Neutralizer */
-    ytd-enforcement-message-view-model,
-    yt-playability-error-supported-renderers:has(ytd-enforcement-message-view-model),
-    #error-screen:has(ytd-enforcement-message-view-model),
-    tp-yt-paper-dialog:has(ytd-enforcement-message-view-model),
+    /* Anti-Adblock Enforcement Modal & Gray Backdrop Neutralizer */
     tp-yt-iron-overlay-backdrop,
+    tp-yt-iron-overlay-backdrop.opened,
+    ytd-enforcement-message-view-model,
+    yt-playability-error-supported-renderers,
+    ytd-player #error-screen,
+    tp-yt-paper-dialog:has(ytd-enforcement-message-view-model),
     .ytd-popup-container:has(ytd-enforcement-message-view-model) {
       display: none !important;
       visibility: hidden !important;
@@ -305,25 +306,14 @@
         video.play().catch(() => {});
       }
 
-      // 3. Accelerate ad playback rate to 16x smoothly (burns 15s-30s ad in ~1s without stalling MSE buffer)
+      // 3. Accelerate ad playback rate to 16x smoothly (burns through ad in milliseconds)
       try {
         if (video.playbackRate !== 16.0) {
           video.playbackRate = 16.0;
         }
       } catch (e) {}
 
-      // 4. Seek forward safely only when video has ready buffer frames
-      const dur = video.duration;
-      if (video.readyState >= 3 && isFinite(dur) && dur > 1.0) {
-        if (dur - video.currentTime > 1.5 && Math.abs(dur - lastSeekedDuration) > 0.5) {
-          lastSeekedDuration = dur;
-          try {
-            video.currentTime = dur - 0.2;
-          } catch (e) {}
-        }
-      }
-
-      // 5. Click skip button as soon as available
+      // 4. Click skip button as soon as available
       tryClickVisibleSkip();
     } else if (wasAdActive) {
       // Ad finished: restore user audio & normal playback speed immediately
@@ -399,8 +389,8 @@
     if (shieldDisposed) return;
     const modal = document.querySelector(
       'ytd-enforcement-message-view-model, ' +
-      'yt-playability-error-supported-renderers:has(ytd-enforcement-message-view-model), ' +
-      '#error-screen:has(ytd-enforcement-message-view-model), ' +
+      'yt-playability-error-supported-renderers, ' +
+      '#error-screen, ' +
       'tp-yt-paper-dialog:has(ytd-enforcement-message-view-model), ' +
       '.ytd-popup-container:has(ytd-enforcement-message-view-model)'
     );
@@ -434,10 +424,8 @@
         video.play().catch(() => {});
       }
 
-      const moviePlayer = document.getElementById('movie_player');
-      if (moviePlayer && typeof moviePlayer.playVideo === 'function') {
-        moviePlayer.playVideo();
-      }
+      // Notify main-world script to invoke YouTube internal player recovery
+      window.dispatchEvent(new CustomEvent('nabla-request-player-recovery'));
 
       safeReport('YOUTUBE', 'BLOCKED', 'Neutralized YouTube anti-adblock enforcement modal and resumed video', {}, 1);
     }
@@ -498,9 +486,17 @@
     unbindCurrentVideo();
     window.removeEventListener('nabla-yt-main-log', onMainWorldLog);
     window.removeEventListener('yt-navigate-finish', runSyncCheck);
+    window.removeEventListener('yt-navigate-start', onNavigateStart);
+  }
+
+  function onNavigateStart() {
+    if (shieldDisposed) return;
+    wasAdActive = false;
+    unbindCurrentVideo();
   }
 
   window.addEventListener('nabla-context-invalidated', disposeOrphanedShield, { once: true });
+  window.addEventListener('yt-navigate-start', onNavigateStart, { passive: true });
 
   function startFeedObserver() {
     if (shieldDisposed) return;

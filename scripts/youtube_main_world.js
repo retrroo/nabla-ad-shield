@@ -31,7 +31,15 @@
     sessionStorage.removeItem('yt-remote-session-app');
   } catch (e) {}
 
-  // 2. Satisfy YouTube's internal ad status checks
+  // 2. Keep YouTube's internal ad status satisfied across all SPA navigations
+  function ensureAdStatus() {
+    try {
+      window.google_ad_status = 1;
+    } catch (e) {}
+  }
+
+  ensureAdStatus();
+
   try {
     if (typeof window.google_ad_status === 'undefined') {
       Object.defineProperty(window, 'google_ad_status', {
@@ -42,8 +50,53 @@
       });
     }
   } catch (e) {
-    try {
-      window.google_ad_status = 1;
-    } catch (e2) {}
+    ensureAdStatus();
   }
+
+  // 3. Autonomous Player Recovery (neutralizes gray/unstarted player on SPA navigation)
+  function attemptPlayerRecovery() {
+    if (isShieldDisabled()) return;
+    if (window.location.pathname !== '/watch') return;
+
+    const vMatch = new URLSearchParams(window.location.search).get('v');
+    if (!vMatch) return;
+
+    const player = document.getElementById('movie_player') || window.movie_player;
+    if (player && typeof player.loadVideoById === 'function') {
+      try {
+        const curTime = typeof player.getCurrentTime === 'function' ? (player.getCurrentTime() || 0) : 0;
+        player.loadVideoById(vMatch, curTime);
+        if (typeof player.playVideo === 'function') {
+          player.playVideo();
+        }
+      } catch (e) {}
+    }
+
+    // Automated single-shot reload fallback: ensures video stream starts without manual F5
+    const sessionKey = '__nabla_yt_rec_' + vMatch;
+    if (!sessionStorage.getItem(sessionKey)) {
+      setTimeout(() => {
+        const p = document.getElementById('movie_player') || window.movie_player;
+        const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
+        const isStuck = !video || video.paused || (p && typeof p.getPlayerState === 'function' && p.getPlayerState() === -1);
+        if (isStuck && !sessionStorage.getItem(sessionKey)) {
+          sessionStorage.setItem(sessionKey, '1');
+          window.location.reload();
+        }
+      }, 400);
+    }
+  }
+
+  window.addEventListener('nabla-request-player-recovery', attemptPlayerRecovery, { passive: true });
+  document.addEventListener('yt-navigate-start', ensureAdStatus, { passive: true });
+  document.addEventListener('yt-navigate-finish', () => {
+    ensureAdStatus();
+    // Check if error-screen was mounted on navigation
+    const hasError = document.querySelector('yt-playability-error-supported-renderers, ytd-enforcement-message-view-model');
+    if (hasError) {
+      attemptPlayerRecovery();
+    }
+  }, { passive: true });
+  document.addEventListener('yt-page-data-updated', ensureAdStatus, { passive: true });
+  window.addEventListener('popstate', ensureAdStatus, { passive: true });
 })();
