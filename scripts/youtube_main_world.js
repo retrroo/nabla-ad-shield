@@ -31,74 +31,7 @@
     sessionStorage.removeItem('yt-remote-session-app');
   } catch (e) {}
 
-  // 2. Surgical Player Payload Pruning (eliminates pre-roll & mid-roll ads at root)
-  function pruneAds(data) {
-    if (!data || typeof data !== 'object' || isShieldDisabled()) return data;
-    try {
-      delete data.adPlacements;
-      delete data.playerAds;
-      delete data.adSlots;
-    } catch (e) {}
-    return data;
-  }
-
-  // Intercept window.ytInitialPlayerResponse for initial SSR page loads
-  let _ytInitialPlayerResponse = window.ytInitialPlayerResponse;
-  try {
-    Object.defineProperty(window, 'ytInitialPlayerResponse', {
-      configurable: true,
-      enumerable: true,
-      get() {
-        return _ytInitialPlayerResponse;
-      },
-      set(val) {
-        _ytInitialPlayerResponse = pruneAds(val);
-      }
-    });
-  } catch (e) {}
-  if (_ytInitialPlayerResponse) {
-    _ytInitialPlayerResponse = pruneAds(_ytInitialPlayerResponse);
-  }
-
-  // Intercept fetch for SPA /youtubei/v1/player and midroll ad_break requests
-  const nativeFetch = window.fetch;
-  if (typeof nativeFetch === 'function') {
-    window.fetch = async function (resource, init) {
-      const url = typeof resource === 'string' ? resource : (resource && resource.url) || '';
-
-      // Intercept and neutralize mid-roll ad requests cleanly without 404/network errors
-      if (url.includes('/youtubei/v1/player/ad_break') || url.includes('/pagead/')) {
-        return new Response(JSON.stringify({}), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' }
-        });
-      }
-
-      const response = await nativeFetch.apply(this, arguments);
-
-      // Prune ad placement trees from dynamic player payload fetches
-      if (url.includes('/youtubei/v1/player')) {
-        try {
-          const originalJson = response.json.bind(response);
-          response.json = async function () {
-            const data = await originalJson();
-            return pruneAds(data);
-          };
-        } catch (e) {}
-      }
-
-      return response;
-    };
-
-    try {
-      Object.defineProperty(window.fetch, 'toString', {
-        value: () => 'function fetch() { [native code] }',
-        configurable: true
-      });
-    } catch (e) {}
-  }
-
-  // 3. Keep YouTube's internal ad status satisfied across all SPA navigations
+  // 2. Keep YouTube's internal ad status satisfied across all SPA navigations
   function ensureAdStatus() {
     try {
       window.google_ad_status = 1;
@@ -120,7 +53,7 @@
     ensureAdStatus();
   }
 
-  // 4. Safe Player Playback Resumer (NEVER calls loadVideoById mid-stream)
+  // 3. Safe Player Playback Resumer (NEVER calls loadVideoById mid-stream)
   function attemptPlayerRecovery() {
     if (isShieldDisabled()) return;
     if (window.location.pathname !== '/watch') return;

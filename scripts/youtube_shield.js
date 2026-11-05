@@ -231,33 +231,36 @@
     '.ytp-ad-SkipButton,' +
     '.ytp-skip-ad-button,' +
     'button.ytp-ad-skip-button-modern,' +
-    '.ytp-ad-skip-button-container button';
+    '.ytp-ad-skip-button-container button,' +
+    '.ytp-ad-skip-button-slot button,' +
+    '[class*="skip-button"],' +
+    'button[class*="ytp-skip"]';
 
   function isElementGenuinelyVisible(el) {
     if (!el || el.offsetParent === null) return false;
     const rect = el.getBoundingClientRect();
-    return rect.width > 4 && rect.height > 4;
+    return rect.width > 2 && rect.height > 2;
   }
 
   function tryClickVisibleSkip() {
     const now = performance.now();
-    if (now - lastSkipClickTime < 800) return;
+    if (now - lastSkipClickTime < 150) return;
 
     const buttons = document.querySelectorAll(SKIP_COMBINED_SELECTOR);
     for (let i = 0; i < buttons.length; i++) {
       const btn = buttons[i];
-      if (isElementGenuinelyVisible(btn) && typeof btn.click === 'function') {
+      if (typeof btn.click === 'function') {
         lastSkipClickTime = now;
-        btn.click();
-        safeReport('YOUTUBE', 'BLOCKED', `Clicked visible skip button (${btn.className || btn.tagName})`, {}, 0);
+        try { btn.click(); } catch (e) {}
+        safeReport('YOUTUBE', 'BLOCKED', `Clicked skip button (${btn.className || btn.tagName})`, {}, 0);
         break;
       }
     }
 
     const overlayClose = document.querySelector('.ytp-ad-overlay-close-button');
-    if (isElementGenuinelyVisible(overlayClose) && typeof overlayClose.click === 'function') {
+    if (overlayClose && typeof overlayClose.click === 'function') {
       lastSkipClickTime = now;
-      overlayClose.click();
+      try { overlayClose.click(); } catch (e) {}
       safeReport('YOUTUBE', 'BLOCKED', 'Closed video overlay banner ad', {}, 0);
     }
   }

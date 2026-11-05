@@ -5,7 +5,7 @@
     "action": { "type": "block" },
     "condition": {
       "urlFilter": "||doubleclick.net^",
-      "excludedInitiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com"],
+      "excludedInitiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com", "tpc.googlesyndication.com", "googlesyndication.com"],
       "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "media", "websocket", "other"]
     }
   },
@@ -15,7 +15,7 @@
     "action": { "type": "block" },
     "condition": {
       "urlFilter": "||googlesyndication.com^",
-      "excludedInitiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com"],
+      "excludedInitiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com", "tpc.googlesyndication.com", "googlesyndication.com"],
       "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "media", "websocket", "other"]
     }
   },
@@ -25,7 +25,7 @@
     "action": { "type": "block" },
     "condition": {
       "urlFilter": "||googleadservices.com^",
-      "excludedInitiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com"],
+      "excludedInitiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com", "tpc.googlesyndication.com", "googlesyndication.com"],
       "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "media", "websocket", "other"]
     }
   },
@@ -453,50 +453,30 @@
     }
   },
   {
+    "id": 9000,
+    "priority": 100,
+    "action": { "type": "allow" },
+    "condition": {
+      "urlFilter": "/generate_204",
+      "resourceTypes": ["image", "ping", "xmlhttprequest", "other"]
+    }
+  },
+  {
     "id": 9001,
-    "priority": 10,
+    "priority": 100,
     "action": { "type": "allow" },
     "condition": {
       "urlFilter": "||pagead2.googlesyndication.com/bg/",
-      "initiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "tpc.googlesyndication.com"],
       "resourceTypes": ["script", "xmlhttprequest", "other"]
     }
   },
   {
     "id": 9002,
-    "priority": 10,
+    "priority": 100,
     "action": { "type": "allow" },
     "condition": {
-      "urlFilter": "||pagead2.googlesyndication.com/pagead/gen_204?id=sodar",
-      "initiatorDomains": ["youtube.com", "www.youtube.com", "m.youtube.com", "tpc.googlesyndication.com"],
+      "urlFilter": "/pagead/gen_204",
       "resourceTypes": ["image", "ping", "xmlhttprequest", "other"]
-    }
-  },
-  {
-    "id": 9003,
-    "priority": 1,
-    "action": { "type": "block" },
-    "condition": {
-      "urlFilter": "||youtube.com/api/stats/ads",
-      "resourceTypes": ["xmlhttprequest", "ping", "image", "other"]
-    }
-  },
-  {
-    "id": 9004,
-    "priority": 1,
-    "action": { "type": "block" },
-    "condition": {
-      "urlFilter": "||youtube.com/ptracking",
-      "resourceTypes": ["xmlhttprequest", "ping", "image", "other"]
-    }
-  },
-  {
-    "id": 9005,
-    "priority": 1,
-    "action": { "type": "block" },
-    "condition": {
-      "urlFilter": "||youtube.com/get_midroll_info",
-      "resourceTypes": ["xmlhttprequest", "other"]
     }
   }
 ]
