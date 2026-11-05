@@ -45,8 +45,7 @@
     ytd-player-legacy-desktop-watch-ads-renderer,
     ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"],
     .ytp-ad-progress-list,
-    .ytp-ad-overlay-container,
-    #player-ads {
+    .ytp-ad-overlay-container {
       display: none !important;
       content-visibility: hidden !important;
       visibility: hidden !important;
@@ -60,6 +59,22 @@
       border: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
+    }
+
+    /* Anti-Adblock Enforcement Modal Neutralizer */
+    ytd-enforcement-message-view-model,
+    yt-playability-error-supported-renderers:has(ytd-enforcement-message-view-model),
+    #error-screen:has(ytd-enforcement-message-view-model),
+    tp-yt-paper-dialog:has(ytd-enforcement-message-view-model),
+    tp-yt-iron-overlay-backdrop,
+    .ytd-popup-container:has(ytd-enforcement-message-view-model) {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      height: 0 !important;
+      width: 0 !important;
+      z-index: -9999 !important;
     }
 
     /* 2. In-Stream Ad Visual Cloak (hides ad frames without pausing MSE decoding) */
@@ -395,8 +410,58 @@
     handleVideoAds(player);
   }
 
+  // 5. Anti-Adblock Enforcement Modal Neutralizer & Video Resumer
+  function dismissEnforcementModal() {
+    if (shieldDisposed) return;
+    const modal = document.querySelector(
+      'ytd-enforcement-message-view-model, ' +
+      'yt-playability-error-supported-renderers:has(ytd-enforcement-message-view-model), ' +
+      '#error-screen:has(ytd-enforcement-message-view-model), ' +
+      'tp-yt-paper-dialog:has(ytd-enforcement-message-view-model), ' +
+      '.ytd-popup-container:has(ytd-enforcement-message-view-model)'
+    );
+    const backdrop = document.querySelector('tp-yt-iron-overlay-backdrop');
+
+    if (modal || backdrop) {
+      if (backdrop) {
+        backdrop.removeAttribute('opened');
+        backdrop.remove();
+      }
+
+      if (modal) {
+        const dismissBtn = modal.querySelector('#dismiss-button, button[aria-label*="dismiss" i], yt-button-renderer button');
+        if (dismissBtn) {
+          try { dismissBtn.click(); } catch (e) {}
+        }
+        modal.remove();
+      }
+
+      // Unlock body scroll
+      if (document.body) {
+        document.body.style.setProperty('overflow-y', 'auto', 'important');
+      }
+      if (document.documentElement) {
+        document.documentElement.style.setProperty('overflow-y', 'auto', 'important');
+      }
+
+      // Resume HTML5 video playback
+      const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
+      if (video && video.paused) {
+        video.play().catch(() => {});
+      }
+
+      const moviePlayer = document.getElementById('movie_player');
+      if (moviePlayer && typeof moviePlayer.playVideo === 'function') {
+        moviePlayer.playVideo();
+      }
+
+      safeReport('YOUTUBE', 'BLOCKED', 'Neutralized YouTube anti-adblock enforcement modal and resumed video', {}, 1);
+    }
+  }
+
   function runSyncCheck() {
     if (shieldDisposed) return;
+    dismissEnforcementModal();
     const player = document.querySelector('.html5-video-player');
     if (player) attachPlayerHooks(player);
     cleanupAdGridSlots();
@@ -430,10 +495,19 @@
     });
   });
 
+  const enforcementTimer = setInterval(() => {
+    if (shieldDisposed) {
+      clearInterval(enforcementTimer);
+      return;
+    }
+    dismissEnforcementModal();
+  }, 500);
+
   // Cleanly tear down orphaned observers if extension is reloaded in chrome://extensions
   function disposeOrphanedShield() {
     if (shieldDisposed) return;
     shieldDisposed = true;
+    clearInterval(enforcementTimer);
     feedObserver.disconnect();
     if (classObserver) classObserver.disconnect();
     if (adModuleObserver) adModuleObserver.disconnect();

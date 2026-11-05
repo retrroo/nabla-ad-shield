@@ -26,6 +26,23 @@
 
   if (isShieldDisabled()) return;
 
+  // 1. Neutralize YouTube's internal onAbnormalityDetected check via Promise.prototype.then
+  try {
+    const originalThen = Promise.prototype.then;
+    Promise.prototype.then = function (onFulfilled, onRejected) {
+      if (typeof onFulfilled === 'function' && onFulfilled.toString().includes('onAbnormalityDetected')) {
+        onFulfilled = function () {};
+      }
+      return originalThen.call(this, onFulfilled, onRejected);
+    };
+  } catch (e) {}
+
+  // 2. Clear any lingering YouTube enforcement flags in sessionStorage
+  try {
+    sessionStorage.removeItem('yt-player-ad-block');
+    sessionStorage.removeItem('yt-remote-session-app');
+  } catch (e) {}
+
   // Real YouTube video IDs are strictly 11-character base64url strings (never "ux" honeypots)
   const VALID_YT_VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
 
@@ -38,17 +55,18 @@
     return Boolean(obj.playabilityStatus || obj.streamingData);
   }
 
-  // 1. Satisfy YouTube's anti-adblock canary variable
+  // 3. Satisfy YouTube's anti-adblock canary variable safely
   try {
-    if (typeof window.google_ad_status === 'undefined') {
-      Object.defineProperty(window, 'google_ad_status', {
-        value: 1,
-        writable: true,
-        configurable: true
-      });
-    }
+    Object.defineProperty(window, 'google_ad_status', {
+      get: () => 1,
+      set: () => {},
+      configurable: true,
+      enumerable: true
+    });
   } catch (e) {
-    window.google_ad_status = 1;
+    try {
+      window.google_ad_status = 1;
+    } catch (e2) {}
   }
 
   function emitMainWorldLog(message, details = {}) {
@@ -62,34 +80,57 @@
   }
 
   /**
-   * Surgically strips ad placements ONLY from genuine YouTube video payloads,
-   * bypassing synthetic "ux" honeypot self-tests completely.
+   * Sanitizes genuine YouTube video payloads:
+   * - Deletes adPlacements, playerAds, and adSlots (mimicking YouTube Premium response)
+   * - Overrides UNPLAYABLE anti-adblock playabilityStatus to OK so video decoders never halt.
    */
   function sanitizeRealPlayerObject(playerObj, source) {
     if (!isRealPlayerCandidate(playerObj) || isShieldDisabled()) return;
 
     const strippedKeys = [];
 
-    if (Array.isArray(playerObj.adPlacements) && playerObj.adPlacements.length > 0) {
-      strippedKeys.push(`adPlacements(${playerObj.adPlacements.length})`);
-      playerObj.adPlacements = [];
+    // Delete ad structures (setting undefined mimics Premium; empty array [] trips internal sanity assertions)
+    if (playerObj.adPlacements) {
+      delete playerObj.adPlacements;
+      strippedKeys.push('adPlacements');
     }
 
-    if (Array.isArray(playerObj.playerAds) && playerObj.playerAds.length > 0) {
-      strippedKeys.push(`playerAds(${playerObj.playerAds.length})`);
-      playerObj.playerAds = [];
+    if (playerObj.playerAds) {
+      delete playerObj.playerAds;
+      strippedKeys.push('playerAds');
     }
 
-    if (Array.isArray(playerObj.adSlots) && playerObj.adSlots.length > 0) {
-      strippedKeys.push(`adSlots(${playerObj.adSlots.length})`);
-      playerObj.adSlots = [];
+    if (playerObj.adSlots) {
+      delete playerObj.adSlots;
+      strippedKeys.push('adSlots');
+    }
+
+    // Bypass UNPLAYABLE anti-adblock enforcement status if YouTube flagged this session
+    if (playerObj.playabilityStatus) {
+      const pStatus = playerObj.playabilityStatus.status;
+      if (pStatus === 'UNPLAYABLE') {
+        const fullErr = JSON.stringify(playerObj.playabilityStatus);
+        if (
+          fullErr.includes('ad blocker') ||
+          fullErr.includes('Ad blockers') ||
+          fullErr.includes('enforcement') ||
+          fullErr.includes('3037019') ||
+          playerObj.playabilityStatus.errorScreen
+        ) {
+          playerObj.playabilityStatus.status = 'OK';
+          delete playerObj.playabilityStatus.errorScreen;
+          delete playerObj.playabilityStatus.reason;
+          delete playerObj.playabilityStatus.subreason;
+          strippedKeys.push('antiAdblockEnforcementNeutralized');
+        }
+      }
     }
 
     if (strippedKeys.length > 0) {
       emitMainWorldLog(`Sanitized YouTube player payload (${source})`, {
         source,
         stripped: strippedKeys,
-        videoId: playerObj.videoDetails.videoId
+        videoId: playerObj.videoDetails?.videoId
       });
     }
   }
@@ -114,7 +155,7 @@
     return data;
   }
 
-  // 2. Intercept window.ytInitialPlayerResponse setter for SSR video loads
+  // 4. Intercept window.ytInitialPlayerResponse setter for SSR video loads
   try {
     let internalPlayerResponse = window.ytInitialPlayerResponse;
     if (internalPlayerResponse) {
@@ -131,7 +172,7 @@
     });
   } catch (e) {}
 
-  // 3. Proxy Response.prototype.json (ignores synthetic in-memory new Response() honeypots where url === "")
+  // 5. Proxy Response.prototype.json strictly for genuine /player endpoints
   try {
     Response.prototype.json = new Proxy(Response.prototype.json, {
       apply(target, thisArg, args) {
@@ -145,16 +186,17 @@
     });
   } catch (e) {}
 
-  // 4. Proxy JSON.parse (preserves [native code] signature and ignores "ux" canary strings)
+  // 6. Proxy JSON.parse ONLY for large player responses (prevents spamming hundreds of card hover previews)
   try {
     JSON.parse = new Proxy(JSON.parse, {
       apply(target, thisArg, args) {
         const raw = args[0];
         const shouldInspect =
           typeof raw === 'string' &&
-          raw.length > 200 &&
+          raw.length > 500 &&
           !raw.includes('"videoId":"ux"') &&
-          (raw.includes('adPlacements') || raw.includes('playerAds') || raw.includes('adSlots'));
+          raw.includes('"streamingData"') &&
+          (raw.includes('adPlacements') || raw.includes('playerAds') || raw.includes('adSlots') || raw.includes('UNPLAYABLE'));
 
         const parsed = Reflect.apply(target, thisArg, args);
 
