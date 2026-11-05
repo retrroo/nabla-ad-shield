@@ -31,7 +31,74 @@
     sessionStorage.removeItem('yt-remote-session-app');
   } catch (e) {}
 
-  // 2. Keep YouTube's internal ad status satisfied across all SPA navigations
+  // 2. Surgical Player Payload Pruning (eliminates pre-roll & mid-roll ads at root)
+  function pruneAds(data) {
+    if (!data || typeof data !== 'object' || isShieldDisabled()) return data;
+    try {
+      delete data.adPlacements;
+      delete data.playerAds;
+      delete data.adSlots;
+    } catch (e) {}
+    return data;
+  }
+
+  // Intercept window.ytInitialPlayerResponse for initial SSR page loads
+  let _ytInitialPlayerResponse = window.ytInitialPlayerResponse;
+  try {
+    Object.defineProperty(window, 'ytInitialPlayerResponse', {
+      configurable: true,
+      enumerable: true,
+      get() {
+        return _ytInitialPlayerResponse;
+      },
+      set(val) {
+        _ytInitialPlayerResponse = pruneAds(val);
+      }
+    });
+  } catch (e) {}
+  if (_ytInitialPlayerResponse) {
+    _ytInitialPlayerResponse = pruneAds(_ytInitialPlayerResponse);
+  }
+
+  // Intercept fetch for SPA /youtubei/v1/player and midroll ad_break requests
+  const nativeFetch = window.fetch;
+  if (typeof nativeFetch === 'function') {
+    window.fetch = async function (resource, init) {
+      const url = typeof resource === 'string' ? resource : (resource && resource.url) || '';
+
+      // Intercept and neutralize mid-roll ad requests cleanly without 404/network errors
+      if (url.includes('/youtubei/v1/player/ad_break') || url.includes('/pagead/')) {
+        return new Response(JSON.stringify({}), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      const response = await nativeFetch.apply(this, arguments);
+
+      // Prune ad placement trees from dynamic player payload fetches
+      if (url.includes('/youtubei/v1/player')) {
+        try {
+          const originalJson = response.json.bind(response);
+          response.json = async function () {
+            const data = await originalJson();
+            return pruneAds(data);
+          };
+        } catch (e) {}
+      }
+
+      return response;
+    };
+
+    try {
+      Object.defineProperty(window.fetch, 'toString', {
+        value: () => 'function fetch() { [native code] }',
+        configurable: true
+      });
+    } catch (e) {}
+  }
+
+  // 3. Keep YouTube's internal ad status satisfied across all SPA navigations
   function ensureAdStatus() {
     try {
       window.google_ad_status = 1;
@@ -53,50 +120,27 @@
     ensureAdStatus();
   }
 
-  // 3. Autonomous Player Recovery (neutralizes gray/unstarted player on SPA navigation)
+  // 4. Safe Player Playback Resumer (NEVER calls loadVideoById mid-stream)
   function attemptPlayerRecovery() {
     if (isShieldDisabled()) return;
     if (window.location.pathname !== '/watch') return;
 
-    const vMatch = new URLSearchParams(window.location.search).get('v');
-    if (!vMatch) return;
-
     const player = document.getElementById('movie_player') || window.movie_player;
-    if (player && typeof player.loadVideoById === 'function') {
+    if (player && typeof player.playVideo === 'function') {
       try {
-        const curTime = typeof player.getCurrentTime === 'function' ? (player.getCurrentTime() || 0) : 0;
-        player.loadVideoById(vMatch, curTime);
-        if (typeof player.playVideo === 'function') {
-          player.playVideo();
-        }
+        player.playVideo();
       } catch (e) {}
     }
 
-    // Automated single-shot reload fallback: ensures video stream starts without manual F5
-    const sessionKey = '__nabla_yt_rec_' + vMatch;
-    if (!sessionStorage.getItem(sessionKey)) {
-      setTimeout(() => {
-        const p = document.getElementById('movie_player') || window.movie_player;
-        const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
-        const isStuck = !video || video.paused || (p && typeof p.getPlayerState === 'function' && p.getPlayerState() === -1);
-        if (isStuck && !sessionStorage.getItem(sessionKey)) {
-          sessionStorage.setItem(sessionKey, '1');
-          window.location.reload();
-        }
-      }, 400);
+    const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
+    if (video && video.paused) {
+      video.play().catch(() => {});
     }
   }
 
   window.addEventListener('nabla-request-player-recovery', attemptPlayerRecovery, { passive: true });
   document.addEventListener('yt-navigate-start', ensureAdStatus, { passive: true });
-  document.addEventListener('yt-navigate-finish', () => {
-    ensureAdStatus();
-    // Check if error-screen was mounted on navigation
-    const hasError = document.querySelector('yt-playability-error-supported-renderers, ytd-enforcement-message-view-model');
-    if (hasError) {
-      attemptPlayerRecovery();
-    }
-  }, { passive: true });
+  document.addEventListener('yt-navigate-finish', ensureAdStatus, { passive: true });
   document.addEventListener('yt-page-data-updated', ensureAdStatus, { passive: true });
   window.addEventListener('popstate', ensureAdStatus, { passive: true });
 })();

@@ -61,12 +61,10 @@
       pointer-events: none !important;
     }
 
-    /* Anti-Adblock Enforcement Modal & Gray Backdrop Neutralizer */
-    tp-yt-iron-overlay-backdrop,
-    tp-yt-iron-overlay-backdrop.opened,
+    /* Anti-Adblock Enforcement Modal Neutralizer (leaves player screen structure intact) */
+    tp-yt-iron-overlay-backdrop:has(ytd-enforcement-message-view-model),
     ytd-enforcement-message-view-model,
-    yt-playability-error-supported-renderers,
-    ytd-player #error-screen,
+    #error-screen:has(ytd-enforcement-message-view-model),
     tp-yt-paper-dialog:has(ytd-enforcement-message-view-model),
     .ytd-popup-container:has(ytd-enforcement-message-view-model) {
       display: none !important;
@@ -75,7 +73,6 @@
       pointer-events: none !important;
       height: 0 !important;
       width: 0 !important;
-      z-index: -9999 !important;
     }
 
     /* 2. In-Stream Ad Overlay Cloak (hides ad overlays without hiding the video element) */
@@ -301,12 +298,14 @@
       // 1. Mute audio during ad
       video.muted = true;
 
-      // 2. Ensure ad plays through without waiting
-      if (video.paused && !video.ended) {
-        video.play().catch(() => {});
+      // 2. Fast-forward ad to the very end instantly
+      if (isFinite(video.duration) && video.duration > 0) {
+        try {
+          video.currentTime = video.duration;
+        } catch (e) {}
       }
 
-      // 3. Accelerate ad playback rate to 16x smoothly (burns through ad in milliseconds)
+      // 3. Accelerate ad playback rate to 16x smoothly
       try {
         if (video.playbackRate !== 16.0) {
           video.playbackRate = 16.0;
@@ -325,6 +324,11 @@
       } catch (e) {}
       wasAdActive = false;
       lastSeekedDuration = -1;
+
+      // Ensure main video resumes smoothly
+      if (video.paused) {
+        video.play().catch(() => {});
+      }
 
       safeReport('YOUTUBE', 'INFO', 'Ad bypassed cleanly. Main video playing.', {}, 0);
     }
@@ -389,25 +393,22 @@
     if (shieldDisposed) return;
     const modal = document.querySelector(
       'ytd-enforcement-message-view-model, ' +
-      'yt-playability-error-supported-renderers, ' +
-      '#error-screen, ' +
       'tp-yt-paper-dialog:has(ytd-enforcement-message-view-model), ' +
-      '.ytd-popup-container:has(ytd-enforcement-message-view-model)'
+      '.ytd-popup-container:has(ytd-enforcement-message-view-model), ' +
+      '#error-screen:has(ytd-enforcement-message-view-model)'
     );
-    const backdrop = document.querySelector('tp-yt-iron-overlay-backdrop');
 
-    if (modal || backdrop) {
+    if (modal) {
+      const dismissBtn = modal.querySelector('#dismiss-button, button[aria-label*="dismiss" i], yt-button-renderer button');
+      if (dismissBtn) {
+        try { dismissBtn.click(); } catch (e) {}
+      }
+      modal.remove();
+
+      const backdrop = document.querySelector('tp-yt-iron-overlay-backdrop.opened');
       if (backdrop) {
         backdrop.removeAttribute('opened');
         backdrop.remove();
-      }
-
-      if (modal) {
-        const dismissBtn = modal.querySelector('#dismiss-button, button[aria-label*="dismiss" i], yt-button-renderer button');
-        if (dismissBtn) {
-          try { dismissBtn.click(); } catch (e) {}
-        }
-        modal.remove();
       }
 
       // Unlock body scroll
