@@ -77,14 +77,15 @@
       z-index: -9999 !important;
     }
 
-    /* 2. In-Stream Ad Visual Cloak (hides ad frames without pausing MSE decoding) */
-    .html5-video-player.ad-showing video.html5-main-video,
-    .html5-video-player.ad-interrupting video.html5-main-video,
+    /* 2. In-Stream Ad Overlay Cloak (hides ad overlays without hiding the video element) */
     .html5-video-player.ad-showing .ytp-ad-player-overlay,
     .html5-video-player.ad-showing .ytp-ad-player-overlay-layout,
     .html5-video-player.ad-showing .ytp-ad-action-interstitial,
-    .html5-video-player.ad-showing .ytp-ad-image-overlay {
+    .html5-video-player.ad-showing .ytp-ad-image-overlay,
+    .html5-video-player.ad-showing .ytp-ad-text,
+    .html5-video-player.ad-showing .ytp-ad-button-icon {
       opacity: 0 !important;
+      pointer-events: none !important;
     }
   `;
 
@@ -296,50 +297,33 @@
         );
       }
 
-      // 1. Always mute audio immediately
+      // 1. Mute audio during ad
       video.muted = true;
 
-      // 2. Ensure ad is not paused at 0.00s waiting for user interaction
+      // 2. Ensure ad plays through without waiting
       if (video.paused && !video.ended) {
         video.play().catch(() => {});
       }
 
-      // 3. MSE-Safe fast-forward: ONLY seek or boost rate AFTER metadata is loaded!
+      // 3. Accelerate ad playback rate to 16x smoothly (burns 15s-30s ad in ~1s without stalling MSE buffer)
+      try {
+        if (video.playbackRate !== 16.0) {
+          video.playbackRate = 16.0;
+        }
+      } catch (e) {}
+
+      // 4. Seek forward safely only when video has ready buffer frames
       const dur = video.duration;
-      if (video.readyState >= 1 && isFinite(dur) && dur > 0.2) {
-        // Seek directly to the end once per ad duration so HTML5 fires 'ended' cleanly
-        if (Math.abs(dur - lastSeekedDuration) > 0.1 && video.currentTime < dur - 0.1) {
+      if (video.readyState >= 3 && isFinite(dur) && dur > 1.0) {
+        if (dur - video.currentTime > 1.5 && Math.abs(dur - lastSeekedDuration) > 0.5) {
           lastSeekedDuration = dur;
           try {
-            video.currentTime = dur;
-            safeReport(
-              'YOUTUBE',
-              'BLOCKED',
-              `Skipped ad stream to end (${dur.toFixed(1)}s)`,
-              { duration: dur },
-              0
-            );
-          } catch (e) {}
-        }
-
-        // Fallback if seek was clamped: smooth 8x rate only when buffer has frames (readyState >= 3)
-        if (dur - video.currentTime > 0.5 && video.readyState >= 3) {
-          try {
-            if (video.playbackRate !== 8.0) {
-              video.playbackRate = 8.0;
-            }
-          } catch (e) {}
-        }
-      } else {
-        // Metadata still loading (readyState === 0): keep playbackRate at 1.0 so MSE never stalls!
-        if (video.playbackRate > 2.0) {
-          try {
-            video.playbackRate = 1.0;
+            video.currentTime = dur - 0.2;
           } catch (e) {}
         }
       }
 
-      // 4. Click skip button ONLY if genuinely visible
+      // 5. Click skip button as soon as available
       tryClickVisibleSkip();
     } else if (wasAdActive) {
       // Ad finished: restore user audio & normal playback speed immediately
