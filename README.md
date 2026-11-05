@@ -82,7 +82,7 @@ Most traditional ad blockers break modern website layouts (leaving huge empty bl
 
 ### 2. Zero-Latency Cosmetic & Cookie Consent Filter
 * **0ms Optimistic CSS Injection**: Hides known ad containers at the exact moment the page starts loading (`document_start`), completely eliminating layout shifts (FOUC) and saving your CPU from rendering broken ad banners.
-* **Automated Cookie Consent Dismissal**: Automatically detects GDPR/CCPA consent modals (OneTrust, Cookiebot, Quantcast, TrustArc, Didomi, Usercentrics) and programmatically clicks **"Reject All"** / **"Necessary Only"**, unlocks locked page scrollbars, and removes modal backdrops.
+* **Automated Cookie Consent Dismissal**: Automatically detects GDPR/CCPA consent modals and programmatically clicks **"Reject All"** / **"Necessary Only"**, unlocks locked page scrollbars, and removes modal backdrops.
 
 ### 3. High-Velocity On-Device Heuristic AI
 * **Zero Cloud APIs & Zero Tracking**: Runs an on-device heuristic classifier in pure vanilla JavaScript.

@@ -22,26 +22,26 @@ Hieronder vind je de exacte gegevens om over te nemen in het Chrome Web Store De
 
   A high-performance, deterministic Manifest V3 Chromium ad blocker engineered from the ground up to eliminate visual noise, bypass aggressive anti-adblock detection walls, and auto-reject GDPR cookie banners without slowing down your computer.
 
-  Unlike traditional ad blockers that inject heavy JavaScript libraries, break page layouts, or trigger YouTube anti-adblock strikes, Shield by Nablai operates strictly on-device with zero remote telemetry and zero cloud API calls.
+  Unlike traditional ad blockers that inject heavy JavaScript libraries, break page layouts, or trigger video player anti-adblock detection, Shield by Nablai operates strictly on-device with zero remote telemetry and zero cloud API calls.
 
 
   KEY PILLARS & ARCHITECTURE
 
   1. STEALTH VIDEO AD MITIGATION & FEED REFLOW
-  • Anti-Detection Evasion: Satisfies internal anti-adblock status canaries and safely evades synthetic tamper honeypots.
+  • Anti-Detection Evasion: Satisfies internal anti-adblock status checks and safely evades synthetic tamper honeypots.
   • Stream Fast-Forward & Mute: Detects video ad segments instantly, cloaks ad frames, mutes audio, and seeks cleanly to the end once media metadata is ready.
   • Automatic Feed Grid Reflow: Collapses feed ad containers and dynamically backfills grid rows so your homepage never has empty black boxes or broken spacing.
 
   2. ZERO-LATENCY COSMETIC & COOKIE CONSENT FILTER
   • 0ms Optimistic CSS Injection: Injects lightweight cosmetic rules at document_start to collapse known ad placeholders before they can cause layout shifts (FOUC).
-  • Automated CMP Consent Rejection: Detects OneTrust, Cookiebot, Quantcast, TrustArc, Didomi, Usercentrics, and generic GDPR modals, automatically selecting "Reject All" or "Necessary Only" in under 5ms.
+  • Automated CMP Consent Rejection: Automatically detects cookie consent banners and selects "Reject All" or "Necessary Only" options without user intervention.
   • Restores Scrolling: Unlocks locked body overflow and clears dark modal overlays cleanly without requiring a page reload.
 
   3. KERNEL-LEVEL DECLARATIVE NET FILTERING (MV3)
   • Zero Runtime CPU Overhead: Utilizes Chromium's native chrome.declarativeNetRequest API with high-impact network filtering rules targeting ad networks, tracking beacons, and analytics scripts.
 
   4. ON-DEVICE HEURISTIC CLASSIFIER
-  • Pattern Recognition: Scores dynamic iframes and sticky ad units using standard IAB dimensions, promotional keyword tokens, and cross-origin query entropy.
+  • Pattern Recognition: Scores dynamic iframes and sticky ad units using standard ad container dimensions, promotional keyword tokens, and cross-origin query entropy.
   • Content Guardrails: Navigation headers, editorial articles, and essential site components are strictly protected.
 
   5. 1-CLICK WEBSITE WHITELIST MANAGER
