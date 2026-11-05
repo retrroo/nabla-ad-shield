@@ -98,3 +98,64 @@ Alle benodigde afbeeldingen zijn exact op maat en gecodeerd als **24-bits PNG (g
 
 5. **Algemene promotievideo:**
    * Leeg laten (zoals aangegeven: video hoeft niet).
+
+---
+
+## 3. Tabblad "Privacyprocedures" (Privacy Practices)
+
+Kopieer en plak de onderstaande teksten exact in de bijbehorende velden op het tabblad **Privacyprocedures**:
+
+### 1. Beschrijving voor één doel (Single Purpose Description)*
+```text
+Shield by Nablai is een snelle, privacygerichte adblocker die advertenties blokkeert, cookiebanners automatisch weigert en videovertraging voorkomt, zonder gebruikersgegevens te verzamelen.
+```
+
+### 2. Verantwoording voor Hostrechten (Host Permissions - `<all_urls>`)*
+```text
+De hostrechten (<all_urls>) zijn noodzakelijk om op alle websites die de gebruiker bezoekt advertentievlakken visueel in te klappen (cosmetic filtering) en opdringerige cookiebanners (GDPR/AVG-overlays) automatisch te weigeren. Omdat advertenties en cookiebanners op elk willekeurig webdomein kunnen voorkomen, is toegang tot alle URL's vereist voor de kernfunctionaliteit van de adblocker. Er worden hierbij geen browsegegevens, URL's of persoonlijke gegevens opgeslagen of verzonden; alle verwerking gebeurt 100% lokaal op het apparaat.
+```
+
+### 3. Verantwoording voor activeTab*
+```text
+Wordt uitsluitend gebruikt wanneer de gebruiker op het extensie-icoon klikt om het popup-venster te openen. activeTab leest enkel de huidige domeinnaam uit om de 1-klik witte lijst (whitelist) in- of uit te schakelen en om lokale statistieken voor dat specifieke tabblad weer te geven.
+```
+
+### 4. Verantwoording voor declarativeNetRequest*
+```text
+Dit is de kernmotor van de adblocker. Deze permissie stelt de extensie in staat om netwerkverzoeken naar bekende advertentieservers, trackingpixels en analysenetwerken direct op Chromium-kernelniveau te blokkeren zonder vertraging van de pagina.
+```
+
+### 5. Verantwoording voor declarativeNetRequestFeedback*
+```text
+Wordt uitsluitend gebruikt door het ingebouwde lokale Diagnose- en Auditpaneel om de gebruiker real-time inzicht te geven in welke lokale regels zijn getriggerd op het actieve tabblad. Deze data verlaat nooit de browser en wordt nergens naartoe verzonden.
+```
+
+### 6. Verantwoording voor scripting*
+```text
+Noodzakelijk om lokale cosmetische stylesheets te injecteren die lege advertentievakken verbergen en om scripts uit te voeren die cookiebanners automatisch sluiten op pagina's en in ingesloten iframes.
+```
+
+### 7. Verantwoording voor storage*
+```text
+Wordt uitsluitend gebruikt om gebruikersvoorkeuren lokaal op te slaan via chrome.storage.local, zoals het gekozen thema (Donker/Licht), de aan/uit-status, de aangepaste witte lijst van domeinen en de lokale bedreigingstellers. Geen van deze instellingen wordt gesynchroniseerd of geëxporteerd naar externe servers.
+```
+
+### 8. Externe code (Remotely Hosted Code)*
+Selecteer de optie **Nee, ik gebruik geen externe code** (of plak bij een tekstveld):
+```text
+De extensie gebruikt geen enkele externe of op afstand gehoste code. Alle scripts, stijlen en filterregels zijn 100% lokaal gebundeld in het extensiepakket conform het Chrome Web Store-beleid voor Manifest V3.
+```
+
+### 9. URL voor privacybeleid (Privacy Policy URL)*
+```text
+https://github.com/retrroo/nabla-ad-shield/blob/main/PRIVACY.md
+```
+
+### 10. Gegevensverzameling en Certificeringen
+* **Gegevenscategorieën:** Selecteer bij alle categorieën **Nee / Niet verzameld** (de extensie verzamelt immers 0 byte aan gegevens).
+* **Certificeringen (vink alle 4 de vakjes aan):**
+  1. [x] Ik verkoop geen gegevens van gebruikers aan derden.
+  2. [x] Ik gebruik of draag geen gebruikersgegevens over voor doeleinden die geen verband houden met de kernfunctionaliteit.
+  3. [x] Ik gebruik of draag geen gebruikersgegevens over om kredietwaardigheid vast te stellen of voor leningen.
+  4. [x] Ik verklaar dat mijn gebruik van gegevens voldoet aan het Programmabeleid voor ontwikkelaars.
+
