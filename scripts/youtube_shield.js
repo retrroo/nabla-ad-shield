@@ -60,12 +60,9 @@
       pointer-events: none !important;
     }
 
-    /* Anti-Adblock Enforcement Modal Neutralizer (leaves player screen structure intact) */
+    /* Anti-Adblock Enforcement Modal Neutralizer */
     tp-yt-iron-overlay-backdrop:has(ytd-enforcement-message-view-model),
     ytd-enforcement-message-view-model,
-    #error-screen:has(ytd-enforcement-message-view-model),
-    #error-screen:has(a[href*="3037019"]),
-    yt-playability-error-supported-renderers:has(a[href*="3037019"]),
     tp-yt-paper-dialog:has(ytd-enforcement-message-view-model),
     .ytd-popup-container:has(ytd-enforcement-message-view-model) {
       display: none !important;
@@ -454,10 +451,7 @@
     const modal = document.querySelector(
       'ytd-enforcement-message-view-model, ' +
       'tp-yt-paper-dialog:has(ytd-enforcement-message-view-model), ' +
-      '.ytd-popup-container:has(ytd-enforcement-message-view-model), ' +
-      '#error-screen:has(ytd-enforcement-message-view-model), ' +
-      '#error-screen:has(a[href*="3037019"]), ' +
-      'yt-playability-error-supported-renderers:has(a[href*="3037019"])'
+      '.ytd-popup-container:has(ytd-enforcement-message-view-model)'
     );
 
     if (modal) {
@@ -487,10 +481,7 @@
         video.play().catch(() => {});
       }
 
-      // Notify main-world script to invoke YouTube internal player recovery via loadVideoById
-      window.dispatchEvent(new CustomEvent('nabla-request-player-recovery'));
-
-      safeReport('YOUTUBE', 'BLOCKED', 'Neutralized YouTube anti-adblock enforcement modal and reloaded stream', {}, 1);
+      safeReport('YOUTUBE', 'BLOCKED', 'Neutralized YouTube anti-adblock enforcement modal and resumed video', {}, 1);
     }
   }
 
@@ -498,15 +489,7 @@
     if (shieldDisposed) return;
     dismissEnforcementModal();
     const player = document.querySelector('.html5-video-player');
-    if (player) {
-      attachPlayerHooks(player);
-      if (window.location.pathname.startsWith('/watch')) {
-        const errorScreen = player.querySelector('#error-screen, yt-playability-error-supported-renderers');
-        if (errorScreen && isElementGenuinelyVisible(errorScreen)) {
-          dismissEnforcementModal();
-        }
-      }
-    }
+    if (player) attachPlayerHooks(player);
     cleanupAdGridSlots();
   }
 

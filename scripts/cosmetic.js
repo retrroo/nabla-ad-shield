@@ -7,6 +7,11 @@
 (async function initCosmeticFilter() {
   'use strict';
 
+  // YouTube DOM is handled exclusively by youtube_shield.js
+  if (window.location.hostname.includes('youtube.com')) {
+    return;
+  }
+
   const STYLE_ID = 'nabla-cosmetic-styles';
 
   const COSMETIC_CSS = `
