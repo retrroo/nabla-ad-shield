@@ -105,8 +105,8 @@
   function fetchStateFromStorage() {
     return new Promise((resolve) => {
       const fallback = {
-        enabled: false,
-        cookieAutoReject: false,
+        enabled: true,
+        cookieAutoReject: true,
         isWhitelisted: false,
         host: rawHost
       };
@@ -126,7 +126,7 @@
                 return;
               }
 
-              const enabled = Boolean(data.enabled);
+              const enabled = data.enabled !== false;
               const cookieAutoReject = data.cookieAutoReject !== false;
               const isWhitelisted = isHostWhitelisted(rawHost, data.whitelistedDomains);
               const shouldBypass = !enabled || isWhitelisted;

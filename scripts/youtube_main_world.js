@@ -5,8 +5,9 @@
  * Provides:
  *  - Native google_ad_status compliance so YouTube canary probes always pass.
  *  - Safe sessionStorage cleanup of stale anti-adblock flags.
- *  - Root player payload pruning (ytInitialPlayerResponse + /youtubei/v1/player fetch)
- *    so ads are eliminated before player instantiation, preventing player stall.
+ *  - Surgical JSON.parse & Response.json payload pruning (eliminates adPlacements,
+ *    playerAds, adSlots before player initialization so ads never render).
+ *  - Instant unplayable playabilityStatus restoration.
  */
 
 (function initYouTubeMainWorld() {
@@ -40,6 +41,9 @@
       if (data.playerAds) delete data.playerAds;
       if (data.adSlots) delete data.adSlots;
       if (data.adBreakHeartbeatParams) delete data.adBreakHeartbeatParams;
+      if (data.playerResponse && typeof data.playerResponse === 'object') {
+        pruneAds(data.playerResponse);
+      }
 
       // If YouTube marked playback UNPLAYABLE due to adblock detection, restore to OK
       if (data.playabilityStatus && data.playabilityStatus.status === 'UNPLAYABLE') {
@@ -54,6 +58,21 @@
     } catch (e) {}
     return data;
   }
+
+  // Intercept JSON.parse (uBlock Origin json-prune scriptlet equivalent)
+  try {
+    const originalJsonParse = JSON.parse;
+    JSON.parse = function (text, reviver) {
+      const parsed = originalJsonParse.apply(this, arguments);
+      if (
+        typeof text === 'string' &&
+        (text.includes('adPlacements') || text.includes('playerAds') || text.includes('adSlots') || text.includes('adBreakHeartbeatParams'))
+      ) {
+        return pruneAds(parsed);
+      }
+      return parsed;
+    };
+  } catch (e) {}
 
   // Intercept window.ytInitialPlayerResponse for initial SSR page loads
   let _ytInitialPlayerResponse = window.ytInitialPlayerResponse;
@@ -71,11 +90,36 @@
         _ytInitialPlayerResponse = pruneAds(val);
       }
     });
-  } catch (e) {}
+  } catch (e) {
+    if (window.ytInitialPlayerResponse) {
+      pruneAds(window.ytInitialPlayerResponse);
+    }
+  }
 
   function pruneWindowPlayerResponse() {
     if (window.ytInitialPlayerResponse) {
       pruneAds(window.ytInitialPlayerResponse);
+    }
+    if (window.ytplayer && window.ytplayer.config && window.ytplayer.config.args) {
+      const args = window.ytplayer.config.args;
+      if (args.raw_player_response) {
+        if (typeof args.raw_player_response === 'string') {
+          try {
+            args.raw_player_response = JSON.stringify(pruneAds(JSON.parse(args.raw_player_response)));
+          } catch (e) {}
+        } else if (typeof args.raw_player_response === 'object') {
+          pruneAds(args.raw_player_response);
+        }
+      }
+      if (args.player_response) {
+        if (typeof args.player_response === 'string') {
+          try {
+            args.player_response = JSON.stringify(pruneAds(JSON.parse(args.player_response)));
+          } catch (e) {}
+        } else if (typeof args.player_response === 'object') {
+          pruneAds(args.player_response);
+        }
+      }
     }
   }
   pruneWindowPlayerResponse();
@@ -83,6 +127,17 @@
   window.addEventListener('yt-navigate-start', pruneWindowPlayerResponse, { passive: true });
   window.addEventListener('yt-navigate-finish', pruneWindowPlayerResponse, { passive: true });
   window.addEventListener('yt-page-data-updated', pruneWindowPlayerResponse, { passive: true });
+
+  // Intercept Response.prototype.json for Fetch responses
+  try {
+    if (typeof window.Response !== 'undefined' && Response.prototype.json) {
+      const originalResponseJson = Response.prototype.json;
+      Response.prototype.json = async function () {
+        const data = await originalResponseJson.apply(this, arguments);
+        return pruneAds(data);
+      };
+    }
+  } catch (e) {}
 
   // Intercept fetch for SPA /youtubei/v1/player requests using native Proxy
   if (typeof window.fetch === 'function') {
@@ -143,7 +198,7 @@
     ensureAdStatus();
   }
 
-  // 4. Safe Player Playback Resumer (NEVER calls loadVideoById mid-stream)
+  // 4. Safe Player Playback Resumer
   function attemptPlayerRecovery() {
     if (isShieldDisabled()) return;
     if (window.location.pathname !== '/watch') return;

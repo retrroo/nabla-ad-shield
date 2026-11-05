@@ -75,13 +75,10 @@
       width: 0 !important;
     }
 
-    /* 2. In-Stream Ad Overlay Cloak (hides ad overlays without hiding the video element) */
-    .html5-video-player.ad-showing .ytp-ad-player-overlay,
-    .html5-video-player.ad-showing .ytp-ad-player-overlay-layout,
-    .html5-video-player.ad-showing .ytp-ad-action-interstitial,
-    .html5-video-player.ad-showing .ytp-ad-image-overlay,
-    .html5-video-player.ad-showing .ytp-ad-text,
-    .html5-video-player.ad-showing .ytp-ad-button-icon {
+    /* 2. Non-intrusive In-Stream Ad Banner Cloak */
+    .ytp-ad-action-interstitial,
+    .ytp-ad-image-overlay {
+      display: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
     }
@@ -304,9 +301,13 @@
       // 2. Click skip button as soon as available
       tryClickVisibleSkip();
 
-      // 3. Accelerate playback rate to 16x smoothly without MSE buffer stalls
-      // (Never manipulate video.currentTime on ad video streams, as that causes MSE unbuffered stalls and pauses playback)
+      // 3. Fast-forward and accelerate playback rate
       try {
+        if (isFinite(video.duration) && video.duration > 0 && video.readyState >= 2) {
+          if (video.currentTime < video.duration - 0.1) {
+            video.currentTime = video.duration - 0.1;
+          }
+        }
         if (video.playbackRate !== 16.0) {
           video.playbackRate = 16.0;
         }
