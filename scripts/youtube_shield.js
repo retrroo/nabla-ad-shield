@@ -301,22 +301,24 @@
       // 1. Mute audio during ad
       video.muted = true;
 
-      // 2. Fast-forward ad to the very end instantly
-      if (isFinite(video.duration) && video.duration > 0) {
-        try {
-          video.currentTime = video.duration;
-        } catch (e) {}
-      }
+      // 2. Click skip button as soon as available
+      tryClickVisibleSkip();
 
-      // 3. Accelerate ad playback rate to 16x smoothly
+      // 3. Accelerate playback rate to 16x smoothly without MSE buffer stalls
+      // (Never manipulate video.currentTime on ad video streams, as that causes MSE unbuffered stalls and pauses playback)
       try {
         if (video.playbackRate !== 16.0) {
           video.playbackRate = 16.0;
         }
       } catch (e) {}
 
-      // 4. Click skip button as soon as available
-      tryClickVisibleSkip();
+      // 4. Ensure playback continues so the ad completes rapidly and transitions to the main video
+      if (video.paused) {
+        video.play().catch(() => {});
+      }
+      if (player && typeof player.playVideo === 'function' && video.paused) {
+        try { player.playVideo(); } catch (e) {}
+      }
     } else if (wasAdActive) {
       // Ad finished: restore user audio & normal playback speed immediately
       if (!userMutedState) {
@@ -476,8 +478,8 @@
       clearInterval(enforcementTimer);
       return;
     }
-    dismissEnforcementModal();
-  }, 500);
+    runSyncCheck();
+  }, 250);
 
   // Cleanly tear down orphaned observers if extension is reloaded in chrome://extensions
   function disposeOrphanedShield() {

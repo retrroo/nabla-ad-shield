@@ -14,12 +14,12 @@ const MAX_LOGS = 600;
 // In-memory hot state cache
 const stateCache = {
   hydrated: false,
-  enabled: false,
+  enabled: true,
   cookieAutoReject: true,
   whitelistedDomains: [],
   whitelistedSet: new Set(),
   totalThreatsNeutralized: 0,
-  initialized: false,
+  initialized: true,
   theme: 'dark'
 };
 
@@ -123,7 +123,7 @@ function ensureHydrated() {
 
     const updates = {};
     stateCache.theme = data.theme === 'light' ? 'light' : (updates.theme = 'dark');
-    stateCache.enabled = typeof data.enabled === 'boolean' ? data.enabled : (updates.enabled = false);
+    stateCache.enabled = typeof data.enabled === 'boolean' ? data.enabled : (updates.enabled = true);
     stateCache.cookieAutoReject =
       typeof data.cookieAutoReject === 'boolean' ? data.cookieAutoReject : (updates.cookieAutoReject = true);
 
@@ -138,7 +138,7 @@ function ensureHydrated() {
         : (updates.totalThreatsNeutralized = 0);
 
     stateCache.initialized =
-      typeof data.initialized === 'boolean' ? data.initialized : (updates.initialized = false);
+      typeof data.initialized === 'boolean' ? data.initialized : (updates.initialized = true);
 
     auditLogs = Array.isArray(data.auditLogs) ? data.auditLogs : (updates.auditLogs = []);
 
