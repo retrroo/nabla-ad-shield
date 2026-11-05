@@ -3,11 +3,13 @@
  * Runs in MAIN world at document_start on *.youtube.com.
  *
  * Provides:
+ *  - Neutralization of YouTube's internal onAbnormalityDetected anomaly check via Promise.prototype.then proxy.
+ *  - Disabling of adBlockMessageViewModel in yt.config_ and Object.prototype.adBlocksFound = 0.
  *  - Native google_ad_status compliance so YouTube canary probes always pass.
  *  - Safe sessionStorage cleanup of stale anti-adblock flags.
- *  - Surgical JSON.parse & Response.json payload pruning (eliminates adPlacements,
- *    playerAds, adSlots before player initialization so ads never render).
- *  - Instant unplayable playabilityStatus restoration.
+ *  - Surgical JSON.parse, Response.text & Response.json payload pruning (eliminates adPlacements,
+ *    playerAds, adSlots, adBreakHeartbeatParams at the root).
+ *  - Automatic stream recovery via movie_player.loadVideoById if YouTube marks a stream unplayable.
  */
 
 (function initYouTubeMainWorld() {
@@ -33,7 +35,92 @@
     sessionStorage.removeItem('yt-remote-session-app');
   } catch (e) {}
 
-  // 2. Surgical Player Payload Pruning (eliminates pre-roll & mid-roll ads at root)
+  // 2. Disarm YouTube's onAbnormalityDetected anomaly reporter via Promise.prototype.then Proxy
+  try {
+    const originalThen = window.Promise.prototype.then;
+    window.Promise.prototype.then = new Proxy(originalThen, {
+      apply(target, thisArg, args) {
+        const handler = args[0];
+        if (typeof handler === 'function') {
+          try {
+            const fnStr = Function.prototype.toString.call(handler);
+            if (fnStr.includes('onAbnormalityDetected')) {
+              args[0] = function () {};
+            }
+          } catch (e) {}
+        }
+        return Reflect.apply(target, thisArg, args);
+      }
+    });
+  } catch (e) {}
+
+  // 3. Spoof adBlocksFound and disarm adBlockMessageViewModel in YouTube config
+  try {
+    if (!('adBlocksFound' in Object.prototype)) {
+      Object.defineProperty(Object.prototype, 'adBlocksFound', {
+        get: () => 0,
+        set: () => {},
+        configurable: true
+      });
+    }
+  } catch (e) {}
+
+  function disableAdblockPopups() {
+    try {
+      if (window.yt?.config_?.openPopupConfig?.supportedPopups) {
+        window.yt.config_.openPopupConfig.supportedPopups.adBlockMessageViewModel = false;
+      }
+    } catch (e) {}
+  }
+  disableAdblockPopups();
+  document.addEventListener('DOMContentLoaded', disableAdblockPopups, { passive: true });
+  window.addEventListener('yt-navigate-finish', disableAdblockPopups, { passive: true });
+
+  // 4. Dynamic Player Stream Restorer via movie_player.loadVideoById
+  let recoveryDebounce = 0;
+  function attemptPlayerRecovery() {
+    if (isShieldDisabled()) return;
+    if (!window.location.pathname.startsWith('/watch')) return;
+
+    const now = performance.now();
+    if (now - recoveryDebounce < 800) return;
+    recoveryDebounce = now;
+
+    const player = document.getElementById('movie_player') || window.movie_player;
+    if (!player) return;
+
+    try {
+      const videoData = typeof player.getVideoData === 'function' ? player.getVideoData() : null;
+      const urlParams = new URLSearchParams(window.location.search);
+      const videoId = videoData?.video_id || urlParams.get('v');
+      const currentTime = typeof player.getCurrentTime === 'function' ? player.getCurrentTime() : 0;
+      const startTime = currentTime > 1 ? currentTime : parseInt(urlParams.get('t'), 10) || 0;
+
+      const playerResponse = typeof player.getPlayerResponse === 'function' ? player.getPlayerResponse() : null;
+      const playability = playerResponse?.playabilityStatus?.status;
+
+      // If YouTube marked the video UNPLAYABLE or removed stream data, reload the video
+      if (videoId && (playability === 'UNPLAYABLE' || playability === 'ERROR' || !playerResponse?.streamingData)) {
+        if (typeof player.loadVideoById === 'function') {
+          player.loadVideoById(videoId, startTime);
+          return;
+        }
+      }
+
+      if (typeof player.playVideo === 'function') {
+        player.playVideo();
+      }
+    } catch (e) {}
+
+    const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
+    if (video && video.paused) {
+      video.play().catch(() => {});
+    }
+  }
+
+  window.addEventListener('nabla-request-player-recovery', attemptPlayerRecovery, { passive: true });
+
+  // 5. Surgical Player Payload Pruning (eliminates pre-roll & mid-roll ads at root)
   function pruneAds(data) {
     if (!data || typeof data !== 'object') return data;
     try {
@@ -65,14 +152,17 @@
       }
 
       // If YouTube marked playback UNPLAYABLE due to adblock detection, restore to OK
-      // Only restore if streamingData is present to avoid infinite player loading loops
       if (data.playabilityStatus && data.playabilityStatus.status === 'UNPLAYABLE') {
         const fullErr = (data.playabilityStatus.reason || '') + ' ' + JSON.stringify(data.playabilityStatus.errorScreen || {});
-        if (/ad blocker|terms of service|3037019/i.test(fullErr) && data.streamingData) {
-          data.playabilityStatus.status = 'OK';
-          delete data.playabilityStatus.errorScreen;
-          delete data.playabilityStatus.reason;
-          delete data.playabilityStatus.subreason;
+        if (/ad blocker|terms of service|3037019/i.test(fullErr)) {
+          if (data.streamingData) {
+            data.playabilityStatus.status = 'OK';
+            delete data.playabilityStatus.errorScreen;
+            delete data.playabilityStatus.reason;
+            delete data.playabilityStatus.subreason;
+          } else {
+            setTimeout(attemptPlayerRecovery, 50);
+          }
         }
       }
 
@@ -194,7 +284,7 @@
     }
   } catch (e) {}
 
-  // 3. Keep YouTube's internal ad status satisfied across all SPA navigations (direct assignment, NO getter honeypot)
+  // 6. Keep YouTube's internal ad status satisfied across all SPA navigations (direct assignment)
   function ensureAdStatus() {
     try {
       window.google_ad_status = 1;
@@ -202,26 +292,6 @@
   }
 
   ensureAdStatus();
-
-  // 4. Safe Player Playback Resumer
-  function attemptPlayerRecovery() {
-    if (isShieldDisabled()) return;
-    if (window.location.pathname !== '/watch') return;
-
-    const player = document.getElementById('movie_player') || window.movie_player;
-    if (player && typeof player.playVideo === 'function') {
-      try {
-        player.playVideo();
-      } catch (e) {}
-    }
-
-    const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
-    if (video && video.paused) {
-      video.play().catch(() => {});
-    }
-  }
-
-  window.addEventListener('nabla-request-player-recovery', attemptPlayerRecovery, { passive: true });
   document.addEventListener('yt-navigate-start', ensureAdStatus, { passive: true });
   document.addEventListener('yt-navigate-finish', ensureAdStatus, { passive: true });
   document.addEventListener('yt-page-data-updated', ensureAdStatus, { passive: true });
