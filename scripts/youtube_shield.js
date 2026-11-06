@@ -224,7 +224,7 @@
   let userMutedState = false;
   let userPlaybackRate = 1.0;
   let lastSkipClickTime = 0;
-  let lastSeekedDuration = -1;
+  let lastAdSeekTime = 0;
   let observedPlayer = null;
   let observedAdModule = null;
   let classObserver = null;
@@ -232,7 +232,7 @@
   let boundVideo = null;
   let boundMediaListener = null;
 
-  const MEDIA_EVENTS = ['play', 'playing', 'loadedmetadata', 'durationchange', 'canplay', 'timeupdate'];
+  const MEDIA_EVENTS = ['play', 'playing', 'loadedmetadata', 'durationchange', 'ended'];
 
   const SKIP_COMBINED_SELECTOR =
     '.ytp-ad-skip-button,' +
@@ -277,47 +277,12 @@
   function checkIsAdActive(player) {
     if (!player) return false;
 
-    // 1. Standard player class indicators
-    if (
+    // In-stream video ads strictly add .ad-showing or .ad-interrupting to the player container.
+    // Relying solely on these classes prevents false positives on stale DOM elements during normal playback.
+    return (
       player.classList.contains('ad-showing') ||
       player.classList.contains('ad-interrupting')
-    ) {
-      return true;
-    }
-
-    // 2. Active skip buttons present anywhere in the player DOM (with content, child icon, or layout)
-    const skipBtn = player.querySelector(SKIP_COMBINED_SELECTOR);
-    if (skipBtn) {
-      const hasContent = (skipBtn.textContent || '').trim().length > 0 || skipBtn.childElementCount > 0;
-      const hasLayout = skipBtn.offsetWidth > 0 || (skipBtn.getClientRects && skipBtn.getClientRects().length > 0);
-      if (hasContent || hasLayout) {
-        return true;
-      }
-    }
-
-    // 3. Ad badges, duration texts or preview containers with non-empty string content (ignores empty placeholders)
-    const adIndicators = player.querySelectorAll(
-      '.ytp-ad-badge, .ytp-ad-simple-ad-badge, .ytp-ad-duration-remaining, .ytp-ad-preview-text, .ytp-ad-text'
     );
-    for (let i = 0; i < adIndicators.length; i++) {
-      if ((adIndicators[i].textContent || '').trim().length > 0) {
-        return true;
-      }
-    }
-
-    // 4. Non-empty ad module with active rendered ad elements (SSAI indicators)
-    const adModule = player.querySelector('.ytp-ad-module');
-    if (adModule && adModule.childElementCount > 0) {
-      const moduleText = (adModule.innerText || adModule.textContent || '').trim();
-      if (moduleText.length > 0) {
-        return true;
-      }
-      if (adModule.querySelector(SKIP_COMBINED_SELECTOR)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   function handleVideoAds(player) {
@@ -337,50 +302,56 @@
         userMutedState = video.muted;
         userPlaybackRate = video.playbackRate && video.playbackRate <= 2 ? video.playbackRate : 1.0;
         wasAdActive = true;
-        lastSeekedDuration = -1;
+        lastAdSeekTime = 0;
 
         safeReport(
           'YOUTUBE',
           'BLOCKED',
-          'In-stream video ad intercepted (accelerated & muted)',
+          'In-stream video ad intercepted (skipped & muted)',
           {
-            readyState: video.readyState,
             duration: isFinite(video.duration) ? Number(video.duration.toFixed(2)) : 'loading'
           },
           1
         );
       }
 
-      // 1. Mute audio during ad
+      // 1. Mute audio during ad so user hears zero ad noise
       video.muted = true;
 
       // 2. Click skip button as soon as available
       tryClickVisibleSkip();
 
-      // 3. Safely accelerate playback rate to 16x without manipulating currentTime
+      // 3. Jump to end of ad with throttle (terminates ad cleanly and triggers transition)
+      const now = performance.now();
+      if (now - lastAdSeekTime > 250) {
+        lastAdSeekTime = now;
+        if (isFinite(video.duration) && video.duration > 0 && video.currentTime < video.duration) {
+          video.currentTime = video.duration;
+        }
+      }
+
+      // 4. Also set 16x speed as fast-forward fallback
       try {
         if (video.playbackRate !== 16.0) {
           video.playbackRate = 16.0;
         }
       } catch (e) {}
 
-      // 4. Ensure playback continues so the ad completes rapidly and transitions to the main video
+      // 5. Ensure playback continues so the transition happens smoothly
       if (video.paused) {
         video.play().catch(() => {});
       }
-      if (player && typeof player.playVideo === 'function' && video.paused) {
-        try { player.playVideo(); } catch (e) {}
-      }
     } else if (wasAdActive) {
       // Ad finished: restore user audio & normal playback speed immediately
+      wasAdActive = false;
+      lastAdSeekTime = 0;
+
       if (!userMutedState) {
         video.muted = false;
       }
       try {
         video.playbackRate = userPlaybackRate > 0 ? userPlaybackRate : 1.0;
       } catch (e) {}
-      wasAdActive = false;
-      lastSeekedDuration = -1;
 
       // Ensure main video resumes smoothly
       if (video.paused) {
