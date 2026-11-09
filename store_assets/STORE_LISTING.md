@@ -130,12 +130,7 @@ Dit is de kernmotor van de adblocker. Deze permissie stelt de extensie in staat 
 Wordt uitsluitend gebruikt door het ingebouwde lokale Diagnose- en Auditpaneel om de gebruiker real-time inzicht te geven in welke lokale regels zijn getriggerd op het actieve tabblad. Deze data verlaat nooit de browser en wordt nergens naartoe verzonden.
 ```
 
-### 6. Verantwoording voor scripting*
-```text
-Noodzakelijk om lokale cosmetische stylesheets te injecteren die lege advertentievakken verbergen en om scripts uit te voeren die cookiebanners automatisch sluiten op pagina's en in ingesloten iframes.
-```
-
-### 7. Verantwoording voor storage*
+### 6. Verantwoording voor storage*
 ```text
 Wordt uitsluitend gebruikt om gebruikersvoorkeuren lokaal op te slaan via chrome.storage.local, zoals het gekozen thema (Donker/Licht), de aan/uit-status, de aangepaste witte lijst van domeinen en de lokale bedreigingstellers. Geen van deze instellingen wordt gesynchroniseerd of geëxporteerd naar externe servers.
 ```

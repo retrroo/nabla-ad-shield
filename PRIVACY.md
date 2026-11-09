@@ -38,7 +38,6 @@ Shield by Nablai requests only the minimal permissions necessary to perform its 
 * **`declarativeNetRequest`**: Enables native Chromium kernel-level blocking of known advertising scripts, tracking pixels, and analytic domains without CPU overhead.
 * **`declarativeNetRequestFeedback`**: Used strictly by the local Diagnostics Console to display intercepted network rules in real time for transparent user auditing.
 * **Host Permissions (`<all_urls>`)**: Required to apply cosmetic stylesheet filters that collapse ad element containers, automatically reject GDPR/CMP cookie consent overlays, and mitigate video ads across arbitrary websites you visit.
-* **`scripting`**: Required to inject dynamic cosmetic CSS rules and execute cookie consent rejection routines across top-level and iframe frames.
 * **`storage`**: Used exclusively to persist your local preferences (whitelist, theme, counters) on your device.
 
 ---
