@@ -60,17 +60,23 @@
       pointer-events: none !important;
     }
 
-    /* Anti-Adblock Enforcement Modal Neutralizer */
+    /* Anti-Adblock Enforcement Modal & Player-Unavailable Grey Screen Neutralizer */
     tp-yt-iron-overlay-backdrop:has(ytd-enforcement-message-view-model),
     ytd-enforcement-message-view-model,
     tp-yt-paper-dialog:has(ytd-enforcement-message-view-model),
-    .ytd-popup-container:has(ytd-enforcement-message-view-model) {
+    .ytd-popup-container:has(ytd-enforcement-message-view-model),
+    #page-manager:has(#player-error-message-container #subreason a.yt-simple-endpoint[href*="3037019"]) yt-playability-error-supported-renderers#error-screen,
+    .ytdMiniplayerPlayerContainerHost .ytdMiniplayerPlayerContainerPlayabilityError {
       display: none !important;
       visibility: hidden !important;
       opacity: 0 !important;
       pointer-events: none !important;
       height: 0 !important;
       width: 0 !important;
+    }
+
+    #page-manager:has(#player-error-message-container #subreason a.yt-simple-endpoint[href*="3037019"]) ytd-watch-flexy[player-unavailable] :is(#player-container-outer, #cinematics-container, #ytd-player > #container) {
+      visibility: visible !important;
     }
 
     /* 2. Non-interactive In-Stream Ad Banner Cloak */
@@ -318,32 +324,24 @@
         );
       }
 
-      // 1. Mute audio during ad so user hears zero ad noise
+      // 1. Trigger Main-World native player.skipAd() / player.finishAd() immediately
+      try {
+        window.dispatchEvent(new CustomEvent('nabla-terminate-yt-ad'));
+      } catch (e) {}
+
+      // 2. Mute audio during ad so user hears zero ad noise
       if (!video.muted) {
         video.muted = true;
       }
 
-      // 2. Accelerate playback smoothly without touching video.currentTime.
-      // Modifying video.currentTime on locked ad timelines triggers YouTube's anti-seek reset (replay from 0:00).
-      // At 16x speed, a 5s skippable countdown unlocks in 0.31s and a 6s bumper finishes in 0.37s.
-      if (video.readyState >= 1) {
+      // 3. Fallback: jump to end of ad if Main-World skipAd didn't terminate it immediately
+      if (isFinite(video.duration) && video.duration > 0.5 && video.currentTime < video.duration - 0.1) {
         try {
-          if (video.playbackRate !== 16.0) {
-            video.playbackRate = 16.0;
-          }
-        } catch (e) {
-          try {
-            if (video.playbackRate !== 8.0) {
-              video.playbackRate = 8.0;
-            }
-          } catch (e2) {}
-        }
+          video.currentTime = video.duration;
+        } catch (e) {}
       }
 
-      // 3. Click skip button only when YouTube genuinely unlocks it
-      tryClickVisibleSkip(player);
-
-      // 4. Ensure playback continues so the ad runs out / unlocks skip button smoothly
+      // 4. Ensure playback continues
       if (video.paused && video.readyState >= 2) {
         video.play().catch(() => {});
       }
