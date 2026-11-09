@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Shield by Nablai",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "High-performance, zero-overhead ad blocking, stealth video mitigation, and cookie banner auto-rejection.",
   "author": "Nablai",
   "icons": {
@@ -51,6 +51,11 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
+      "exclude_matches": [
+        "*://*.youtube.com/*",
+        "*://*.youtu.be/*",
+        "*://*.googlevideo.com/*"
+      ],
       "js": [
         "scripts/state_client.js",
         "scripts/cosmetic.js",

@@ -13,7 +13,9 @@
         "m.youtube.com",
         "music.youtube.com",
         "tpc.googlesyndication.com",
-        "googlesyndication.com"
+        "googlesyndication.com",
+        "youtu.be",
+        "googlevideo.com"
       ],
       "resourceTypes": [
         "script",
@@ -40,7 +42,9 @@
         "m.youtube.com",
         "music.youtube.com",
         "tpc.googlesyndication.com",
-        "googlesyndication.com"
+        "googlesyndication.com",
+        "youtu.be",
+        "googlevideo.com"
       ],
       "resourceTypes": [
         "script",
@@ -67,7 +71,9 @@
         "m.youtube.com",
         "music.youtube.com",
         "tpc.googlesyndication.com",
-        "googlesyndication.com"
+        "googlesyndication.com",
+        "youtu.be",
+        "googlevideo.com"
       ],
       "resourceTypes": [
         "script",
@@ -96,6 +102,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -115,6 +129,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -134,6 +156,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -153,6 +183,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -172,6 +210,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -191,6 +237,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -210,6 +264,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -229,6 +291,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -248,6 +318,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -267,6 +345,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -286,6 +372,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -305,6 +399,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -324,6 +426,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -343,6 +453,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -362,6 +480,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -381,6 +507,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -400,6 +534,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -419,6 +561,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -438,6 +588,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -457,6 +615,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -476,6 +642,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -495,6 +669,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -514,6 +696,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -533,6 +723,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -552,6 +750,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -571,6 +777,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -590,6 +804,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -609,6 +831,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -628,6 +858,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -647,6 +885,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -666,6 +912,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -685,6 +939,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -704,6 +966,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -723,6 +993,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -742,6 +1020,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -761,6 +1047,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -780,6 +1074,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -799,6 +1101,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -818,6 +1128,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -837,6 +1155,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -856,6 +1182,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -875,6 +1209,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -894,6 +1236,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -913,6 +1263,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -932,6 +1290,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -951,6 +1317,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -970,6 +1344,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -989,6 +1371,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1008,6 +1398,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1027,6 +1425,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1046,6 +1452,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1065,6 +1479,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1084,6 +1506,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1103,6 +1533,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1122,6 +1560,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1141,6 +1587,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1160,6 +1614,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1179,6 +1641,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1198,6 +1668,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1217,6 +1695,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1236,6 +1722,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1255,6 +1749,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1274,6 +1776,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1293,6 +1803,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1312,6 +1830,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1331,6 +1857,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1350,6 +1884,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1369,6 +1911,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1388,6 +1938,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1407,6 +1965,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1426,6 +1992,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1445,6 +2019,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1464,6 +2046,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1481,7 +2071,9 @@
         "m.youtube.com",
         "music.youtube.com",
         "tpc.googlesyndication.com",
-        "googlesyndication.com"
+        "googlesyndication.com",
+        "youtu.be",
+        "googlevideo.com"
       ],
       "resourceTypes": [
         "script",
@@ -1510,6 +2102,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1529,6 +2129,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1548,6 +2156,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1567,6 +2183,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1586,6 +2210,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1605,6 +2237,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1624,6 +2264,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1643,6 +2291,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1662,6 +2318,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1681,6 +2345,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1700,6 +2372,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1719,6 +2399,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1738,6 +2426,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1757,6 +2453,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1776,6 +2480,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1795,6 +2507,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1814,6 +2534,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1833,6 +2561,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1852,6 +2588,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1871,6 +2615,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1890,6 +2642,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1909,6 +2669,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1928,6 +2696,14 @@
         "media",
         "websocket",
         "other"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
       ]
     }
   },
@@ -1974,6 +2750,640 @@
         "image",
         "ping",
         "xmlhttprequest",
+        "other"
+      ]
+    }
+  },
+  {
+    "id": 101,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "requestDomains": [
+        "adcolony.com",
+        "adition.com",
+        "adkernel.com",
+        "adlightning.com",
+        "admarvel.com",
+        "admixer.net",
+        "admeld.com",
+        "admob.com",
+        "adhese.com",
+        "adhigh.net",
+        "adhood.com",
+        "adiver.ru",
+        "adjug.com",
+        "adlantic.nl",
+        "adledge.com",
+        "adloch.com",
+        "admanmedia.com",
+        "admaxim.com",
+        "admedia.com",
+        "admeta.com",
+        "adnet.de",
+        "adocean.pl",
+        "adonnetwork.com",
+        "adotmob.com",
+        "adpepper.com",
+        "adperium.com",
+        "adplugg.com",
+        "adreactor.com",
+        "adrecover.com",
+        "adriver.ru",
+        "adrotate.net",
+        "adsafeprotected.com",
+        "adsame.com",
+        "adscale.de",
+        "adserverplus.com",
+        "adshostnet.com",
+        "adsnative.com",
+        "adsonline.com",
+        "adspeed.net",
+        "adspirit.de",
+        "adsrvr.org",
+        "adstage.io",
+        "adstanding.com",
+        "adstir.com",
+        "adswizz.com",
+        "adsymptotic.com",
+        "adtaily.com",
+        "adtarget.me",
+        "adtegrity.net",
+        "adtelligent.com",
+        "adthrive.com",
+        "adtiger.de",
+        "adtoma.com",
+        "adtrace.org",
+        "adup-tech.com",
+        "advangelists.com",
+        "advelvet.com",
+        "adventori.com",
+        "adverticum.net",
+        "advertlets.com",
+        "advertserve.com",
+        "adview.cn",
+        "advisibility.com",
+        "adxpose.com",
+        "adyoulike.com",
+        "adzerk.net",
+        "airpush.com",
+        "alenty.com",
+        "amobee.com",
+        "aniview.com",
+        "appier.net",
+        "applovin.com",
+        "appodeal.com",
+        "apsalar.com",
+        "atemda.com",
+        "atwola.com",
+        "audience2media.com",
+        "audiencescience.com",
+        "avocet.io",
+        "bannersnack.com",
+        "beachfront.com",
+        "beeswax.com",
+        "betrad.com",
+        "bidr.io",
+        "bidsystem.com",
+        "bidtellect.com",
+        "bluekai.com",
+        "brightroll.com",
+        "burstnet.com",
+        "buysellads.com",
+        "carbonads.com",
+        "carbonads.net",
+        "celtra.com",
+        "channelintelligence.com",
+        "chartbeat.com",
+        "chartboost.com",
+        "choicestream.com",
+        "cityads.com",
+        "clickagy.com",
+        "clickbooth.com",
+        "clickfuse.com",
+        "clickintext.net",
+        "clicktale.net",
+        "clrstm.com",
+        "cognitiv.ai",
+        "collective-media.net",
+        "connatix.com",
+        "connectad.io",
+        "content.ad",
+        "contentabc.com",
+        "contextweb.com",
+        "convergetrack.com",
+        "conversantmedia.com",
+        "cpmstar.com",
+        "crwdcntrl.net",
+        "ctnsnet.com",
+        "cxense.com",
+        "dable.io",
+        "deepintent.com",
+        "demandbase.com",
+        "deployads.com",
+        "dianomi.com",
+        "digitru.st",
+        "directtrack.com",
+        "dotomi.com",
+        "doubleverify.com",
+        "tremorhub.com",
+        "dynamicoxygen.com",
+        "e-planning.net",
+        "ebayadservices.com",
+        "effectivemeasure.net",
+        "emediate.dk",
+        "emxdgt.com",
+        "engageya.com",
+        "ensighten.com",
+        "epom.com",
+        "ero-advertising.com",
+        "ethicalads.io",
+        "everesttech.net",
+        "evidon.com",
+        "exelator.com",
+        "exoclick.com",
+        "exosrv.com",
+        "extremereach.io",
+        "eyeota.net",
+        "eyewonder.com",
+        "fastclick.net",
+        "flashtalking.com",
+        "fmpub.net",
+        "freewheel.tv",
+        "fyber.com",
+        "gemius.pl",
+        "getadmiral.com",
+        "getclicky.com",
+        "getintent.com",
+        "gumgum.com",
+        "heias.com",
+        "histats.com",
+        "hotjar.com",
+        "httpool.com",
+        "hurra.com",
+        "iasds01.com",
+        "ib-ibi.com",
+        "id5-sync.com",
+        "imrworldwide.com",
+        "inmobi.com",
+        "inner-active.mobi",
+        "innovid.com",
+        "inskinmedia.com",
+        "inspectlet.com",
+        "instinctive.io",
+        "intentiq.com",
+        "intergi.com",
+        "interpolls.com",
+        "invitemedia.com",
+        "iponweb.com",
+        "ipredictive.com",
+        "ispot.tv",
+        "juicyads.com",
+        "justpremium.com",
+        "kargo.com",
+        "keywee.co",
+        "kissmetrics.com",
+        "knorex.com",
+        "kochava.com",
+        "krxd.net",
+        "leadbolt.com",
+        "leadforensics.com",
+        "leadlander.com",
+        "levexis.com",
+        "liftoff.io",
+        "ligatus.com",
+        "linkstorm.net",
+        "liveintent.com",
+        "liverail.com",
+        "liveramp.com",
+        "lkqd.net",
+        "localytics.com",
+        "lockerdome.com",
+        "loopme.com",
+        "lotame.com",
+        "fullstory.com",
+        "m6d.com",
+        "madadsmedia.com",
+        "maddict.net",
+        "marchex.com",
+        "marketo.net",
+        "mathtag.com",
+        "maxpoint.com",
+        "media6degrees.com",
+        "mediabong.com",
+        "mediaforge.com",
+        "mediamath.com",
+        "mediaplex.com",
+        "mediavine.com",
+        "megacash.de",
+        "metrigo.com",
+        "mixpanel.com",
+        "mookie1.com",
+        "mouseflow.com",
+        "myads.com",
+        "mypagerank.net",
+        "mythings.com",
+        "nanigans.com",
+        "nativeads.com",
+        "nativo.com",
+        "navegg.com",
+        "neodatagroup.com",
+        "netmng.com",
+        "netseer.com",
+        "nexac.com",
+        "nexage.com",
+        "nextmillennium.io",
+        "nrich.ai",
+        "nuggad.net",
+        "ogury.com",
+        "omnitagjs.com",
+        "onaudience.com",
+        "onecount.net",
+        "onesignal.com",
+        "onetag-sys.com",
+        "onscroll.com",
+        "openadstream.com",
+        "optimatic.com",
+        "optimizely.com",
+        "optmd.com",
+        "optout.network",
+        "oribi.io",
+        "otto-ads.de",
+        "owneriq.net",
+        "pagefair.com",
+        "pagefair.net",
+        "pardot.com",
+        "parsely.com",
+        "perfectmarket.com",
+        "permutive.com",
+        "pippio.com",
+        "pixfuture.com",
+        "placed.com",
+        "plista.com",
+        "playground.xyz",
+        "plugrush.com",
+        "pocketmath.com",
+        "pointroll.com",
+        "polar.me",
+        "polarmobile.com",
+        "polyad.net",
+        "postrelease.com",
+        "powerlinks.com",
+        "predicta.net",
+        "pressboard.ca",
+        "primis.tech",
+        "pro-market.net",
+        "projectwonderful.com",
+        "provenpixel.com",
+        "proxistore.com",
+        "pswec.com",
+        "pubgears.com",
+        "pubguru.com",
+        "pubmine.com",
+        "pubnation.com",
+        "pubnative.net",
+        "pulsepoint.com",
+        "pushcrew.com",
+        "pushengage.com",
+        "pushnami.com",
+        "pushowl.com",
+        "pushwoosh.com",
+        "quantcast.com",
+        "qubit.com",
+        "quisma.com",
+        "radiumone.com",
+        "rayjump.com",
+        "reachlocal.com",
+        "realmedia.com",
+        "realvu.net",
+        "redintelligence.net",
+        "redmas.com",
+        "reduxmedia.com",
+        "relap.io",
+        "relevant-digital.com",
+        "remerge.io",
+        "resonate.com",
+        "revjet.com",
+        "revlift.io",
+        "revsci.net",
+        "rhythmone.com",
+        "richmedia.com",
+        "richrelevance.com",
+        "rightmedia.com",
+        "rlcdn.com",
+        "rmtag.com",
+        "rockabox.com",
+        "rocketfuel.com",
+        "roi-rocket.net",
+        "roq.ad",
+        "rtbhouse.com",
+        "rtbiq.com",
+        "rtbmarkt.com",
+        "rtbsystem.com",
+        "rtk.io",
+        "runads.com",
+        "rundsp.com",
+        "rvty.net",
+        "s4m.io",
+        "sabio.us",
+        "sail-horizon.com",
+        "samba.tv",
+        "scanscout.com",
+        "scoota.com",
+        "script.ac",
+        "searchforce.net",
+        "searchignite.com",
+        "securepaths.com",
+        "seedtag.com",
+        "segment.io",
+        "selectmedia.asia",
+        "sellpoints.com",
+        "semasio.net",
+        "serving-sys.com",
+        "servingsys.com",
+        "shareaholic.com",
+        "sharethis.com",
+        "simpli.fi",
+        "singular.net",
+        "sitescout.com",
+        "skimresources.com",
+        "smaato.net",
+        "smartclip.net",
+        "smartology.net",
+        "smartstream.tv",
+        "snapads.com",
+        "snigelweb.com",
+        "sociomantic.com",
+        "sojern.com",
+        "sonobi.com",
+        "sortable.com",
+        "specificmedia.com",
+        "spongecell.com",
+        "spot.im",
+        "spotx.tv",
+        "spotxchange.com",
+        "springserve.com",
+        "sprout-ad.com",
+        "stackadapt.com",
+        "startapp.com",
+        "statcounter.com",
+        "steelhousemedia.com",
+        "stickyadstv.com",
+        "streamrail.com",
+        "strikead.com",
+        "stroeerdigitalgroup.de",
+        "sublime.xyz",
+        "sublimemedia.net",
+        "sumo.com",
+        "sunnyads.com",
+        "superadbox.com",
+        "supersonicads.com",
+        "switchadhub.com",
+        "switchconcepts.com",
+        "swoop.com",
+        "synacor.com",
+        "tabmo.io",
+        "tailtarget.com",
+        "tapad.com",
+        "tapfiliate.com",
+        "tapjoy.com",
+        "tappx.com",
+        "tapstream.com",
+        "targetspot.com",
+        "tealiumiq.com",
+        "telaria.com",
+        "teliad.de",
+        "tellapart.com",
+        "textad.net",
+        "thebrighttag.com",
+        "themoneytizer.com",
+        "thetradedesk.com",
+        "tidaltv.com",
+        "tiqcdn.com",
+        "tlvmedia.com",
+        "tnkfactory.com",
+        "toplist.cz",
+        "touchcommerce.com",
+        "trackad.cz",
+        "trackcmp.net",
+        "tradedoubler.com",
+        "tradelab.fr",
+        "tradetracker.net",
+        "trafficfactory.biz",
+        "trafficforce.com",
+        "traffichaus.com",
+        "trafficmarketplace.com",
+        "trafficshop.com",
+        "trafficstars.com",
+        "trakken.de",
+        "tremorvideo.com",
+        "trgt.io",
+        "triblio.com",
+        "triptease.io",
+        "trueffect.com",
+        "truffle.bid",
+        "trustpid.com",
+        "trustx.org",
+        "tubemogul.com",
+        "turn.com",
+        "twenga.com",
+        "tynt.com",
+        "uberads.com",
+        "ubimo.com",
+        "ucfunnel.com",
+        "undertone.com",
+        "unruly.co",
+        "unrulymedia.com",
+        "upsight-api.com",
+        "urbanairship.com",
+        "useinsider.com",
+        "usekahuna.com",
+        "userreport.com",
+        "vcommission.com",
+        "vdopia.com",
+        "veinteractive.com",
+        "velti.com",
+        "verizonmedia.com",
+        "vertoz.com",
+        "vi.ai",
+        "viantinc.com",
+        "vibrantmedia.com",
+        "videoamp.com",
+        "videohub.tv",
+        "videologygroup.com",
+        "videonow.ru",
+        "videoplaza.tv",
+        "vidible.tv",
+        "vidora.com",
+        "vidoomy.com",
+        "viewbix.com",
+        "viglink.com",
+        "vindicosuite.com",
+        "viralgains.com",
+        "viralize.tv",
+        "visx.net",
+        "visualdna.com",
+        "visualwebsiteoptimizer.com",
+        "vivaki.com",
+        "vizury.com",
+        "vlym.com",
+        "vmfive.com",
+        "voicefive.com",
+        "vpon.com",
+        "vrtcal.com",
+        "vserv.mobi",
+        "vungle.com",
+        "w55c.net",
+        "wahoha.com",
+        "webads.eu",
+        "weborama.fr",
+        "webspectator.com",
+        "webtrends.com",
+        "widespace.com",
+        "wigetmedia.com",
+        "wizaly.com",
+        "woopra.com",
+        "wtp101.com",
+        "xaxis.com",
+        "xiti.com",
+        "xplosion.de",
+        "xplusone.com",
+        "xtendmedia.com",
+        "yabidos.com",
+        "yashi.com",
+        "ydworld.com",
+        "yieldbot.com",
+        "yieldify.com",
+        "yieldkit.com",
+        "yieldlab.net",
+        "yieldmanager.com",
+        "yieldmanager.net",
+        "yieldoptimizer.com",
+        "yieldpartners.com",
+        "yieldr.com",
+        "yieldselect.com",
+        "ylx-1.com",
+        "yoc.com",
+        "yomedia.vn",
+        "youappi.com",
+        "yumenetworks.com",
+        "zdbb.net",
+        "zedo.com",
+        "zeotap.com",
+        "zog.link",
+        "zoomd.com",
+        "zucks.net",
+        "zumobi.com"
+      ],
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "sub_frame",
+        "image",
+        "media",
+        "websocket",
+        "other"
+      ]
+    }
+  },
+  {
+    "id": 102,
+    "priority": 2,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/gampad/ads?",
+      "domainType": "thirdParty",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "sub_frame",
+        "other"
+      ]
+    }
+  },
+  {
+    "id": 103,
+    "priority": 2,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/pagead/js/adsbygoogle.js",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
+      "resourceTypes": [
+        "script"
+      ]
+    }
+  },
+  {
+    "id": 104,
+    "priority": 2,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "||securepubads.g.doubleclick.net/tag/js/gpt.js",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
+      "resourceTypes": [
+        "script"
+      ]
+    }
+  },
+  {
+    "id": 9003,
+    "priority": 100,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "initiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com"
+      ],
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "sub_frame",
+        "image",
+        "media",
+        "ping",
+        "websocket",
         "other"
       ]
     }

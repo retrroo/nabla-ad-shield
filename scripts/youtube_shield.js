@@ -82,17 +82,14 @@
       pointer-events: none !important;
     }
 
-    /* 3. Keep interactive skip buttons visible, unobstructed and immediately clickable */
-    .ytp-ad-skip-button,
-    .ytp-ad-skip-button-modern,
-    .ytp-skip-ad-button,
-    .ytp-ad-skip-button-container,
-    .ytp-ad-skip-button-slot {
-      pointer-events: auto !important;
-      opacity: 1 !important;
-      visibility: visible !important;
-      display: block !important;
-      z-index: 99999 !important;
+    /* 3. Visual Ad Stream Cloak: hides fast-forwarding ad frames without breaking DOM layout or offsetParent */
+    .html5-video-player.ad-showing video.html5-main-video,
+    .html5-video-player.ad-interrupting video.html5-main-video,
+    .html5-video-player.ad-showing .ytp-ad-player-overlay-layout,
+    .html5-video-player.ad-interrupting .ytp-ad-player-overlay-layout,
+    .html5-video-player.ad-showing .ytp-ad-player-overlay,
+    .html5-video-player.ad-interrupting .ytp-ad-player-overlay {
+      opacity: 0 !important;
     }
   `;
 
@@ -224,7 +221,6 @@
   let userMutedState = false;
   let userPlaybackRate = 1.0;
   let lastSkipClickTime = 0;
-  let lastAdSeekTime = 0;
   let observedPlayer = null;
   let observedAdModule = null;
   let classObserver = null;
@@ -232,42 +228,50 @@
   let boundVideo = null;
   let boundMediaListener = null;
 
-  const MEDIA_EVENTS = ['play', 'playing', 'loadedmetadata', 'durationchange', 'ended'];
+  const MEDIA_EVENTS = ['play', 'playing', 'timeupdate', 'loadedmetadata', 'durationchange', 'ended'];
 
-  const SKIP_COMBINED_SELECTOR =
+  const SKIP_BUTTON_SELECTOR =
+    'button.ytp-ad-skip-button,' +
+    'button.ytp-ad-skip-button-modern,' +
+    'button.ytp-skip-ad-button,' +
     '.ytp-ad-skip-button,' +
     '.ytp-ad-skip-button-modern,' +
-    '.ytp-ad-SkipButton,' +
     '.ytp-skip-ad-button,' +
-    'button.ytp-ad-skip-button-modern,' +
     '.ytp-ad-skip-button-container button,' +
-    '.ytp-ad-skip-button-slot button,' +
-    '[class*="skip-button"],' +
-    'button[class*="ytp-skip"]';
+    '.ytp-ad-skip-button-slot button';
 
-  function isElementGenuinelyVisible(el) {
-    if (!el || el.offsetParent === null) return false;
-    const rect = el.getBoundingClientRect();
-    return rect.width > 2 && rect.height > 2;
+  function isSkipButtonReady(btn, player) {
+    if (!btn || btn.disabled) return false;
+    let el = btn;
+    while (el && el !== player && el !== document.body) {
+      if (el.hidden || el.getAttribute('aria-hidden') === 'true') return false;
+      if (el.style && el.style.display === 'none') return false;
+      const cs = window.getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return false;
+      el = el.parentElement;
+    }
+    const rect = btn.getBoundingClientRect();
+    return rect.width > 4 && rect.height > 4;
   }
 
-  function tryClickVisibleSkip() {
+  function tryClickVisibleSkip(player) {
     const now = performance.now();
-    if (now - lastSkipClickTime < 150) return;
+    if (now - lastSkipClickTime < 200) return;
 
-    const buttons = document.querySelectorAll(SKIP_COMBINED_SELECTOR);
+    const root = player || document;
+    const buttons = root.querySelectorAll(SKIP_BUTTON_SELECTOR);
     for (let i = 0; i < buttons.length; i++) {
       const btn = buttons[i];
-      if (typeof btn.click === 'function') {
+      if (typeof btn.click === 'function' && isSkipButtonReady(btn, player)) {
         lastSkipClickTime = now;
         try { btn.click(); } catch (e) {}
-        safeReport('YOUTUBE', 'BLOCKED', `Clicked skip button (${btn.className || btn.tagName})`, {}, 0);
+        safeReport('YOUTUBE', 'BLOCKED', `Clicked unlocked skip button (${btn.className || btn.tagName})`, {}, 0);
         break;
       }
     }
 
-    const overlayClose = document.querySelector('.ytp-ad-overlay-close-button');
-    if (overlayClose && typeof overlayClose.click === 'function') {
+    const overlayClose = root.querySelector('.ytp-ad-overlay-close-button');
+    if (overlayClose && typeof overlayClose.click === 'function' && isSkipButtonReady(overlayClose, player)) {
       lastSkipClickTime = now;
       try { overlayClose.click(); } catch (e) {}
       safeReport('YOUTUBE', 'BLOCKED', 'Closed video overlay banner ad', {}, 0);
@@ -302,12 +306,11 @@
         userMutedState = video.muted;
         userPlaybackRate = video.playbackRate && video.playbackRate <= 2 ? video.playbackRate : 1.0;
         wasAdActive = true;
-        lastAdSeekTime = 0;
 
         safeReport(
           'YOUTUBE',
           'BLOCKED',
-          'In-stream video ad intercepted (skipped & muted)',
+          'In-stream video ad intercepted (cloaked, muted & accelerated)',
           {
             duration: isFinite(video.duration) ? Number(video.duration.toFixed(2)) : 'loading'
           },
@@ -316,41 +319,43 @@
       }
 
       // 1. Mute audio during ad so user hears zero ad noise
-      video.muted = true;
+      if (!video.muted) {
+        video.muted = true;
+      }
 
-      // 2. Click skip button as soon as available
-      tryClickVisibleSkip();
-
-      // 3. Jump to end of ad with throttle (terminates ad cleanly and triggers transition)
-      const now = performance.now();
-      if (now - lastAdSeekTime > 250) {
-        lastAdSeekTime = now;
-        if (isFinite(video.duration) && video.duration > 0 && video.currentTime < video.duration) {
-          video.currentTime = video.duration;
+      // 2. Accelerate playback smoothly without touching video.currentTime.
+      // Modifying video.currentTime on locked ad timelines triggers YouTube's anti-seek reset (replay from 0:00).
+      // At 16x speed, a 5s skippable countdown unlocks in 0.31s and a 6s bumper finishes in 0.37s.
+      if (video.readyState >= 1) {
+        try {
+          if (video.playbackRate !== 16.0) {
+            video.playbackRate = 16.0;
+          }
+        } catch (e) {
+          try {
+            if (video.playbackRate !== 8.0) {
+              video.playbackRate = 8.0;
+            }
+          } catch (e2) {}
         }
       }
 
-      // 4. Also set 16x speed as fast-forward fallback
-      try {
-        if (video.playbackRate !== 16.0) {
-          video.playbackRate = 16.0;
-        }
-      } catch (e) {}
+      // 3. Click skip button only when YouTube genuinely unlocks it
+      tryClickVisibleSkip(player);
 
-      // 5. Ensure playback continues so the transition happens smoothly
-      if (video.paused) {
+      // 4. Ensure playback continues so the ad runs out / unlocks skip button smoothly
+      if (video.paused && video.readyState >= 2) {
         video.play().catch(() => {});
       }
     } else if (wasAdActive) {
       // Ad finished: restore user audio & normal playback speed immediately
       wasAdActive = false;
-      lastAdSeekTime = 0;
 
       if (!userMutedState) {
         video.muted = false;
       }
       try {
-        video.playbackRate = userPlaybackRate > 0 ? userPlaybackRate : 1.0;
+        video.playbackRate = userPlaybackRate > 0 && userPlaybackRate <= 2 ? userPlaybackRate : 1.0;
       } catch (e) {}
 
       // Ensure main video resumes smoothly

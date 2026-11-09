@@ -10,8 +10,29 @@
 (async function initHeuristicClassifier() {
   'use strict';
 
-  // YouTube DOM is handled exclusively by youtube_shield.js
-  if (window.location.hostname.includes('youtube.com')) {
+  // YouTube DOM (including about:blank subframes inside YouTube) is handled exclusively by youtube_shield.js
+  function isYouTubeOrSafeFrameContext() {
+    const host = window.location.hostname || '';
+    if (
+      /youtube\.com|youtu\.be|googlevideo\.com|vimeo\.com|twitch\.tv|recaptcha\.net|gstatic\.com|hcaptcha\.com|challenges\.cloudflare\.com|stripe\.com|paypal\.com|accounts\.google\.com/i.test(
+        host
+      )
+    ) {
+      return true;
+    }
+    if (document.referrer && /youtube\.com|youtu\.be/i.test(document.referrer)) {
+      return true;
+    }
+    const ancestors = window.location.ancestorOrigins;
+    if (ancestors && ancestors.length > 0) {
+      for (let i = 0; i < ancestors.length; i++) {
+        if (/youtube\.com|youtu\.be/i.test(ancestors[i])) return true;
+      }
+    }
+    return false;
+  }
+
+  if (isYouTubeOrSafeFrameContext()) {
     return;
   }
 
@@ -138,16 +159,16 @@
       features.push('Ad Vendor Attributes');
     }
 
-    // Inside an ad subframe, the frame itself carries the ad URL & entropy (+0.40)
+    // Inside an ad subframe, check if the frame URL explicitly matches known ad patterns (+0.40)
     if (isInsideIframe) {
       const currentUrl = window.location.href;
-      if (AD_URL_REGEX.test(currentUrl) || window.location.search.length > 50) {
+      if (AD_URL_REGEX.test(currentUrl)) {
         score += 0.40;
         features.push('Inside Ad Subframe');
       }
     }
 
-    // Feature 2 (cheap attribute check): Cross-Origin Ad URL & Query Entropy (+0.35)
+    // Feature 2 (cheap attribute check): Cross-Origin Ad URL (+0.35)
     let src = '';
     if (el.tagName === 'IFRAME') {
       src = el.getAttribute('src') || el.getAttribute('data-src') || '';
@@ -162,7 +183,7 @@
       try {
         const parsed = new URL(src, window.location.href);
         const frameHost = parsed.hostname.replace(/^www\./i, '').toLowerCase();
-        if (frameHost && frameHost !== currentHost && (AD_URL_REGEX.test(src) || parsed.search.length > 70)) {
+        if (frameHost && frameHost !== currentHost && AD_URL_REGEX.test(src)) {
           score += 0.35;
           features.push('Cross-Origin Ad URL');
         }

@@ -7,8 +7,25 @@
 (async function initCosmeticFilter() {
   'use strict';
 
-  // YouTube DOM is handled exclusively by youtube_shield.js
-  if (window.location.hostname.includes('youtube.com')) {
+  // YouTube DOM (including about:blank subframes inside YouTube) is handled exclusively by youtube_shield.js
+  function isYouTubeContext() {
+    const host = window.location.hostname || '';
+    if (host.includes('youtube.com') || host.includes('youtu.be') || host.includes('googlevideo.com')) {
+      return true;
+    }
+    if (document.referrer && /youtube\.com|youtu\.be/i.test(document.referrer)) {
+      return true;
+    }
+    const ancestors = window.location.ancestorOrigins;
+    if (ancestors && ancestors.length > 0) {
+      for (let i = 0; i < ancestors.length; i++) {
+        if (/youtube\.com|youtu\.be/i.test(ancestors[i])) return true;
+      }
+    }
+    return false;
+  }
+
+  if (isYouTubeContext()) {
     return;
   }
 
@@ -16,14 +33,17 @@
 
   const COSMETIC_CSS = `
     ins.adsbygoogle,
+    amp-ad,
+    amp-embed,
+    amp-sticky-ad,
     [id^="div-gpt-ad"],
     [id^="google_ads_iframe"],
+    [id^="google_ads_frame"],
     [id*="google_ads"],
     [id*="google-ad"],
     [class*="google_ads"],
     [id^="ad-unit"],
     [id^="dfp-ad"],
-    [id^="div-gpt-ad"],
     [id*="ad-banner"],
     .ad-container,
     .ad-wrapper,
@@ -50,18 +70,24 @@
     [data-ad-region],
     [data-adzone],
     [data-google-query-id],
-    ins.adsbygoogle,
+    div[aria-label="Advertisement"],
+    div[data-testid="ad-slot"],
     iframe[src*="doubleclick.net"],
     iframe[src*="googlesyndication.com"],
     iframe[src*="adnxs.com"],
     iframe[src*="criteo.com"],
     iframe[src*="amazon-adsystem.com"],
+    iframe[src*="rubiconproject.com"],
+    iframe[src*="pubmatic.com"],
     .trc_rbox_div,
     .trc_related_container,
     .ob-widget,
     .outbrain-placeholder,
     .taboola-placeholder,
     .OUTBRAIN,
+    [id*="taboola-"],
+    [class*="taboola-"],
+    [class*="outbrain-"],
     #taboola-below-article-thumbnails,
     #rc-widget-install {
       display: none !important;
