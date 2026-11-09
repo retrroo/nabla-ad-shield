@@ -32,6 +32,28 @@
 
   if (isShieldDisabled()) return;
 
+  // 0. Clean stale anti-adblock flags and repair muted state left by previous extension versions
+  try {
+    sessionStorage.removeItem('yt-player-ad-block');
+    sessionStorage.removeItem('yt-remote-session-app');
+  } catch (e) {}
+  function clearPersistentMute() {
+    try {
+      const volStr = localStorage.getItem('yt-player-volume');
+      if (volStr && volStr.includes('"muted":true')) {
+        localStorage.setItem('yt-player-volume', volStr.replace('"muted":true', '"muted":false'));
+      }
+    } catch (e) {}
+    try {
+      const sessVol = sessionStorage.getItem('yt-player-volume');
+      if (sessVol && sessVol.includes('"muted":true')) {
+        sessionStorage.setItem('yt-player-volume', sessVol.replace('"muted":true', '"muted":false'));
+      }
+    } catch (e) {}
+  }
+  clearPersistentMute();
+  document.addEventListener('yt-navigate-start', clearPersistentMute, { passive: true });
+
   let lastLogTime = 0;
   function emitMainLog(message, details = {}) {
     const now = performance.now();
@@ -89,14 +111,11 @@
     const nextChunkProxyHandler = {
       apply(target, thisArg, args) {
         const chunk = args[0];
-        if (typeof chunk?.value === 'string' && (chunk.value.includes('playerResponse') || chunk.value.includes('adPlacements') || chunk.value.includes('adSlots'))) {
+        if (typeof chunk?.value === 'string' && (chunk.value.includes('playerResponse') || chunk.value.includes('adPlacements') || chunk.value.includes('adSlots') || chunk.value.includes('muteOnStart'))) {
           try {
             let str = chunk.value;
-            if (
-              (location.href.includes('/watch') || (str.includes('cards') && !str.includes('"miniplayer"'))) &&
-              str.includes('"muteOnStart":true')
-            ) {
-              str = str.replace('"muteOnStart":true', '"muteOnStart":false');
+            if (str.includes('"muteOnStart":true')) {
+              str = str.replace(/"muteOnStart":\s*true/g, '"muteOnStart":false');
               if (str.includes('"youThereRenderer":')) {
                 str = str.replace('"youThereRenderer":', '"no_youThereRenderer":');
               }
@@ -124,14 +143,14 @@
               delete res.playerAds;
               emitMainLog('Blocked YouTube ad payload in JSPB constructor', { source: 'jspbResponseCtor' });
             }
-            if (
-              res.playerConfig?.audioConfig?.muteOnStart &&
-              (location.href.includes('/watch') || (res.cards && !res.playabilityStatus?.miniplayer))
-            ) {
+            if (res.playerConfig?.audioConfig?.muteOnStart) {
               delete res.playerConfig.audioConfig.muteOnStart;
               if (res.messages?.[0]?.youThereRenderer) {
                 delete res.messages[0].youThereRenderer;
               }
+            }
+            if (res.audioConfig?.muteOnStart) {
+              delete res.audioConfig.muteOnStart;
             }
           } catch (e) {}
         }
@@ -170,14 +189,20 @@
 
   // 4. Intercept Response.prototype.text & Response.prototype.json to strip adPlacements / adSlots / playerAds
   function stripAdKeysFromString(str) {
+    if (typeof str !== 'string') return str;
+    let modified = str;
     if (
-      typeof str === 'string' &&
-      (str.includes('"adPlacements"') || str.includes('"adSlots"') || str.includes('"playerAds"'))
+      modified.includes('"adPlacements"') ||
+      modified.includes('"adSlots"') ||
+      modified.includes('"playerAds"')
     ) {
       emitMainLog('Blocked YouTube ad payload in network response', { source: 'fetch-text' });
-      return str.replace(/"(adPlacements|adSlots|playerAds)"/g, '"no_ads"');
+      modified = modified.replace(/"(adPlacements|adSlots|playerAds)"/g, '"no_ads"');
     }
-    return str;
+    if (modified.includes('"muteOnStart":true') || modified.includes('"muteOnStart": true')) {
+      modified = modified.replace(/"muteOnStart":\s*true/g, '"muteOnStart":false');
+    }
+    return modified;
   }
 
   function pruneAdObject(obj) {
@@ -188,6 +213,12 @@
         if ('adPlacements' in obj) { delete obj.adPlacements; pruned = true; }
         if ('adSlots' in obj) { delete obj.adSlots; pruned = true; }
         if ('playerAds' in obj) { delete obj.playerAds; pruned = true; }
+      }
+      if (obj.playerConfig?.audioConfig?.muteOnStart) {
+        delete obj.playerConfig.audioConfig.muteOnStart;
+      }
+      if (obj.audioConfig?.muteOnStart) {
+        delete obj.audioConfig.muteOnStart;
       }
       if (obj.playerResponse && typeof obj.playerResponse === 'object') {
         pruneAdObject(obj.playerResponse);
@@ -441,15 +472,14 @@
               setStrategy(idx < 0 ? S_NONE : STRATEGIES[idx + 1] ?? S_NONE);
               return parsed;
             }
-            if (
-              currentStrategy === S_PARAM1 &&
-              parsed.playerConfig?.audioConfig?.muteOnStart &&
-              (location.href.includes('/watch') || (parsed.cards && !parsed.playabilityStatus?.miniplayer))
-            ) {
+            if (parsed.playerConfig?.audioConfig?.muteOnStart) {
               delete parsed.playerConfig.audioConfig.muteOnStart;
               if (parsed.messages?.[0]?.youThereRenderer) {
                 delete parsed.messages[0].youThereRenderer;
               }
+            }
+            if (parsed.audioConfig?.muteOnStart) {
+              delete parsed.audioConfig.muteOnStart;
             }
             if (currentStrategy === S_ADTYPE && parsed.playerConfig?.granularVariableSpeedConfig) {
               parsed.playerConfig.granularVariableSpeedConfig.maximumPlaybackRate = 200;

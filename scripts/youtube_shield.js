@@ -224,7 +224,6 @@
 
   // 4. MSE-Safe Video Ad Fast-Forwarder & Visible-Only Skipper
   let wasAdActive = false;
-  let userMutedState = false;
   let userPlaybackRate = 1.0;
   let lastSkipClickTime = 0;
   let observedPlayer = null;
@@ -309,14 +308,13 @@
 
     if (isAdShowing) {
       if (!wasAdActive) {
-        userMutedState = video.muted;
         userPlaybackRate = video.playbackRate && video.playbackRate <= 2 ? video.playbackRate : 1.0;
         wasAdActive = true;
 
         safeReport(
           'YOUTUBE',
           'BLOCKED',
-          'In-stream video ad intercepted (cloaked, muted & accelerated)',
+          'In-stream video ad intercepted (cloaked & accelerated)',
           {
             duration: isFinite(video.duration) ? Number(video.duration.toFixed(2)) : 'loading'
           },
@@ -329,27 +327,23 @@
         window.dispatchEvent(new CustomEvent('nabla-terminate-yt-ad'));
       } catch (e) {}
 
-      // 2. Mute audio during ad so user hears zero ad noise
-      if (!video.muted) {
-        video.muted = true;
-      }
-
-      // 3. Fallback: jump to end of ad if Main-World skipAd didn't terminate it immediately
+      // 2. Fallback: jump to end of ad if Main-World skipAd didn't terminate it immediately
       if (isFinite(video.duration) && video.duration > 0.5 && video.currentTime < video.duration - 0.1) {
         try {
           video.currentTime = video.duration;
         } catch (e) {}
       }
 
-      // 4. Ensure playback continues
+      // 3. Ensure playback continues
       if (video.paused && video.readyState >= 2) {
         video.play().catch(() => {});
       }
     } else if (wasAdActive) {
-      // Ad finished: restore user audio & normal playback speed immediately
+      // Ad finished: restore normal playback speed immediately
       wasAdActive = false;
 
-      if (!userMutedState) {
+      // If video was left muted by any prior ad state, ensure audio is restored
+      if (video.muted) {
         video.muted = false;
       }
       try {
@@ -406,6 +400,9 @@
     if (video && boundVideo !== video) {
       unbindCurrentVideo();
       boundVideo = video;
+      if (video.muted && !checkIsAdActive(player)) {
+        video.muted = false;
+      }
       boundMediaListener = () => {
         if (wasAdActive || checkIsAdActive(player)) {
           handleVideoAds(player);
@@ -521,6 +518,10 @@
     if (shieldDisposed) return;
     wasAdActive = false;
     unbindCurrentVideo();
+    const video = document.querySelector('video.html5-main-video') || document.querySelector('video');
+    if (video && video.muted) {
+      video.muted = false;
+    }
   }
 
   window.addEventListener('nabla-context-invalidated', disposeOrphanedShield, { once: true });
