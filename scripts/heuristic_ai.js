@@ -81,6 +81,8 @@
   const evaluatedNodes = new WeakSet();
 
   const PROTECTED_TAGS = new Set([
+    'HTML',
+    'BODY',
     'NAV',
     'HEADER',
     'FOOTER',
@@ -88,14 +90,32 @@
     'ARTICLE',
     'FORM',
     'VIDEO',
-    'SECTION'
+    'SECTION',
+    'DIALOG'
+  ]);
+
+  const PROTECTED_ROOT_IDS = new Set([
+    'root',
+    'app',
+    '__next',
+    '__nuxt',
+    'react-root',
+    'gatsby-focus-wrapper',
+    'main',
+    'page',
+    'wrapper'
   ]);
 
   /**
-   * Fast structural guard to protect navigation and editorial content without layout reflow.
+   * Fast structural guard to protect navigation, dialogs/popups, and editorial content without layout reflow.
    * Elements with obvious ad attributes or ad server iframes are explicitly excluded from being core content.
    */
   function isCoreContent(el) {
+    if (!el || el === document.body || el === document.documentElement) return true;
+
+    const idLower = (el.id || '').toLowerCase();
+    if (idLower && PROTECTED_ROOT_IDS.has(idLower)) return true;
+
     const classStr = typeof el.className === 'string' ? el.className : '';
     if (
       el.hasAttribute('data-google-query-id') ||
@@ -115,15 +135,30 @@
 
     if (PROTECTED_TAGS.has(el.tagName)) return true;
 
+    // Never collapse legitimate modals, cookie settings dialogs, login/checkout popups
+    const role = el.getAttribute('role');
+    if (role === 'dialog' || role === 'alertdialog' || el.getAttribute('aria-modal') === 'true') {
+      return true;
+    }
+
     // Large layout wrappers with many child blocks are never standalone ad units
     if (el.children.length > 25) return true;
+
+    // Never collapse containers wrapping main landmarks, forms, or SPA roots
+    if (el.querySelector('main, article, nav, header, form, #react-root, #__next, #app, #root')) {
+      return true;
+    }
 
     const rawText = el.textContent || '';
     if (rawText.length > 450) {
       if (el.getElementsByTagName('p').length >= 3) return true;
     }
 
-    if (el.closest('nav, header, [role="navigation"], [role="main"]')) {
+    if (
+      el.closest(
+        'nav, header, [role="navigation"], [role="main"], [role="dialog"], [role="alertdialog"], [aria-modal="true"], dialog'
+      )
+    ) {
       return true;
     }
 
@@ -153,7 +188,7 @@
       el.hasAttribute('data-ad-client') ||
       el.hasAttribute('data-dmp-id') ||
       classStr.includes('google-auto-placed') ||
-      /google_ads_iframe|dfp-ad|gpt-ad|ad-slot|ad-unit|ad-container/i.test(idStr)
+      /(?:^|[-_])(google_ads_iframe|dfp-ad|gpt-ad|ad-slot|ad-unit|ad-container)(?:$|[-_0-9])/i.test(idStr)
     ) {
       score += 0.30;
       features.push('Ad Vendor Attributes');
@@ -211,6 +246,16 @@
     const rect = el.getBoundingClientRect();
     const width = Math.round(rect.width);
     const height = Math.round(rect.height);
+
+    // Never collapse near-fullscreen page containers
+    if (
+      el.tagName !== 'IFRAME' &&
+      width >= window.innerWidth * 0.75 &&
+      height >= window.innerHeight * 0.75
+    ) {
+      evaluatedNodes.add(el);
+      return null;
+    }
 
     if (width > 0 && height > 0) {
       for (let i = 0; i < IAB_DIMENSIONS.length; i++) {
