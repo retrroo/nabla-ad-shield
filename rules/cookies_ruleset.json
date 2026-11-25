@@ -2,31 +2,46 @@
   {
     "id": 1001,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "||events.usercentrics.eu^",
       "domainType": "thirdParty",
-      "resourceTypes": ["ping", "image"]
+      "resourceTypes": [
+        "ping",
+        "image"
+      ]
     }
   },
   {
     "id": 1002,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "||api.didomi.io/events",
       "domainType": "thirdParty",
-      "resourceTypes": ["ping", "image"]
+      "resourceTypes": [
+        "ping",
+        "image"
+      ]
     }
   },
   {
     "id": 1003,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "||consent-log.iubenda.com^",
       "domainType": "thirdParty",
-      "resourceTypes": ["ping", "image"]
+      "resourceTypes": [
+        "ping",
+        "image"
+      ]
     }
   }
 ]

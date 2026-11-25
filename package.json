@@ -1,0 +1,14 @@
+{
+  "name": "shield-by-nablai",
+  "version": "1.0.24",
+  "private": true,
+  "description": "Shield by Nablai — MV3 Ad Blocker, Stealth YouTube Shield & Safe Cookie Auto-Rejecter",
+  "scripts": {
+    "compile-rules": "node tools/compile-rules.js",
+    "sync-rules": "node tools/compile-rules.js --sync",
+    "check-rules": "node tools/compile-rules.js --check",
+    "test": "node tests/run-tests.js",
+    "preflight": "node tools/compile-rules.js --check && node tools/package-release.js --check-only",
+    "package": "node tools/compile-rules.js && node tools/package-release.js"
+  }
+}

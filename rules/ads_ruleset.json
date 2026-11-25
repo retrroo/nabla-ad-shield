@@ -8,12 +8,12 @@
     "condition": {
       "urlFilter": "||doubleclick.net^",
       "excludedInitiatorDomains": [
+        "tpc.googlesyndication.com",
+        "googlesyndication.com",
         "youtube.com",
         "www.youtube.com",
         "m.youtube.com",
         "music.youtube.com",
-        "tpc.googlesyndication.com",
-        "googlesyndication.com",
         "youtu.be",
         "googlevideo.com"
       ],
@@ -37,12 +37,12 @@
     "condition": {
       "urlFilter": "||googlesyndication.com^",
       "excludedInitiatorDomains": [
+        "tpc.googlesyndication.com",
+        "googlesyndication.com",
         "youtube.com",
         "www.youtube.com",
         "m.youtube.com",
         "music.youtube.com",
-        "tpc.googlesyndication.com",
-        "googlesyndication.com",
         "youtu.be",
         "googlevideo.com"
       ],
@@ -66,12 +66,12 @@
     "condition": {
       "urlFilter": "||googleadservices.com^",
       "excludedInitiatorDomains": [
+        "tpc.googlesyndication.com",
+        "googlesyndication.com",
         "youtube.com",
         "www.youtube.com",
         "m.youtube.com",
         "music.youtube.com",
-        "tpc.googlesyndication.com",
-        "googlesyndication.com",
         "youtu.be",
         "googlevideo.com"
       ],
@@ -94,6 +94,14 @@
     },
     "condition": {
       "urlFilter": "||adnxs.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -102,14 +110,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -121,6 +121,14 @@
     },
     "condition": {
       "urlFilter": "||taboola.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -129,14 +137,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -148,6 +148,14 @@
     },
     "condition": {
       "urlFilter": "||outbrain.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -156,14 +164,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -175,6 +175,14 @@
     },
     "condition": {
       "urlFilter": "||amazon-adsystem.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -183,14 +191,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -202,6 +202,14 @@
     },
     "condition": {
       "urlFilter": "||criteo.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -210,14 +218,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -229,6 +229,14 @@
     },
     "condition": {
       "urlFilter": "||criteo.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -237,14 +245,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -256,6 +256,14 @@
     },
     "condition": {
       "urlFilter": "||popads.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -264,14 +272,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -283,6 +283,14 @@
     },
     "condition": {
       "urlFilter": "||popcash.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -291,14 +299,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -310,6 +310,14 @@
     },
     "condition": {
       "urlFilter": "||rubiconproject.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -318,14 +326,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -337,6 +337,14 @@
     },
     "condition": {
       "urlFilter": "||pubmatic.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -345,14 +353,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -364,6 +364,14 @@
     },
     "condition": {
       "urlFilter": "||openx.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -372,14 +380,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -391,6 +391,14 @@
     },
     "condition": {
       "urlFilter": "||casalemedia.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -399,14 +407,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -418,6 +418,14 @@
     },
     "condition": {
       "urlFilter": "||smartadserver.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -426,14 +434,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -445,6 +445,14 @@
     },
     "condition": {
       "urlFilter": "||advertising.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -453,14 +461,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -472,6 +472,14 @@
     },
     "condition": {
       "urlFilter": "||adroll.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -480,14 +488,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -499,6 +499,14 @@
     },
     "condition": {
       "urlFilter": "||media.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -507,14 +515,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -526,6 +526,14 @@
     },
     "condition": {
       "urlFilter": "||bidswitch.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -534,14 +542,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -553,6 +553,14 @@
     },
     "condition": {
       "urlFilter": "||moatads.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -561,14 +569,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -580,6 +580,14 @@
     },
     "condition": {
       "urlFilter": "||scorecardresearch.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -588,14 +596,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -607,6 +607,14 @@
     },
     "condition": {
       "urlFilter": "||quantserve.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -615,14 +623,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -634,6 +634,14 @@
     },
     "condition": {
       "urlFilter": "||yieldmo.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -642,14 +650,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -661,6 +661,14 @@
     },
     "condition": {
       "urlFilter": "||revcontent.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -669,14 +677,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -688,6 +688,14 @@
     },
     "condition": {
       "urlFilter": "||adtechus.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -696,14 +704,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -715,6 +715,14 @@
     },
     "condition": {
       "urlFilter": "||exponential.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -723,14 +731,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -742,6 +742,14 @@
     },
     "condition": {
       "urlFilter": "||tribalfusion.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -750,14 +758,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -769,6 +769,14 @@
     },
     "condition": {
       "urlFilter": "||infolinks.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -777,14 +785,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -796,6 +796,14 @@
     },
     "condition": {
       "urlFilter": "||chitika.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -804,14 +812,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -823,6 +823,14 @@
     },
     "condition": {
       "urlFilter": "||mgid.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -831,14 +839,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -850,6 +850,14 @@
     },
     "condition": {
       "urlFilter": "||propellerads.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -858,14 +866,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -877,6 +877,14 @@
     },
     "condition": {
       "urlFilter": "||trafficjunky.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -885,14 +893,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -904,6 +904,14 @@
     },
     "condition": {
       "urlFilter": "||zergnet.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -912,14 +920,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -931,6 +931,14 @@
     },
     "condition": {
       "urlFilter": "||zemanta.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -939,14 +947,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -958,6 +958,14 @@
     },
     "condition": {
       "urlFilter": "||sovrn.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -966,14 +974,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -985,6 +985,14 @@
     },
     "condition": {
       "urlFilter": "||lijit.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -993,14 +1001,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1012,6 +1012,14 @@
     },
     "condition": {
       "urlFilter": "||teads.tv^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1020,14 +1028,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1039,6 +1039,14 @@
     },
     "condition": {
       "urlFilter": "||sharethrough.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1047,14 +1055,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1066,6 +1066,14 @@
     },
     "condition": {
       "urlFilter": "||indexexchange.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1074,14 +1082,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1093,6 +1093,14 @@
     },
     "condition": {
       "urlFilter": "||adform.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1101,14 +1109,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1120,6 +1120,14 @@
     },
     "condition": {
       "urlFilter": "||smartclip.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1128,14 +1136,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1147,6 +1147,14 @@
     },
     "condition": {
       "urlFilter": "||aniview.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1155,14 +1163,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1174,6 +1174,14 @@
     },
     "condition": {
       "urlFilter": "||spotxchange.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1182,14 +1190,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1201,6 +1201,14 @@
     },
     "condition": {
       "urlFilter": "||adblade.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1209,14 +1217,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1228,6 +1228,14 @@
     },
     "condition": {
       "urlFilter": "||connatix.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1236,14 +1244,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1255,6 +1255,14 @@
     },
     "condition": {
       "urlFilter": "||exoclick.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1263,14 +1271,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1282,6 +1282,14 @@
     },
     "condition": {
       "urlFilter": "||trafficfactory.biz^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1290,14 +1298,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1309,6 +1309,14 @@
     },
     "condition": {
       "urlFilter": "||adcolony.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1317,14 +1325,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1336,6 +1336,14 @@
     },
     "condition": {
       "urlFilter": "||rlcdn.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1344,14 +1352,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1363,6 +1363,14 @@
     },
     "condition": {
       "urlFilter": "||applovin.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1371,14 +1379,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1390,6 +1390,14 @@
     },
     "condition": {
       "urlFilter": "||unityads.unity3d.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1398,14 +1406,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1417,6 +1417,14 @@
     },
     "condition": {
       "urlFilter": "||ads.unity3d.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1425,14 +1433,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1444,6 +1444,14 @@
     },
     "condition": {
       "urlFilter": "||vungle.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1452,14 +1460,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1471,6 +1471,14 @@
     },
     "condition": {
       "urlFilter": "||inmobi.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1479,14 +1487,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1498,6 +1498,14 @@
     },
     "condition": {
       "urlFilter": "||chartboost.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1506,14 +1514,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1525,6 +1525,14 @@
     },
     "condition": {
       "urlFilter": "||ads-twitter.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1533,14 +1541,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1552,6 +1552,14 @@
     },
     "condition": {
       "urlFilter": "||static.ads-twitter.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1560,14 +1568,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1579,6 +1579,14 @@
     },
     "condition": {
       "urlFilter": "||an.facebook.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1587,14 +1595,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1606,6 +1606,14 @@
     },
     "condition": {
       "urlFilter": "||pixel.facebook.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1614,14 +1622,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1633,6 +1633,14 @@
     },
     "condition": {
       "urlFilter": "||clarity.ms^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1641,14 +1649,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1660,6 +1660,14 @@
     },
     "condition": {
       "urlFilter": "||hotjar.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1668,14 +1676,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1687,6 +1687,14 @@
     },
     "condition": {
       "urlFilter": "||smaato.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1695,14 +1703,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1714,6 +1714,14 @@
     },
     "condition": {
       "urlFilter": "||liveintent.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1722,14 +1730,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1741,6 +1741,14 @@
     },
     "condition": {
       "urlFilter": "||triplelift.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1749,14 +1757,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1768,6 +1768,14 @@
     },
     "condition": {
       "urlFilter": "||gumgum.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1776,14 +1784,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1795,6 +1795,14 @@
     },
     "condition": {
       "urlFilter": "||playwire.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1803,14 +1811,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1822,6 +1822,14 @@
     },
     "condition": {
       "urlFilter": "||intergi.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1830,14 +1838,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1849,6 +1849,14 @@
     },
     "condition": {
       "urlFilter": "||monetizemore.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1857,14 +1865,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1876,6 +1876,14 @@
     },
     "condition": {
       "urlFilter": "||mediavine.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1884,14 +1892,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1903,6 +1903,14 @@
     },
     "condition": {
       "urlFilter": "||adthrive.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1911,14 +1919,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1930,6 +1930,14 @@
     },
     "condition": {
       "urlFilter": "||ezoic.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1938,14 +1946,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1957,6 +1957,14 @@
     },
     "condition": {
       "urlFilter": "||ezoic.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1965,14 +1973,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -1984,6 +1984,14 @@
     },
     "condition": {
       "urlFilter": "||buysellads.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -1992,14 +2000,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2011,6 +2011,14 @@
     },
     "condition": {
       "urlFilter": "||buysellads.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2019,14 +2027,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2038,6 +2038,14 @@
     },
     "condition": {
       "urlFilter": "||carbonads.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2046,14 +2054,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2064,14 +2064,12 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||adservice.google.com^",
+      "urlFilter": "||an.yandex.ru^",
       "excludedInitiatorDomains": [
         "youtube.com",
         "www.youtube.com",
         "m.youtube.com",
         "music.youtube.com",
-        "tpc.googlesyndication.com",
-        "googlesyndication.com",
         "youtu.be",
         "googlevideo.com"
       ],
@@ -2093,7 +2091,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||an.yandex.ru^",
+      "urlFilter": "||mc.yandex.ru^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2102,14 +2108,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2120,7 +2118,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||mc.yandex.ru^",
+      "urlFilter": "||adsystem.yandex.ru^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2129,14 +2135,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2147,7 +2145,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||adsystem.yandex.ru^",
+      "urlFilter": "||gemini.yahoo.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2156,14 +2162,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2174,7 +2172,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||gemini.yahoo.com^",
+      "urlFilter": "||adserver.yahoo.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2183,14 +2189,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2201,7 +2199,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||adserver.yahoo.com^",
+      "urlFilter": "||ads.yahoo.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2210,14 +2216,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2228,7 +2226,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||ads.yahoo.com^",
+      "urlFilter": "||adzerk.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2237,14 +2243,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2255,7 +2253,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||adzerk.net^",
+      "urlFilter": "||kevel.co^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2264,14 +2270,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2282,7 +2280,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||kevel.co^",
+      "urlFilter": "||kargo.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2291,14 +2297,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2309,7 +2307,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||kargo.com^",
+      "urlFilter": "||nativo.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2318,14 +2324,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2336,7 +2334,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||nativo.com^",
+      "urlFilter": "||nativo.net^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2345,14 +2351,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2363,7 +2361,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||nativo.net^",
+      "urlFilter": "||undertone.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2372,14 +2378,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2390,7 +2388,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||undertone.com^",
+      "urlFilter": "||sonobi.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2399,14 +2405,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2417,7 +2415,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||sonobi.com^",
+      "urlFilter": "||yieldlove.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2426,14 +2432,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2444,7 +2442,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||yieldlove.com^",
+      "urlFilter": "||districtm.io^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2453,14 +2459,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2471,7 +2469,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||districtm.io^",
+      "urlFilter": "||adtrue.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2480,14 +2486,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2498,7 +2496,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||adtrue.com^",
+      "urlFilter": "||adpushup.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2507,14 +2513,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2525,7 +2523,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||adpushup.com^",
+      "urlFilter": "||popmyads.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2534,14 +2540,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2552,7 +2550,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||popmyads.com^",
+      "urlFilter": "||hilltopads.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2561,14 +2567,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2579,7 +2577,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||hilltopads.com^",
+      "urlFilter": "||richaudience.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2588,14 +2594,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2606,7 +2604,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||richaudience.com^",
+      "urlFilter": "||clicksor.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2615,14 +2621,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2633,7 +2631,15 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||clicksor.com^",
+      "urlFilter": "||bidvertiser.com^",
+      "excludedInitiatorDomains": [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "music.youtube.com",
+        "youtu.be",
+        "googlevideo.com"
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
@@ -2642,14 +2648,6 @@
         "media",
         "websocket",
         "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
       ]
     }
   },
@@ -2660,43 +2658,7 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||bidvertiser.com^",
-      "resourceTypes": [
-        "script",
-        "xmlhttprequest",
-        "sub_frame",
-        "image",
-        "media",
-        "websocket",
-        "other"
-      ],
-      "excludedInitiatorDomains": [
-        "youtube.com",
-        "www.youtube.com",
-        "m.youtube.com",
-        "music.youtube.com",
-        "youtu.be",
-        "googlevideo.com"
-      ]
-    }
-  },
-  {
-    "id": 100,
-    "priority": 1,
-    "action": {
-      "type": "block"
-    },
-    "condition": {
       "urlFilter": "||a-ads.com^",
-      "resourceTypes": [
-        "script",
-        "xmlhttprequest",
-        "sub_frame",
-        "image",
-        "media",
-        "websocket",
-        "other"
-      ],
       "excludedInitiatorDomains": [
         "youtube.com",
         "www.youtube.com",
@@ -2704,52 +2666,14 @@
         "music.youtube.com",
         "youtu.be",
         "googlevideo.com"
-      ]
-    }
-  },
-  {
-    "id": 9000,
-    "priority": 100,
-    "action": {
-      "type": "allow"
-    },
-    "condition": {
-      "urlFilter": "/generate_204",
-      "resourceTypes": [
-        "image",
-        "ping",
-        "xmlhttprequest",
-        "other"
-      ]
-    }
-  },
-  {
-    "id": 9001,
-    "priority": 100,
-    "action": {
-      "type": "allow"
-    },
-    "condition": {
-      "urlFilter": "||pagead2.googlesyndication.com/bg/",
+      ],
       "resourceTypes": [
         "script",
         "xmlhttprequest",
-        "other"
-      ]
-    }
-  },
-  {
-    "id": 9002,
-    "priority": 100,
-    "action": {
-      "type": "allow"
-    },
-    "condition": {
-      "urlFilter": "/pagead/gen_204",
-      "resourceTypes": [
+        "sub_frame",
         "image",
-        "ping",
-        "xmlhttprequest",
+        "media",
+        "websocket",
         "other"
       ]
     }
@@ -2762,26 +2686,25 @@
     },
     "condition": {
       "requestDomains": [
-        "adcolony.com",
-        "adition.com",
-        "adkernel.com",
-        "adlightning.com",
-        "admarvel.com",
-        "admixer.net",
-        "admeld.com",
-        "admob.com",
         "adhese.com",
         "adhigh.net",
         "adhood.com",
+        "adition.com",
         "adiver.ru",
         "adjug.com",
+        "adkernel.com",
         "adlantic.nl",
         "adledge.com",
+        "adlightning.com",
         "adloch.com",
         "admanmedia.com",
+        "admarvel.com",
         "admaxim.com",
         "admedia.com",
+        "admeld.com",
         "admeta.com",
+        "admixer.net",
+        "admob.com",
         "adnet.de",
         "adocean.pl",
         "adonnetwork.com",
@@ -2812,7 +2735,6 @@
         "adtarget.me",
         "adtegrity.net",
         "adtelligent.com",
-        "adthrive.com",
         "adtiger.de",
         "adtoma.com",
         "adtrace.org",
@@ -2827,13 +2749,10 @@
         "advisibility.com",
         "adxpose.com",
         "adyoulike.com",
-        "adzerk.net",
         "airpush.com",
         "alenty.com",
         "amobee.com",
-        "aniview.com",
         "appier.net",
-        "applovin.com",
         "appodeal.com",
         "apsalar.com",
         "atemda.com",
@@ -2850,13 +2769,10 @@
         "bluekai.com",
         "brightroll.com",
         "burstnet.com",
-        "buysellads.com",
         "carbonads.com",
-        "carbonads.net",
         "celtra.com",
         "channelintelligence.com",
         "chartbeat.com",
-        "chartboost.com",
         "choicestream.com",
         "cityads.com",
         "clickagy.com",
@@ -2867,7 +2783,6 @@
         "clrstm.com",
         "cognitiv.ai",
         "collective-media.net",
-        "connatix.com",
         "connectad.io",
         "content.ad",
         "contentabc.com",
@@ -2887,7 +2802,6 @@
         "directtrack.com",
         "dotomi.com",
         "doubleverify.com",
-        "tremorhub.com",
         "dynamicoxygen.com",
         "e-planning.net",
         "ebayadservices.com",
@@ -2900,7 +2814,6 @@
         "ethicalads.io",
         "everesttech.net",
         "exelator.com",
-        "exoclick.com",
         "exosrv.com",
         "extremereach.io",
         "eyeota.net",
@@ -2914,24 +2827,20 @@
         "getadmiral.com",
         "getclicky.com",
         "getintent.com",
-        "gumgum.com",
         "heias.com",
         "histats.com",
-        "hotjar.com",
         "httpool.com",
         "hurra.com",
         "iasds01.com",
         "ib-ibi.com",
         "id5-sync.com",
         "imrworldwide.com",
-        "inmobi.com",
         "inner-active.mobi",
         "innovid.com",
         "inskinmedia.com",
         "inspectlet.com",
         "instinctive.io",
         "intentiq.com",
-        "intergi.com",
         "interpolls.com",
         "invitemedia.com",
         "iponweb.com",
@@ -2939,7 +2848,6 @@
         "ispot.tv",
         "juicyads.com",
         "justpremium.com",
-        "kargo.com",
         "keywee.co",
         "kissmetrics.com",
         "knorex.com",
@@ -2952,7 +2860,6 @@
         "liftoff.io",
         "ligatus.com",
         "linkstorm.net",
-        "liveintent.com",
         "liverail.com",
         "liveramp.com",
         "lkqd.net",
@@ -2971,7 +2878,6 @@
         "mediaforge.com",
         "mediamath.com",
         "mediaplex.com",
-        "mediavine.com",
         "megacash.de",
         "metrigo.com",
         "mixpanel.com",
@@ -2982,7 +2888,6 @@
         "mythings.com",
         "nanigans.com",
         "nativeads.com",
-        "nativo.com",
         "navegg.com",
         "neodatagroup.com",
         "netmng.com",
@@ -3013,8 +2918,8 @@
         "pippio.com",
         "pixfuture.com",
         "placed.com",
-        "plista.com",
         "playground.xyz",
+        "plista.com",
         "plugrush.com",
         "pocketmath.com",
         "pointroll.com",
@@ -3062,7 +2967,6 @@
         "richmedia.com",
         "richrelevance.com",
         "rightmedia.com",
-        "rlcdn.com",
         "rmtag.com",
         "rockabox.com",
         "rocketfuel.com",
@@ -3098,20 +3002,16 @@
         "singular.net",
         "sitescout.com",
         "skimresources.com",
-        "smaato.net",
-        "smartclip.net",
         "smartology.net",
         "smartstream.tv",
         "snapads.com",
         "snigelweb.com",
         "sociomantic.com",
         "sojern.com",
-        "sonobi.com",
         "sortable.com",
         "specificmedia.com",
         "spongecell.com",
         "spotx.tv",
-        "spotxchange.com",
         "springserve.com",
         "sprout-ad.com",
         "stackadapt.com",
@@ -3155,13 +3055,13 @@
         "tradedoubler.com",
         "tradelab.fr",
         "tradetracker.net",
-        "trafficfactory.biz",
         "trafficforce.com",
         "traffichaus.com",
         "trafficmarketplace.com",
         "trafficshop.com",
         "trafficstars.com",
         "trakken.de",
+        "tremorhub.com",
         "tremorvideo.com",
         "trgt.io",
         "triblio.com",
@@ -3175,7 +3075,6 @@
         "uberads.com",
         "ubimo.com",
         "ucfunnel.com",
-        "undertone.com",
         "unruly.co",
         "unrulymedia.com",
         "upsight-api.com",
@@ -3194,15 +3093,15 @@
         "videonow.ru",
         "videoplaza.tv",
         "vidible.tv",
-        "vidora.com",
         "vidoomy.com",
+        "vidora.com",
         "viewbix.com",
         "viglink.com",
         "vindicosuite.com",
         "viralgains.com",
         "viralize.tv",
-        "visx.net",
         "visualdna.com",
+        "visx.net",
         "vivaki.com",
         "vizury.com",
         "vlym.com",
@@ -3211,7 +3110,6 @@
         "vpon.com",
         "vrtcal.com",
         "vserv.mobi",
-        "vungle.com",
         "w55c.net",
         "wahoha.com",
         "webads.eu",
@@ -3253,6 +3151,7 @@
         "zucks.net",
         "zumobi.com"
       ],
+      "domainType": "thirdParty",
       "excludedInitiatorDomains": [
         "youtube.com",
         "www.youtube.com",
@@ -3269,12 +3168,11 @@
         "media",
         "websocket",
         "other"
-      ],
-      "domainType": "thirdParty"
+      ]
     }
   },
   {
-    "id": 102,
+    "id": 500,
     "priority": 2,
     "action": {
       "type": "block"
@@ -3299,7 +3197,7 @@
     }
   },
   {
-    "id": 103,
+    "id": 501,
     "priority": 2,
     "action": {
       "type": "block"
@@ -3320,7 +3218,7 @@
     }
   },
   {
-    "id": 104,
+    "id": 502,
     "priority": 2,
     "action": {
       "type": "block"
@@ -3337,6 +3235,53 @@
       ],
       "resourceTypes": [
         "script"
+      ]
+    }
+  },
+  {
+    "id": 9000,
+    "priority": 100,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "/generate_204",
+      "resourceTypes": [
+        "image",
+        "ping",
+        "xmlhttprequest",
+        "other"
+      ]
+    }
+  },
+  {
+    "id": 9001,
+    "priority": 100,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "||pagead2.googlesyndication.com/bg/",
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "other"
+      ]
+    }
+  },
+  {
+    "id": 9002,
+    "priority": 100,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "/pagead/gen_204",
+      "resourceTypes": [
+        "image",
+        "ping",
+        "xmlhttprequest",
+        "other"
       ]
     }
   },

@@ -1,0 +1,23 @@
+{
+  "name": "adblock-team",
+  "description": "Multi-agent team workflow (Researcher, Infra, Site-Adapters, QA-Unit, QA-Sites, Coordinator) for Shield by Nablai.",
+  "entry": "adblock_team.py",
+  "argsSchema": {
+    "type": "object",
+    "properties": {
+      "focus": {
+        "type": "string",
+        "description": "Primary focus area for this team run (e.g. YouTube, X.com, Dutch news CMPs)."
+      },
+      "sites": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "List of target websites for QA-Sites parallel audit."
+      },
+      "sync_upstream": {
+        "type": "boolean",
+        "description": "Whether Infra should evaluate upstream hosts list syncing."
+      }
+    }
+  }
+}
