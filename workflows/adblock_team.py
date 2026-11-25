@@ -56,8 +56,17 @@ Return a concise, prioritized list of concrete, zero-breakage improvements split
     },
     role="Researcher",
     type_name="research",
+    model="flash",
 )
 log("Research complete:", research_report["summary"])
+
+# Escalate Infra/Adapter to stronger model ONLY if Researcher flags complex anti-adblock / SPA risks
+needs_heavy_model = any(
+    any(k in t.lower() for k in ("youtube", "botguard", "ssai", "sabr", "main world", "shadow dom", "react", "black screen"))
+    for t in (research_report["infra_tasks"] + research_report["adapter_tasks"])
+)
+eng_model = "pro" if needs_heavy_model else "flash"
+log(f"Hybrid model routing -> Engineering tier: {eng_model}")
 
 # ==============================================================================
 # PHASE 2: PARALLEL ENGINEERING (INFRA + SITE ADAPTERS)
@@ -102,6 +111,7 @@ eng_results = await parallel(
         },
         role=spec["role"],
         workspace="inherit",
+        model=eng_model,
     ),
 )
 for spec, res in zip(eng_specs, eng_results):
@@ -126,6 +136,7 @@ Report exact pass/fail counts and any missing regression test coverage.""",
         "required": ["passed", "details", "coverage_gaps"],
     },
     role="QA-Unit",
+    model="flash_lite",
 )
 
 qa_sites_task = parallel(

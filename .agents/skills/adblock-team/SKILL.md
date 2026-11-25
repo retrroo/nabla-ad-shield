@@ -39,6 +39,18 @@ description: Multi-agent team playbook for Shield by Nablai (Coordinator, Resear
 ### 5. Coordinator (`coordinator`)
 - Breaks goals into clear slices, assigns them to `researcher`, `infra`, `qa-unit`, and `qa-sites`, validates every merge with `npm run package`, bumps `manifest.json` version, and summarizes user-visible impact.
 
+## Hybrid Cost-Optimized Model Policy (For `/swarm` & Workflows)
+1. **Default Light (Token-Saving)**:
+   - Always call `swarm(action="models")` at swarm start and assign economical **Flash / Lite** models to `researcher`, `qa-unit`, `qa-sites`, and routine `infra` tasks (filter lists, CSS adapters, running tests).
+2. **On-Demand Escalation (Hybrid)**:
+   - Escalate a worker to a **larger/stronger model** (`swarm(action="model", name="<worker>", model="<larger-model>")`) ONLY when needed:
+     - YouTube `MAIN`-world anti-adblock / Botguard / SABR / SSAI changes
+     - Tricky React/Vue/Tailwind SPA breakage or Shadow DOM CMP race conditions
+     - Non-obvious test failures that a light model could not resolve in 1 pass
+3. **Zero Idle Waste**:
+   - Never spam `@all`; address specific workers with tight, actionable briefs.
+   - Land/merge work promptly and `kill` finished workers so workspaces stay clean.
+
 ## Running the Team Automatically
+- **Via Live Swarm (Recommended)**: User invokes `/swarm` with `researcher`, `infra`, `qa-unit`, and `qa-sites` using `workspace: "share"` for authors (`infra`, `qa-unit`) and `workspace: "inherit"` for readers/verifiers (`researcher`, `qa-sites`), applying the Hybrid Model Policy above.
 - **Via Python Workflow (`run_workflow`)**: Execute `workflows/adblock_team.py` with optional `Args` like `{"focus": "YouTube & Dutch news CMPs", "sync_upstream": false}`.
-- **Via Live Swarm**: User invokes `/teamwork` or `/swarm` with these 4 roles (`researcher`, `infra`, `qa-unit`, `qa-sites`) using `workspace: "share"` for authors (`infra`, `qa-unit`) and `workspace: "inherit"` for readers/verifiers (`researcher`, `qa-sites`).
